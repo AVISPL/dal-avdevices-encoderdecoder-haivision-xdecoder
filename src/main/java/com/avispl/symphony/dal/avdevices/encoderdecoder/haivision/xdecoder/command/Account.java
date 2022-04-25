@@ -4,7 +4,7 @@
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.command;
 
 /**
- * AccountCommand
+ * Account command
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/18/2022

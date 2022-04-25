@@ -4,7 +4,7 @@
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.command;
 
 /**
- * CommonCommand
+ * Common command
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/18/2022

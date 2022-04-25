@@ -216,7 +216,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 *
 	 * @throws ResourceNotReachableException When there is no valid User Role data or having an Exception
 	 */
-	private String retrieveUserRole() {
+	public String retrieveUserRole() {
 		objectMapper = new ObjectMapper();
 		try {
 			String request = Account.ACCOUNT.getName()
@@ -572,6 +572,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					// Stream name filtering
 					if (this.streamNameFilter != null && streamsNameFiltered != null && streamsNameFiltered.contains(stream.getStreamName())) {
 						populateStreamStats(stats, streamInfoWrapper);
+						updateLocalStreamConfigInfo(streamInfoWrapper, Integer.parseInt(stream.getStreamId()));
 						continue;
 					}
 
@@ -590,12 +591,15 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					}
 					if (this.streamStatusFilter != null) {
 						populateStreamStats(stats, streamInfoWrapper);
+						updateLocalStreamConfigInfo(streamInfoWrapper, Integer.parseInt(stream.getStreamId()));
 					}
 					if (this.portNumberFilter != null) {
 						populateStreamStats(stats, streamInfoWrapper);
+						updateLocalStreamConfigInfo(streamInfoWrapper, Integer.parseInt(stream.getStreamId()));
 					}
 					if (this.streamNameFilter == null) {
 						populateStreamStats(stats, streamInfoWrapper);
+						updateLocalStreamConfigInfo(streamInfoWrapper, Integer.parseInt(stream.getStreamId()));
 					}
 				}
 			} else {
