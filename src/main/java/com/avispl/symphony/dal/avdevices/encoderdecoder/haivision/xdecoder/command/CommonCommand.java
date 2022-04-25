@@ -1,27 +1,30 @@
+/*
+ * Copyright (c) 2022 AVI-SPL, Inc. All Rights Reserved.
+ */
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.command;
 
 /**
- * TalkbackCommand
+ * CommonCommand
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/18/2022
  * @since 1.0.0
  */
-public enum Videnc {
-	VIDENC("viddec"),
+public enum CommonCommand {
+	GET("get"),
+	ALL("all"),
 	START("start"),
 	STOP("stop"),
-	SET("set"),
-	GET("get");
+	SET("set");
 
 	private final String name;
 
 	/**
-	 * Talkback command
+	 * Common command
 	 *
 	 * @param name {@code {@link #name}}
 	 */
-	Videnc(String name) {
+	CommonCommand(String name) {
 		this.name = name;
 	}
 

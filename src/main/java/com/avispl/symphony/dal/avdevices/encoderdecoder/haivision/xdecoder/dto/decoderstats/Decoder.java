@@ -14,10 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Viddec {
-
-	@JsonAlias ("DecoderID")
-	private String decoderID;
+public class Decoder {
 
 	@JsonAlias("KLV")
 	private String keyLengthValue;
@@ -30,24 +27,6 @@ public class Viddec {
 
 	@JsonAlias("AFD")
 	private String activeFormatDescription;
-
-	/**
-	 * Retrieves {@code {@link #decoderID}}
-	 *
-	 * @return value of {@link #decoderID}
-	 */
-	public String getDecoderID() {
-		return decoderID;
-	}
-
-	/**
-	 * Sets {@code decoderID}
-	 *
-	 * @param decoderID the {@code java.lang.String} field
-	 */
-	public void setDecoderID(String decoderID) {
-		this.decoderID = decoderID;
-	}
 
 	/**
 	 * Retrieves {@code {@link #keyLengthValue }}

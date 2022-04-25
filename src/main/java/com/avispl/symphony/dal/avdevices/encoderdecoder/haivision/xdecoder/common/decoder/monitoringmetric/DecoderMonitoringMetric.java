@@ -7,12 +7,13 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
  * Set of decoder monitoring metrics keys
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 4/18/2022
  * @since 1.0.0
  */
 public enum DecoderMonitoringMetric {
 
 	// Static metric
+	ID("DecoderID"),
 	UPTIME("Uptime"),
 	RESTARTS("Restarts"),
 	VIDEO_ALGORITHM("VideoAlgorithm"),

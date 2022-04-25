@@ -10,19 +10,23 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Device info
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 4/18/2022
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeviceInfo {
+
+	@JsonAlias("SerialNumber")
+	private String serialNumber;
+
 	@JsonAlias("BootVersion")
 	private String bootVersion;
 
 	@JsonAlias("CardType")
 	private String cardType;
 
-	@JsonAlias("CPLDRevision")
-	private String cpldRevision;
+	@JsonAlias("CPLDVersion")
+	private String cpldVersion;
 
 	@JsonAlias("FirmwareDate")
 	private String firmwareDate;
@@ -47,6 +51,24 @@ public class DeviceInfo {
 
 	@JsonAlias("TemperatureStatus")
 	private TemperatureStatus temperatureStatus;
+
+	/**
+	 * Retrieves {@code {@link #serialNumber}}
+	 *
+	 * @return value of {@link #serialNumber}
+	 */
+	public String getSerialNumber() {
+		return serialNumber;
+	}
+
+	/**
+	 * Sets {@code serialNumber}
+	 *
+	 * @param serialNumber the {@code java.lang.String} field
+	 */
+	public void setSerialNumber(String serialNumber) {
+		this.serialNumber = serialNumber;
+	}
 
 	/**
 	 * Retrieves {@code {@link #bootVersion}}
@@ -85,21 +107,21 @@ public class DeviceInfo {
 	}
 
 	/**
-	 * Retrieves {@code {@link #cpldRevision}}
+	 * Retrieves {@code {@link #cpldVersion }}
 	 *
-	 * @return value of {@link #cpldRevision}
+	 * @return value of {@link #cpldVersion}
 	 */
-	public String getCpldRevision() {
-		return cpldRevision;
+	public String getCpldVersion() {
+		return cpldVersion;
 	}
 
 	/**
 	 * Sets {@code cpldRevision}
 	 *
-	 * @param cpldRevision the {@code java.lang.String} field
+	 * @param cpldVersion the {@code java.lang.String} field
 	 */
-	public void setCpldRevision(String cpldRevision) {
-		this.cpldRevision = cpldRevision;
+	public void setCpldVersion(String cpldVersion) {
+		this.cpldVersion = cpldVersion;
 	}
 
 	/**

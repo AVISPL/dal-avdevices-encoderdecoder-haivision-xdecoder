@@ -14,7 +14,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
  */
 public class Deserializer {
 
-	public static Map<String, Object> popularConvertDataToObject(String responseData, String request) {
+	public static Map<String, Object> convertDataToObject(String responseData, String request) {
 
 		try {
 			String[] fields = responseData.split("\r\n");
@@ -23,7 +23,7 @@ public class Deserializer {
 			Map<String, String> object = new HashMap<>();
 
 			for (String field : fields) {
-				String[] fieldElement = field.split(DecoderConstant.COLON);
+				String[] fieldElement = field.split(DecoderConstant.COLON, 2);
 				String key = fieldElement[0];
 
 				if (!key.contains("\t") && (fieldElement.length == 1 || fieldElement[1].trim().isEmpty())) {
@@ -34,7 +34,7 @@ public class Deserializer {
 					}
 					rootObject.put(key.replaceAll("[1-9\\s+]", ""), object);
 				} else {
-					object.put(key.replaceAll("\\s+", ""), fieldElement[1].replaceAll("\\s+", ""));
+					object.put(key.replaceAll("\\s+", ""), fieldElement[1]);
 				}
 			}
 			return rootObject;

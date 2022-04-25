@@ -7,12 +7,13 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
  * Set of device info metric keys
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 4/18/2022
  * @since 1.0.0
  */
 public enum DeviceInfoMetric {
 
 	// Static metric
+	SERIAL_NUMBER("SerialNumber"),
 	BOOT_VERSION("BootVersion"),
 	CARD_TYPE("CardType"),
 	CPLD_REVISION("CpldRevision"),

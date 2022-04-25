@@ -8,36 +8,40 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
  * Set of stream monitoring metric keys
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 4/18/2022
  * @since 1.0.0
  */
 public enum StreamMonitoringMetric {
 
 	// Static metric
-	ID("ContentID"),
-	NAME("ContentName"),
-	DECODER_ID("ContentDecoderId"),
+	NAME("GeneralName"),
+	STREAM_ID("GeneralStreamId"),
 	ENCAPSULATION("GeneralEncapsulation"),
-	STATE("GeneralStreamStatus"),
-	SOURCE_ADDRESS("GeneralSourceAddress"),
-	BIT_RATE("GeneralBitRate(Mbps)"),
-	CONNECTIONS("GeneralConnections"),
-	LAST_CONNECTIONS("GeneralLastConnections"),
-	RECEIVED_PACKET("GeneralReceivedPacket"),
-	RECEIVED_BYTES("GeneralReceivedBytes"),
-	LAST_RECEIVED("GeneralLastReceived"),
-	OUTPUT_PACKETS("GeneralOutputPackets"),
-	LAST_OUTPUT_PACKETS("GeneralLastOutputPackets"),
-	OUTPUT_BYTES("GeneralOutputBytes"),
-	PROGRAM_NUMBER("GeneralProgramNumber"),
-	PCR_PID("GeneralPcrPid"),
-	STREAM_SUMMARY("GeneralStreamSummary"),
+	STATE("StatsState"),
+	OUTPUT("StatsOutput"),
+	SOURCE_ADDRESS("StatsSourceAddress"),
+	BIT_RATE("StatsBitRate"),
+	RECEIVED_PACKET("StatsReceivedPacket"),
+	RECEIVED_BYTES("StatsReceivedBytes"),
+	LAST_RECEIVED("StatsLastReceived"),
+	UP_TIME("StatsUpTime"),
+	RECONNECTIONS("SRTReconnections"),
+	SNCRYPTION("SRTAESncryption"),
+	KEY_LENGTH("SRTKeyLength"),
+	DECRYPTION("SRTDecryption"),
+	LOST_PACKETS("SRTLostPackets"),
+	SKIPPED_PACKETS("SRTSkippedPackets"),
+	SENT_ACKS("SRTSentAcks"),
+	SENT_NAKS("SRTSentNaks"),
+	LINK_BANDWIDTH("SRTLinkBandwidth"),
+	RTT("SRTRtt"),
+	BUFFER("SRTBuffer"),
+	LATENCY("SRTLatency"),
+	ERROR_MPEG_2_TS_LOST_PACKETS("ErrorMPEG2TSLostPackets"),
 	ERROR_CORRUPTED_FRAMES("ErrorCorruptedFrames"),
-	ERROR_LAST_CORRUPTED_FRAMES("ErrorLastCorruptedFrames"),
-	ERROR_DROPPED_PACKETS("ErrorDroppedPackets"),
-	ERROR_LAST_DROPPED_PACKETS("ErrorLastDroppedPackets"),
-	ERROR_RESTARTS("ErrorResumedStreamFlags"),
-	ERROR_LAST_RESTARTS("ErrorLastResumedStreamFlags");
+	ERROR_PAUSES("ErrorPauses"),
+	LAST_ERROR("ErrorLastError"),
+	ERROR_OCCURRED("ErrorOccurred");
 
 	private final String name;
 

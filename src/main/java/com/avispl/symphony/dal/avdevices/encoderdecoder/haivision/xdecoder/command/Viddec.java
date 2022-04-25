@@ -4,24 +4,23 @@
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.command;
 
 /**
- * DeviceInfoCommand
+ * ViddecCommand
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/18/2022
  * @since 1.0.0
  */
-public enum Haiversion {
-	HAIVERSION("haiversion"),
-	TEMPERATURE("temperature get");
+public enum Viddec {
+	VIDDEC("viddec");
 
 	private final String name;
 
 	/**
-	 * Device info command
+	 * Viddec command
 	 *
 	 * @param name {@code {@link #name}}
 	 */
-	Haiversion(String name) {
+	Viddec(String name) {
 		this.name = name;
 	}
 
