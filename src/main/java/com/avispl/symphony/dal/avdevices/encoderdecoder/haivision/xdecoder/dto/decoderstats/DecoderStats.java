@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * Decoder statistics
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 4/18/2022
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

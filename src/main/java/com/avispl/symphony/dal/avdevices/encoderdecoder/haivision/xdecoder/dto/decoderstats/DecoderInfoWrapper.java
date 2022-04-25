@@ -10,7 +10,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
 
 /**
- * Decoder Data
+ * Decoder info wrapper
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/22/2022
@@ -19,8 +19,8 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DecoderInfoWrapper {
 
-	@JsonAlias ("viddegetall")
-	private Viddec viddec;
+	@JsonAlias("viddegetall")
+	private Decoder decoder;
 
 	@JsonAlias("Configuration")
 	private DecoderConfigInfo decoderConfigInfo;
@@ -38,21 +38,21 @@ public class DecoderInfoWrapper {
 	private Timecode timecode;
 
 	/**
-	 * Retrieves {@code {@link #viddec }}
+	 * Retrieves {@code {@link #decoder }}
 	 *
-	 * @return value of {@link #viddec}
+	 * @return value of {@link #decoder}
 	 */
-	public Viddec getViddec() {
-		return viddec;
+	public Decoder getDecoder() {
+		return decoder;
 	}
 
 	/**
 	 * Sets {@code decoderID}
 	 *
-	 * @param viddec the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderID} field
+	 * @param decoder the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderID} field
 	 */
-	public void setViddec(Viddec viddec) {
-		this.viddec = viddec;
+	public void setDecoder(Decoder decoder) {
+		this.decoder = decoder;
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class DecoderInfoWrapper {
 		this.timecode = timecode;
 	}
 
-		/**
+	/**
 	 * @param decoderMonitoringMetric
 	 *
 	 * @return String value of decoder monitoring properties by metric
@@ -209,9 +209,9 @@ public class DecoderInfoWrapper {
 			case AUDIO_SKIPPED_FRAMES:
 				return audio.getSkippedFrames();
 			case KLV:
-				return viddec.getKeyLengthValue();
+				return decoder.getKeyLengthValue();
 			case TC:
-				return viddec.getTimecode();
+				return decoder.getTimecode();
 			case TIMECODE_STATE:
 				return timecode.getState();
 			case CURRENT_TIMECODE:
@@ -221,9 +221,9 @@ public class DecoderInfoWrapper {
 			case TIMECODE_DISPLAYED_FRAMES:
 				return timecode.getDisplayedFrames();
 			case CC:
-				return viddec.getClosedCaptioning();
+				return decoder.getClosedCaptioning();
 			case AFD:
-				return viddec.getActiveFormatDescription();
+				return decoder.getActiveFormatDescription();
 			default:
 				return DecoderConstant.EMPTY;
 		}

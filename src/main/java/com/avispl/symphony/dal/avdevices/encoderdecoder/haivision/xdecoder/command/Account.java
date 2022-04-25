@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2022 AVI-SPL, Inc. All Rights Reserved.
+ */
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.command;
 
 /**
@@ -8,8 +11,7 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
  * @since 1.0.0
  */
 public enum Account {
-	ACCOUNT("account"),
-	GET("get");
+	ACCOUNT("account");
 
 	private final String name;
 

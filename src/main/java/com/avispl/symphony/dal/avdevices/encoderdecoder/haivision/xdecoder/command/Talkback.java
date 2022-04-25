@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2022 AVI-SPL, Inc. All Rights Reserved.
+ */
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.command;
 
 /**
@@ -8,10 +11,7 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
  * @since 1.0.0
  */
 public enum Talkback {
-	START("start"),
-	STOP("stop"),
-	SET("set"),
-	GET("get");
+	TALKBACK("talkback");
 
 	private final String name;
 

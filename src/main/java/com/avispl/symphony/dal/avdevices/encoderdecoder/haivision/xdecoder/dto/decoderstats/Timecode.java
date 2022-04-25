@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Decoder Data
+ * Time code
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/22/2022

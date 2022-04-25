@@ -1,26 +1,30 @@
+/*
+ * Copyright (c) 2022 AVI-SPL, Inc. All Rights Reserved.
+ */
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.command;
 
 /**
- * AccountCommand
+ * StreamCommand
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/18/2022
  * @since 1.0.0
  */
-public enum Audenc {
-	START("start"),
-	STOP("stop"),
-	SET("set"),
-	GET("get");
+public enum StreamCommand {
+	STREAM("stream"),
+	CREATE("create"),
+	PAUSE("pause"),
+	RESUME("resume"),
+	DELETE("delete");
 
 	private final String name;
 
 	/**
-	 * Audenc command
+	 * Stream command
 	 *
 	 * @param name {@code {@link #name}}
 	 */
-	Audenc(String name) {
+	StreamCommand(String name) {
 		this.name = name;
 	}
 
