@@ -4,14 +4,14 @@
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.command;
 
 /**
- * AuddecCommand
+ * Auddec command
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/18/2022
  * @since 1.0.0
  */
 public enum Auddec {
-	AUDENC("start");
+	AUDDEC("auddec");
 
 	private final String name;
 

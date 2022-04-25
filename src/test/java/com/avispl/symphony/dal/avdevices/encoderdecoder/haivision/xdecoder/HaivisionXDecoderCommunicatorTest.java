@@ -5,7 +5,6 @@
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
@@ -18,7 +17,6 @@ import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.MonitoringMetricGroup;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.data.MonitoringData;
 
 /**
@@ -59,8 +57,6 @@ public class HaivisionXDecoderCommunicatorTest {
 	void testHaivisionX4DecoderCommunicatorGetMonitoringDataSuccessful() {
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionX4DecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
-
-		String decoderStatisticGroup = MonitoringMetricGroup.DECODER_STATISTICS.getName() + 1 + DecoderConstant.HASH;
 
 		Assertions.assertEquals(MonitoringData.SERIAL_NUMBER.getData(), stats.get(DeviceInfoMetric.SERIAL_NUMBER.getName()));
 		Assertions.assertEquals(MonitoringData.BOOT_VERSION.getData(), stats.get(DeviceInfoMetric.BOOT_VERSION.getName()));
