@@ -34,12 +34,12 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.Deserializer;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.authentication.AuthenticationRoleWrapper;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderConfigInfo;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderConfig;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderInfoWrapper;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.deviceinfo.DeviceInfo;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.deviceinfo.DeviceInfoWrapper;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.Stream;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.StreamConfigInfo;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.StreamConfig;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.StreamInfoWrapper;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.StreamStats;
 import com.avispl.symphony.dal.communicator.SshCommunicator;
@@ -58,14 +58,14 @@ import com.avispl.symphony.dal.util.StringUtils;
  * <li>Start/Stop /Edit Decoder</li>
  * <li>Create/ Delete Stream</li>
  *
- * @author Ivan / Symphony Dev Team<br>
+ * @author Harry / Symphony Dev Team<br>
  * Created on 4/6/2022
  * @since 1.0.0
  */
 public class HaivisionXDecoderCommunicator extends SshCommunicator implements Monitorable, Controller {
-	ObjectMapper objectMapper;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 	private Map<String, String> failedMonitor;
-	private Set<Integer> filteredStreamIDSet;
+	private Set<Integer> filteredStreamsID;
 	private Set<String> streamsNameFiltered;
 	private Set<String> streamsStatusFiltered;
 	private Set<String> portNumbersFiltered;
@@ -73,10 +73,10 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private boolean isUpdateLocalStreamControl = false;
 
 	// Decoder and stream DTO
-	private List<DecoderConfigInfo> decoderConfigInfosDTO;
-	private List<DecoderConfigInfo> localDecoderConfigInfos;
-	private List<StreamConfigInfo> streamConfigDTOInfos;
-	private List<StreamConfigInfo> localStreamConfigInfos;
+	private List<DecoderConfig> decoderConfigsDTO;
+	private List<DecoderConfig> localDecoderConfigs;
+	private List<StreamConfig> streamConfigsDTO;
+	private List<StreamConfig> localStreamConfigs;
 
 	//Adapter Properties
 	private String streamNameFilter;
@@ -181,19 +181,19 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		final ExtendedStatistics extendedStatistics = new ExtendedStatistics();
 		final Map<String, String> stats = new HashMap<>();
 		failedMonitor = new HashMap<>();
-		filteredStreamIDSet = new HashSet<>();
+		filteredStreamsID = new HashSet<>();
 
-		if (decoderConfigInfosDTO == null) {
-			decoderConfigInfosDTO = new ArrayList<>();
+		if (decoderConfigsDTO == null) {
+			decoderConfigsDTO = new ArrayList<>();
 		}
-		if (streamConfigDTOInfos == null) {
-			streamConfigDTOInfos = new ArrayList<>();
+		if (streamConfigsDTO == null) {
+			streamConfigsDTO = new ArrayList<>();
 		}
-		if (localDecoderConfigInfos == null) {
-			localDecoderConfigInfos = new ArrayList<>();
+		if (localDecoderConfigs == null) {
+			localDecoderConfigs = new ArrayList<>();
 		}
-		if (localStreamConfigInfos == null) {
-			localStreamConfigInfos = new ArrayList<>();
+		if (localStreamConfigs == null) {
+			localStreamConfigs = new ArrayList<>();
 		}
 		populateDecoderMonitoringMetrics(stats);
 
@@ -203,12 +203,12 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 	@Override
 	public void controlProperty(ControllableProperty controllableProperty) {
-
+		// ToDo:
 	}
 
 	@Override
 	public void controlProperties(List<ControllableProperty> list) {
-
+		// ToDo:
 	}
 
 	/**
@@ -217,7 +217,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @throws ResourceNotReachableException When there is no valid User Role data or having an Exception
 	 */
 	public String retrieveUserRole() {
-		objectMapper = new ObjectMapper();
 		try {
 			String request = Account.ACCOUNT.getName()
 					.concat(DecoderConstant.SPACE)
@@ -237,7 +236,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			}
 			return role;
 		} catch (Exception e) {
-			throw new ResourceNotReachableException("Retrieve role based error: " + e.getMessage());
+			throw new ResourceNotReachableException("Retrieve role based error: " + e.getMessage(), e);
 		}
 	}
 
@@ -270,7 +269,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 */
 	private void retrieveDeviceInfo(Map<String, String> stats) {
 		try {
-			objectMapper = new ObjectMapper();
 			String request = Haiversion.HAIVERSION.getName();
 			String response = send(request);
 
@@ -296,6 +294,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 			}
 		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				logger.error(e);
+			}
 			updateDeviceInfoFailedMonitor(failedMonitor);
 		}
 	}
@@ -310,7 +311,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 */
 	private void retrieveDeviceTemperature(Map<String, String> stats) {
 		try {
-			objectMapper = new ObjectMapper();
 			String request = Haiversion.TEMPERATURE.getName();
 			String response = send(request);
 
@@ -325,6 +325,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 			}
 		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				logger.error(e);
+			}
 			updateDeviceInfoFailedMonitor(failedMonitor);
 		}
 	}
@@ -361,21 +364,21 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param decoderID ID of decoder
 	 */
 	private void updateLocalDecoderConfigInfo(DecoderInfoWrapper decoderInfoWrapper, Integer decoderID) {
-		DecoderConfigInfo decoderInfo = decoderInfoWrapper.getDecoderConfigInfo();
+		DecoderConfig decoderInfo = decoderInfoWrapper.getDecoderConfigInfo();
 
-		if (localDecoderConfigInfos.size() > decoderID) {
-			DecoderConfigInfo localDecoderInfo = this.localDecoderConfigInfos.get(decoderID);
-			DecoderConfigInfo decoderInfoDTO = this.decoderConfigInfosDTO.get(decoderID);
+		if (localDecoderConfigs.size() > decoderID) {
+			DecoderConfig localDecoderInfo = this.localDecoderConfigs.get(decoderID);
+			DecoderConfig decoderInfoDTO = this.decoderConfigsDTO.get(decoderID);
 			if (decoderInfoDTO.equals(localDecoderInfo) && !decoderInfo.equals(decoderInfoDTO)) {
-				this.decoderConfigInfosDTO.set(decoderID, decoderInfo);
+				this.decoderConfigsDTO.set(decoderID, decoderInfo);
 				this.isUpdateLocalDecoderControl = true;
 			}
 		}
 		if (!isUpdateLocalDecoderControl) {
-			if (this.decoderConfigInfosDTO.size() > decoderID) {
-				this.decoderConfigInfosDTO.set(decoderID, decoderInfo);
+			if (this.decoderConfigsDTO.size() > decoderID) {
+				this.decoderConfigsDTO.set(decoderID, decoderInfo);
 			} else {
-				this.decoderConfigInfosDTO.add(decoderID, decoderInfo);
+				this.decoderConfigsDTO.add(decoderID, decoderInfo);
 			}
 		}
 	}
@@ -391,7 +394,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 */
 	private void retrieveDecoderStats(Map<String, String> stats, Integer decoderID) {
 		try {
-			objectMapper = new ObjectMapper();
 			String request = Viddec.VIDDEC.getName()
 					.concat(DecoderConstant.SPACE)
 					.concat(decoderID.toString())
@@ -415,6 +417,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				updateDecoderStatisticsFailedMonitor(failedMonitor, decoderID);
 			}
 		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				logger.error(e);
+			}
 			updateDecoderStatisticsFailedMonitor(failedMonitor, decoderID);
 		}
 	}
@@ -448,23 +453,21 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param streamID ID of decoder
 	 */
 	private void updateLocalStreamConfigInfo(StreamInfoWrapper streamInfoWrapper, Integer streamID) {
-		StreamConfigInfo streamConfigInfo = streamInfoWrapper.getStreamConfigInfo();
+		StreamConfig streamConfigInfo = streamInfoWrapper.getStreamConfigInfo();
 
-		Optional<StreamConfigInfo> streamInfoDTO = this.streamConfigDTOInfos.stream().filter(st -> streamID.equals(st.getId())).findFirst();
-		Optional<StreamConfigInfo> localStreamInfo = this.localStreamConfigInfos.stream().filter(st -> streamID.equals(st.getId())).findFirst();
-		if (localStreamInfo.isPresent() && localStreamInfo.get().equals(streamInfoDTO.get()) && !streamInfoDTO.get().equals(streamConfigInfo)) {
-			this.streamConfigDTOInfos.remove(streamInfoDTO.get());
-			this.streamConfigDTOInfos.add(streamConfigInfo);
+		Optional<StreamConfig> streamInfoDTO = this.streamConfigsDTO.stream().filter(st -> streamID.equals(st.getId())).findFirst();
+		Optional<StreamConfig> localStreamInfo = this.localStreamConfigs.stream().filter(st -> streamID.equals(st.getId())).findFirst();
+		if (localStreamInfo.isPresent() && streamInfoDTO.isPresent() && localStreamInfo.get().equals(streamInfoDTO.get()) && !streamInfoDTO.get().equals(streamConfigInfo)) {
+			this.streamConfigsDTO.remove(streamInfoDTO.get());
+			this.streamConfigsDTO.add(streamConfigInfo);
 			this.isUpdateLocalStreamControl = true;
 		}
 
 		if (!isUpdateLocalStreamControl) {
-			if (streamInfoDTO.isPresent()) {
-				this.streamConfigDTOInfos.remove(streamInfoDTO.get());
-			}
-			this.streamConfigDTOInfos.add(streamConfigInfo);
+			streamInfoDTO.ifPresent(config -> this.streamConfigsDTO.remove(config));
+			this.streamConfigsDTO.add(streamConfigInfo);
 		}
-		filteredStreamIDSet.add(streamID);
+		filteredStreamsID.add(streamID);
 	}
 
 	/**
@@ -483,7 +486,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			}
 			return setAdapterPropertiesElement;
 		}
-		return null;
+		return Collections.emptySet();
 	}
 
 	/**
@@ -494,16 +497,14 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @return boolean the port and port range filtering result
 	 */
 	public boolean handleAdapterPropertyPortRangeFromUser(Integer portNumber) {
-		int minPortNumber = 0;
-		int maxPortNumber = 0;
 		try {
 			for (String portNumberFromAdapterProperties : portNumbersFiltered) {
 
 				// Port range filtering
 				if (portNumberFromAdapterProperties.contains(DecoderConstant.DASH)) {
 					String[] rangeList = portNumberFromAdapterProperties.split(DecoderConstant.DASH);
-					minPortNumber = Integer.parseInt(rangeList[0]);
-					maxPortNumber = Integer.parseInt(rangeList[1]);
+					int minPortNumber = Integer.parseInt(rangeList[0]);
+					int maxPortNumber = Integer.parseInt(rangeList[1]);
 
 					// Swapping if min value > max value
 					if (minPortNumber > maxPortNumber) {
@@ -512,18 +513,16 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						maxPortNumber = temp;
 					}
 					if (portNumber >= minPortNumber && portNumber <= maxPortNumber) {
-						portNumbersFiltered.contains(portNumberFromAdapterProperties);
 						return true;
 					}
 
 					// Port filtering
 				} else if (portNumberFromAdapterProperties.equals(portNumber.toString())) {
-					portNumbersFiltered.contains(portNumberFromAdapterProperties);
 					return true;
 				}
 			}
 		} catch (NumberFormatException f) {
-			throw new ResourceNotReachableException(DecoderConstant.PORT_NUMBER_ERROR);
+			throw new ResourceNotReachableException(DecoderConstant.PORT_NUMBER_ERROR, f);
 		}
 		return false;
 	}
@@ -606,6 +605,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				updateStreamStatisticsFailedMonitor(failedMonitor);
 			}
 		} catch (Exception e) {
+			if (logger.isDebugEnabled()) {
+				logger.error(e);
+			}
 			updateStreamStatisticsFailedMonitor(failedMonitor);
 		}
 	}

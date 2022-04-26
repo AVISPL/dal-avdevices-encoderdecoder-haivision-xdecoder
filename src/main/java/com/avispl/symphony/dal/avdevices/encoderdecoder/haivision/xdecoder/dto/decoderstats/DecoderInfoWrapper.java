@@ -23,7 +23,7 @@ public class DecoderInfoWrapper {
 	private Decoder decoder;
 
 	@JsonAlias("Configuration")
-	private DecoderConfigInfo decoderConfigInfo;
+	private DecoderConfig decoderConfigInfo;
 
 	@JsonAlias ("Statistics")
 	private DecoderStats decoderStats;
@@ -60,7 +60,7 @@ public class DecoderInfoWrapper {
 	 *
 	 * @return value of {@link #decoderConfigInfo}
 	 */
-	public DecoderConfigInfo getDecoderConfigInfo() {
+	public DecoderConfig getDecoderConfigInfo() {
 		return decoderConfigInfo;
 	}
 
@@ -69,7 +69,7 @@ public class DecoderInfoWrapper {
 	 *
 	 * @param decoderConfigInfo the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.x4encoder.dto.decoderstats.DecoderInfo} field
 	 */
-	public void setDecoderConfigInfo(DecoderConfigInfo decoderConfigInfo) {
+	public void setDecoderConfigInfo(DecoderConfig decoderConfigInfo) {
 		this.decoderConfigInfo = decoderConfigInfo;
 	}
 
