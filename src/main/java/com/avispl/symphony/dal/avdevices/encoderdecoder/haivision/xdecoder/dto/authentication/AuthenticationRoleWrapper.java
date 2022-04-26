@@ -17,23 +17,23 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class AuthenticationRoleWrapper {
 
 	@JsonAlias("accountadminget")
-	private AuthenticationRole authenticationWrapper;
+	private AuthenticationRole authenticationRole;
 
 	/**
-	 * Retrieves {@code {@link #authenticationWrapper}}
+	 * Retrieves {@code {@link #authenticationRole }}
 	 *
-	 * @return value of {@link #authenticationWrapper}
+	 * @return value of {@link #authenticationRole}
 	 */
-	public AuthenticationRole getAuthenticationWrapper() {
-		return authenticationWrapper;
+	public AuthenticationRole getAuthenticationRole() {
+		return authenticationRole;
 	}
 
 	/**
 	 * Sets {@code authenticationWrapper}
 	 *
-	 * @param authenticationWrapper the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.authentication.AuthenticationRole} field
+	 * @param authenticationRole the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.authentication.AuthenticationRole} field
 	 */
-	public void setAuthenticationWrapper(AuthenticationRole authenticationWrapper) {
-		this.authenticationWrapper = authenticationWrapper;
+	public void setAuthenticationRole(AuthenticationRole authenticationRole) {
+		this.authenticationRole = authenticationRole;
 	}
 }
