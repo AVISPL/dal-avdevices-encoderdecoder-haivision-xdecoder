@@ -6,6 +6,9 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
+
 /**
  * Stream statistics
  *
@@ -55,7 +58,7 @@ public class StreamStats {
 	@JsonAlias("LastError")
 	private String lastError;
 
-	@JsonAlias("ErrorOccurred")
+	@JsonAlias("Occurred")
 	private String errorOccurred;
 
 	/**
@@ -308,5 +311,45 @@ public class StreamStats {
 	 */
 	public void setErrorOccurred(String errorOccurred) {
 		this.errorOccurred = errorOccurred;
+	}
+
+	/**
+	 * @param streamMonitoringMetric
+	 *
+	 * @return String value of Stream monitoring properties by metric
+	 */
+	public String getValueByStreamMonitoringMetric(StreamMonitoringMetric streamMonitoringMetric) {
+		switch (streamMonitoringMetric) {
+			case ENCAPSULATION:
+				return getEncapsulation();
+			case STATE:
+				return getState();
+			case OUTPUT:
+				return getOutput();
+			case SOURCE_ADDRESS:
+				return getSourceAddress();
+			case BIT_RATE:
+				return getBitRate();
+			case RECEIVED_PACKET:
+				return getReceivedPackets();
+			case RECEIVED_BYTES:
+				return getReceivedBytes();
+			case LAST_RECEIVED:
+				return getLastReceived();
+			case UP_TIME:
+				return getUpTime();
+			case ERROR_MPEG_2_TS_LOST_PACKETS:
+				return getMpeg2TSLostPackets();
+			case ERROR_CORRUPTED_FRAMES:
+				return getCorruptedFrames();
+			case ERROR_PAUSES:
+				return getPauses();
+			case LAST_ERROR:
+				return getLastError();
+			case ERROR_OCCURRED:
+				return getErrorOccurred();
+			default:
+				return DecoderConstant.NONE;
+		}
 	}
 }

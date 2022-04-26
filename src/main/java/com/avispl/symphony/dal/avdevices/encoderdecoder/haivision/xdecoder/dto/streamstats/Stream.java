@@ -6,6 +6,9 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
+
 /**
  * Stream
  *
@@ -56,5 +59,15 @@ public class Stream {
 	 */
 	public void setStreamName(String streamName) {
 		this.streamName = streamName;
+	}
+
+	/**
+	 * @return String value of Stream monitoring properties by metric
+	 */
+	public String getValueByStreamMonitoringMetric(StreamMonitoringMetric streamMonitoringMetric) {
+		if (streamMonitoringMetric.equals(StreamMonitoringMetric.NAME)) {
+			return getStreamName();
+		}
+		return DecoderConstant.NONE;
 	}
 }

@@ -6,9 +6,6 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
-
 /**
  * Decoder info wrapper
  *
@@ -19,7 +16,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DecoderStatsWrapper {
 
-	@JsonAlias("viddegetall")
+	@JsonAlias("viddecgetall")
 	private Decoder decoder;
 
 	@JsonAlias("Configuration")
@@ -143,89 +140,5 @@ public class DecoderStatsWrapper {
 	 */
 	public void setTimecode(Timecode timecode) {
 		this.timecode = timecode;
-	}
-
-	/**
-	 * @param decoderMonitoringMetric
-	 *
-	 * @return String value of decoder monitoring properties by metric
-	 */
-	public String getValueByDecoderMonitoringMetric(DecoderMonitoringMetric decoderMonitoringMetric) {
-		switch (decoderMonitoringMetric) {
-			case UPTIME:
-				return decoderStats.getUptime();
-			case RESTARTS:
-				return decoderStats.getRestarts();
-			case VIDEO_ALGORITHM:
-				return video.getAlgorithm();
-			case VIDEO_PROFILE:
-				return video.getProfile();
-			case VIDEO_LEVEL:
-				return video.getLevel();
-			case VIDEO_STATE:
-				return video.getState();
-			case VIDEO_BUFFERING_MODE:
-				return video.getBufferingMode();
-			case MULTISYNC_STATUS:
-				return video.getMultisyncStatus();
-			case MULTISYNC_DELAY:
-				return video.getMultisyncDelay();
-			case MULTISYNC_DELAY_RANGE:
-				return video.getMultisyncDelayRange();
-			case MULTISYNC_DELAY_SET:
-				return video.getMultisyncDelaySet();
-			case VIDEO_INPUT_FORMAT:
-				return video.getInputFormat();
-			case VIDEO_BITRATE:
-				return video.getBitrate();
-			case VIDEO_DECODED_FRAMES:
-				return video.getDecodedFrames();
-			case VIDEO_OUTPUT_FORMAT:
-				return video.getOutputFormat();
-			case VIDEO_OUTPUT_FRAMES:
-				return video.getOutputFrames();
-			case VIDEO_SKIPPED_OUTPUT_FRAMES:
-				return video.getSkippedOutputFrames();
-			case VIDEO_REPLAYED_OUTPUT_FRAMES:
-				return video.getReplayedOutputFrames();
-			case AUDIO_ALGORITHM:
-				return audio.getAlgorithm();
-			case AUDIO_STATE:
-				return audio.getState();
-			case AUDIO_BITRATE:
-				return audio.getBitrate();
-			case AUDIO_SAMPLE_RATE:
-				return audio.getSampleRate();
-			case AUDIO_NUMBER_OF_PAIR:
-				return audio.getNumberOfPair();
-			case AUDIO_INPUT_LAYOUT_1:
-				return audio.getInputLayout1DecodedFrames();
-			case AUDIO_DECODED_FRAMES:
-				return audio.getDecodedFrames();
-			case AUDIO_OUTPUT_FRAME:
-				return audio.getOutputFrames();
-			case AUDIO_OUTPUT_LAYOUT:
-				return audio.getOutputLayout();
-			case AUDIO_SKIPPED_FRAMES:
-				return audio.getSkippedFrames();
-			case KLV:
-				return decoder.getKeyLengthValue();
-			case TC:
-				return decoder.getTimecode();
-			case TIMECODE_STATE:
-				return timecode.getState();
-			case CURRENT_TIMECODE:
-				return timecode.getCurrentTimecode();
-			case TIMECODE_PROCESSED_BYTES:
-				return timecode.getProcessedBytes();
-			case TIMECODE_DISPLAYED_FRAMES:
-				return timecode.getDisplayedFrames();
-			case CC:
-				return decoder.getClosedCaptioning();
-			case AFD:
-				return decoder.getActiveFormatDescription();
-			default:
-				return DecoderConstant.EMPTY;
-		}
 	}
 }

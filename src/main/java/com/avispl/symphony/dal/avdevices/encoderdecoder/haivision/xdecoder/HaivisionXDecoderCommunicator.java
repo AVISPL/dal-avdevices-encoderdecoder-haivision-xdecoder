@@ -421,7 +421,21 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		String decoderStatisticGroup = MonitoringMetricGroup.DECODER_STATISTICS.getName() + decoderID + DecoderConstant.HASH;
 
 		for (DecoderMonitoringMetric item : DecoderMonitoringMetric.values()) {
-			stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getValueByDecoderMonitoringMetric(item)));
+			if (decoderInfoWrapper.getDecoder() != null) {
+				stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getDecoder().getValueByDecoderMonitoringMetric(item)));
+			}
+			if (decoderInfoWrapper.getDecoderStats() != null) {
+				stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getDecoderStats().getValueByDecoderMonitoringMetric(item)));
+			}
+			if (decoderInfoWrapper.getTimecode() != null) {
+				stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getTimecode().getValueByDecoderMonitoringMetric(item)));
+			}
+			if (decoderInfoWrapper.getAudio() != null) {
+				stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getAudio().getValueByDecoderMonitoringMetric(item)));
+			}
+			if (decoderInfoWrapper.getVideo() != null) {
+				stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getVideo().getValueByDecoderMonitoringMetric(item)));
+			}
 		}
 	}
 
@@ -446,7 +460,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			if (this.decoderConfigsDTO.size() > decoderID) {
 				this.decoderConfigsDTO.set(decoderID, decoderInfo);
 			} else {
-				this.decoderConfigsDTO.add(decoderID, decoderInfo);
+				this.decoderConfigsDTO.add(decoderInfo);
 			}
 		}
 	}
@@ -493,8 +507,15 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				String[] responsesSplit = response.split("\r\n\r");
 
 				for (String responseSplit : responsesSplit) {
+					responseSplit = request.concat("\r\n").concat(responseSplit);
 					Map<String, Object> responseMap = Deserializer.convertDataToObject(responseSplit, request);
 					StreamStatsWrapper streamInfoWrapper = objectMapper.convertValue(responseMap, StreamStatsWrapper.class);
+
+					// Check if converted object is not a stream
+					if (streamInfoWrapper.getStream().getStreamId() == null){
+						break;
+					}
+
 					StreamStats streamStats = streamInfoWrapper.getStreamStats();
 					Stream stream = streamInfoWrapper.getStream();
 
@@ -528,7 +549,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					}
 					if (this.streamNameFilter == null) {
 						populateStreamStats(stats, streamInfoWrapper);
-						updateLocalStreamConfigInfo(streamInfoWrapper, Integer.parseInt(stream.getStreamId()));
+						updateLocalStreamConfigInfo(streamInfoWrapper, Integer.parseInt(stream.getStreamId().trim()));
 					}
 				}
 			} else {
@@ -555,8 +576,17 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 */
 	private void populateStreamStats(Map<String, String> stats, StreamStatsWrapper stream) {
 		String streamStatisticGroup = MonitoringMetricGroup.STREAM_STATISTICS.getName() + stream.getStream().getStreamName() + DecoderConstant.HASH;
+
 		for (StreamMonitoringMetric item : StreamMonitoringMetric.values()) {
-			stats.put(streamStatisticGroup + item.getName(), getDefaultValueForNullData(stream.getValueByStreamMonitoringMetric(item)));
+			if (stream.getStream() != null) {
+				stats.put(streamStatisticGroup + item.getName(), getDefaultValueForNullData(stream.getStream().getValueByStreamMonitoringMetric(item)));
+			}
+			if (stream.getStreamStats() != null) {
+				stats.put(streamStatisticGroup + item.getName(), getDefaultValueForNullData(stream.getStreamStats().getValueByStreamMonitoringMetric(item)));
+			}
+			if (stream.getSrt() != null) {
+				stats.put(streamStatisticGroup + item.getName(), getDefaultValueForNullData(stream.getSrt().getValueByStreamMonitoringMetric(item)));
+			}
 		}
 	}
 
@@ -651,7 +681,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @return String (none/value)
 	 */
 	private String getDefaultValueForNullData(String value) {
-		return value == null || value.equals(DecoderConstant.EMPTY) ? DecoderConstant.NONE : value;
+		return StringUtils.isNullOrEmpty(value) ? DecoderConstant.NONE : value;
 	}
 
 	/**

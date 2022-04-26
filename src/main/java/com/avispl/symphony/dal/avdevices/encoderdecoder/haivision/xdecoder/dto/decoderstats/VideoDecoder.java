@@ -6,6 +6,9 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
+
 /**
  * Video decoder
  *
@@ -350,5 +353,49 @@ public class VideoDecoder {
 	 */
 	public void setReplayedOutputFrames(String replayedOutputFrames) {
 		this.replayedOutputFrames = replayedOutputFrames;
+	}
+
+	/**
+	 * @param decoderMonitoringMetric
+	 *
+	 * @return String value of decoder monitoring properties by metric
+	 */
+	public String getValueByDecoderMonitoringMetric(DecoderMonitoringMetric decoderMonitoringMetric) {
+		switch (decoderMonitoringMetric) {
+			case VIDEO_ALGORITHM:
+				return getAlgorithm();
+			case VIDEO_PROFILE:
+				return getProfile();
+			case VIDEO_LEVEL:
+				return getLevel();
+			case VIDEO_STATE:
+				return getState();
+			case VIDEO_BUFFERING_MODE:
+				return getBufferingMode();
+			case MULTISYNC_STATUS:
+				return getMultisyncStatus();
+			case MULTISYNC_DELAY:
+				return getMultisyncDelay();
+			case MULTISYNC_DELAY_RANGE:
+				return getMultisyncDelayRange();
+			case MULTISYNC_DELAY_SET:
+				return getMultisyncDelaySet();
+			case VIDEO_INPUT_FORMAT:
+				return getInputFormat();
+			case VIDEO_BITRATE:
+				return getBitrate();
+			case VIDEO_DECODED_FRAMES:
+				return getDecodedFrames();
+			case VIDEO_OUTPUT_FORMAT:
+				return getOutputFormat();
+			case VIDEO_OUTPUT_FRAMES:
+				return getOutputFrames();
+			case VIDEO_SKIPPED_OUTPUT_FRAMES:
+				return getSkippedOutputFrames();
+			case VIDEO_REPLAYED_OUTPUT_FRAMES:
+				return getReplayedOutputFrames();
+			default:
+				return DecoderConstant.EMPTY;
+		}
 	}
 }
