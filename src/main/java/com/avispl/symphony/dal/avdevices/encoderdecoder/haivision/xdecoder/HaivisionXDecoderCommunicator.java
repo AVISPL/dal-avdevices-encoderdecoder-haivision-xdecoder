@@ -315,9 +315,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 			}
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.error(e);
-			}
+				logger.error("Error while retrieve device info: ", e);
 			updateDeviceInfoFailedMonitor();
 		}
 	}
@@ -346,9 +344,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 			}
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.error(e);
-			}
+				logger.error("Error while retrieve device info: ", e);
 			updateDeviceInfoFailedMonitor();
 		}
 	}
@@ -400,9 +396,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				updateDecoderStatisticsFailedMonitor(decoderID);
 			}
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.error(e);
-			}
+				logger.error("Error while retrieve decoder statistics: ", e);
 			updateDecoderStatisticsFailedMonitor(decoderID);
 		}
 	}
@@ -541,9 +535,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				updateStreamStatisticsFailedMonitor();
 			}
 		} catch (Exception e) {
-			if (logger.isDebugEnabled()) {
-				logger.error(e);
-			}
+				logger.error("Error while retrieve stream statistics: ", e);
 			updateStreamStatisticsFailedMonitor();
 		}
 	}

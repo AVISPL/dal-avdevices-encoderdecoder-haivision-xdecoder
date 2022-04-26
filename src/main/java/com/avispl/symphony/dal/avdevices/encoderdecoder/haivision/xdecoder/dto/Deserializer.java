@@ -57,7 +57,7 @@ public class Deserializer {
 			}
 			return objectWrapper;
 		} catch (Exception e) {
-			logger.error("Error while convert data to object", e);
+			logger.error("Error while convert data to object: ", e);
 			return Collections.emptyMap();
 		}
 	}
