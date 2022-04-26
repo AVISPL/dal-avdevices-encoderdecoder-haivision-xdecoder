@@ -6,6 +6,9 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
+
 /**
  * Time code
  *
@@ -98,5 +101,25 @@ public class Timecode {
 	 */
 	public void setCurrentTimecode(String currentTimecode) {
 		this.currentTimecode = currentTimecode;
+	}
+
+	/**
+	 * @param decoderMonitoringMetric
+	 *
+	 * @return String value of decoder monitoring properties by metric
+	 */
+	public String getValueByDecoderMonitoringMetric(DecoderMonitoringMetric decoderMonitoringMetric) {
+		switch (decoderMonitoringMetric) {
+			case TIMECODE_STATE:
+				return getState();
+			case CURRENT_TIMECODE:
+				return getCurrentTimecode();
+			case TIMECODE_PROCESSED_BYTES:
+				return getProcessedBytes();
+			case TIMECODE_DISPLAYED_FRAMES:
+				return getDisplayedFrames();
+			default:
+				return DecoderConstant.EMPTY;
+		}
 	}
 }

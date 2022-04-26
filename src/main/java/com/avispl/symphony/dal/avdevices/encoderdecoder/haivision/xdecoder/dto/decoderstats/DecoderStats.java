@@ -6,6 +6,9 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
+
 /**
  * Decoder statistics
  *
@@ -78,5 +81,21 @@ public class DecoderStats {
 	 */
 	public void setHdmiOutput(String hdmiOutput) {
 		this.hdmiOutput = hdmiOutput;
+	}
+
+	/**
+	 * @param decoderMonitoringMetric
+	 *
+	 * @return String value of decoder monitoring properties by metric
+	 */
+	public String getValueByDecoderMonitoringMetric(DecoderMonitoringMetric decoderMonitoringMetric) {
+		switch (decoderMonitoringMetric) {
+			case UPTIME:
+				return getUptime();
+			case RESTARTS:
+				return getRestarts();
+			default:
+				return DecoderConstant.EMPTY;
+		}
 	}
 }
