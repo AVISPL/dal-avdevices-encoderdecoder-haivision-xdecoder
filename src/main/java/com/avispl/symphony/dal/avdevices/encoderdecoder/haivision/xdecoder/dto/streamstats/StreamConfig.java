@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StreamConfigInfo {
+public class StreamConfig {
 
 	@JsonAlias("name")
 	private String name;

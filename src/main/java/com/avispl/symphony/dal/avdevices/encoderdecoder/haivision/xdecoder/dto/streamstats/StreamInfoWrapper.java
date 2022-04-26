@@ -23,7 +23,7 @@ public class StreamInfoWrapper {
 	private SRT srt;
 
 	@JsonAlias("Configuration")
-	private StreamConfigInfo streamConfigInfo;
+	private StreamConfig streamConfigInfo;
 
 	@JsonAlias("Statistics")
 	private StreamStats streamStats;
@@ -54,7 +54,7 @@ public class StreamInfoWrapper {
 	 *
 	 * @return value of {@link #streamConfigInfo}
 	 */
-	public StreamConfigInfo getStreamConfigInfo() {
+	public StreamConfig getStreamConfigInfo() {
 		return streamConfigInfo;
 	}
 
@@ -63,7 +63,7 @@ public class StreamInfoWrapper {
 	 *
 	 * @param streamConfigInfo the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.StreamConfigInfo} field
 	 */
-	public void setStreamConfigInfo(StreamConfigInfo streamConfigInfo) {
+	public void setStreamConfigInfo(StreamConfig streamConfigInfo) {
 		this.streamConfigInfo = streamConfigInfo;
 	}
 

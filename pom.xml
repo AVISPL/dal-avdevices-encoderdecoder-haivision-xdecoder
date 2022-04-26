@@ -55,6 +55,25 @@
           <failOnNoGitDirectory>false</failOnNoGitDirectory>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>3.12.0</version>
+        <configuration>
+          <rulesets>
+            <ruleset>src/main/resources/plugins/pmd-ruleset.xml</ruleset>
+          </rulesets>
+          <printFailingErrors>true</printFailingErrors>
+          <showPmdLog>true</showPmdLog>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -65,23 +84,23 @@
     <dependency>
       <groupId>com.avispl.symphony.api</groupId>
       <artifactId>symphony-api-commons</artifactId>
-      <version>5.4.0</version>
+      <version>5.5.0</version>
       <scope>system</scope>
-      <systemPath>${basedir}/lib/symphony-api-commons-5.4.0.jar</systemPath>
+      <systemPath>${basedir}/lib/symphony-api-commons-5.5.0.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>com.avispl.symphony.api</groupId>
       <artifactId>symphony-api-dal</artifactId>
-      <version>5.4.0</version>
+      <version>5.5.0</version>
       <scope>system</scope>
-      <systemPath>${basedir}/lib/symphony-api-dal-5.4.0.jar</systemPath>
+      <systemPath>${basedir}/lib/symphony-api-dal-5.5.0.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>com.avispl.symphony.dal</groupId>
       <artifactId>symphony-dal-commons</artifactId>
-      <version>5.4.0</version>
+      <version>5.5.0</version>
       <scope>system</scope>
-      <systemPath>${basedir}/lib/symphony-dal-commons-5.4.0.jar</systemPath>
+      <systemPath>${basedir}/lib/symphony-dal-commons-5.5.0.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.icmp4j</groupId>

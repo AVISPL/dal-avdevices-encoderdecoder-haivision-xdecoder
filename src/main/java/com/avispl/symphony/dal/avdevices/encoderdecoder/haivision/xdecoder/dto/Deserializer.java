@@ -1,5 +1,6 @@
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,13 +14,21 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
  * @since 1.0.0
  */
 public class Deserializer {
+	private Deserializer(){
 
+	}
+
+	/**
+	 * This method is used to convert response data to object
+	 * @param responseData
+	 * @param request
+	 * @return objectWrapper
+	 */
 	public static Map<String, Object> convertDataToObject(String responseData, String request) {
-
 		try {
 			String[] fields = responseData.split("\r\n");
 
-			Map<String, Object> rootObject = new HashMap<>();
+			Map<String, Object> objectWrapper = new HashMap<>();
 			Map<String, String> object = new HashMap<>();
 
 			for (String field : fields) {
@@ -32,14 +41,14 @@ public class Deserializer {
 					} else {
 						key = request.replaceAll("[1-9\\s+]", "");
 					}
-					rootObject.put(key.replaceAll("[1-9\\s+]", ""), object);
+					objectWrapper.put(key.replaceAll("[1-9\\s+]", ""), object);
 				} else {
 					object.put(key.replaceAll("\\s+", ""), fieldElement[1]);
 				}
 			}
-			return rootObject;
+			return objectWrapper;
 		} catch (Exception e) {
-			return null;
+			return Collections.emptyMap();
 		}
 	}
 

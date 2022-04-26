@@ -14,9 +14,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.MonitoringMetricGroup;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.data.MonitoringData;
 
 /**
@@ -27,7 +25,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.data.
  * @version 1.0
  * @since 1.0
  */
-public class HaivisionXDecoderCommunicatorTest {
+class HaivisionXDecoderCommunicatorTest {
 	private HaivisionXDecoderCommunicator haivisionX4DecoderCommunicator = new HaivisionXDecoderCommunicator();
 
 	@BeforeEach()
