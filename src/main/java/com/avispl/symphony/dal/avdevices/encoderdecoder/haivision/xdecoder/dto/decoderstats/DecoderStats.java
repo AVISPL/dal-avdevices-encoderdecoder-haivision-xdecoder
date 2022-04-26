@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DecoderStats {
+
 	@JsonAlias("Uptime")
 	private String uptime;
 

@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 
 /**
@@ -14,9 +17,11 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
  * @since 1.0.0
  */
 public class Deserializer {
+
+	private static final Log logger = LogFactory.getLog(Deserializer.class);
+
 	private Deserializer(){
 	}
-
 	/**
 	 * This method is used to convert response data to object
 	 * @param responseData
@@ -52,6 +57,7 @@ public class Deserializer {
 			}
 			return objectWrapper;
 		} catch (Exception e) {
+			logger.error("Error while convert data to object", e);
 			return Collections.emptyMap();
 		}
 	}

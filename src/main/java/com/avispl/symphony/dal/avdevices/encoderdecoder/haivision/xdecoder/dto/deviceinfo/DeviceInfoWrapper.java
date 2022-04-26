@@ -15,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DeviceInfoWrapper {
+
 	@JsonAlias("haiversion")
 	private DeviceInfo deviceInfo;
 
