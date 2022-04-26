@@ -17,7 +17,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class StreamInfoWrapper {
+public class StreamStatsWrapper {
 
 	@JsonAlias("SRT")
 	private SRT srt;

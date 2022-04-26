@@ -15,7 +15,6 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
  */
 public class Deserializer {
 	private Deserializer(){
-
 	}
 
 	/**
@@ -35,14 +34,19 @@ public class Deserializer {
 				String[] fieldElement = field.split(DecoderConstant.COLON, 2);
 				String key = fieldElement[0];
 
+				// get key of wrapper object
 				if (!key.contains("\t") && (fieldElement.length == 1 || fieldElement[1].trim().isEmpty())) {
 					if (!key.isEmpty()) {
 						object = new HashMap<>();
 					} else {
+						// when wrapper object key is empty, replace empty key by default key
 						key = request.replaceAll("[1-9\\s+]", "");
 					}
-					objectWrapper.put(key.replaceAll("[1-9\\s+]", ""), object);
+
+					// put object to object wrapper
+					objectWrapper.put(key.replaceAll("\\s+", ""), object);
 				} else {
+					// put data to object
 					object.put(key.replaceAll("\\s+", ""), fieldElement[1]);
 				}
 			}
@@ -51,5 +55,4 @@ public class Deserializer {
 			return Collections.emptyMap();
 		}
 	}
-
 }
