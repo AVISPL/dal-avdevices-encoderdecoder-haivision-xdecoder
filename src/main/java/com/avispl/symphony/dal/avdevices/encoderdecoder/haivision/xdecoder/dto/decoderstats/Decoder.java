@@ -6,6 +6,9 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
+
 /**
  * Decoder Data
  *
@@ -98,5 +101,25 @@ public class Decoder {
 	 */
 	public void setActiveFormatDescription(String activeFormatDescription) {
 		this.activeFormatDescription = activeFormatDescription;
+	}
+
+	/**
+	 * @param decoderMonitoringMetric
+	 *
+	 * @return String value of decoder monitoring properties by metric
+	 */
+	public String getValueByDecoderMonitoringMetric(DecoderMonitoringMetric decoderMonitoringMetric) {
+		switch (decoderMonitoringMetric) {
+			case KLV:
+				return getKeyLengthValue();
+			case TC:
+				return getTimecode();
+			case CC:
+				return getClosedCaptioning();
+			case AFD:
+				return getActiveFormatDescription();
+			default:
+				return DecoderConstant.EMPTY;
+		}
 	}
 }

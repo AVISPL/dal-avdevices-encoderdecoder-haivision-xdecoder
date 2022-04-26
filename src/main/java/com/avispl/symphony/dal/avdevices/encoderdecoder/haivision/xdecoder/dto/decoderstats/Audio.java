@@ -6,6 +6,9 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
+
 /**
  * Decoder audio
  *
@@ -224,5 +227,37 @@ public class Audio {
 	 */
 	public void setSkippedFrames(String skippedFrames) {
 		this.skippedFrames = skippedFrames;
+	}
+
+	/**
+	 * @param decoderMonitoringMetric
+	 *
+	 * @return String value of decoder monitoring properties by metric
+	 */
+	public String getValueByDecoderMonitoringMetric(DecoderMonitoringMetric decoderMonitoringMetric) {
+		switch (decoderMonitoringMetric) {
+			case AUDIO_ALGORITHM:
+				return getAlgorithm();
+			case AUDIO_STATE:
+				return getState();
+			case AUDIO_BITRATE:
+				return getBitrate();
+			case AUDIO_SAMPLE_RATE:
+				return getSampleRate();
+			case AUDIO_NUMBER_OF_PAIR:
+				return getNumberOfPair();
+			case AUDIO_INPUT_LAYOUT_1:
+				return getInputLayout1DecodedFrames();
+			case AUDIO_DECODED_FRAMES:
+				return getDecodedFrames();
+			case AUDIO_OUTPUT_FRAME:
+				return getOutputFrames();
+			case AUDIO_OUTPUT_LAYOUT:
+				return getOutputLayout();
+			case AUDIO_SKIPPED_FRAMES:
+				return getSkippedFrames();
+			default:
+				return DecoderConstant.EMPTY;
+		}
 	}
 }

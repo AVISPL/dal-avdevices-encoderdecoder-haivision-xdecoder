@@ -6,9 +6,6 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
-
 /**
  * Stream info wrapper
  *
@@ -101,72 +98,5 @@ public class StreamStatsWrapper {
 	 */
 	public void setStream(Stream stream) {
 		this.stream = stream;
-	}
-
-	/**
-	 * @param streamMonitoringMetric
-	 *
-	 * @return String value of Stream monitoring properties by metric
-	 */
-	public String getValueByStreamMonitoringMetric(StreamMonitoringMetric streamMonitoringMetric) {
-
-		switch (streamMonitoringMetric) {
-			case NAME:
-				return stream.getStreamName();
-			case ENCAPSULATION:
-				return streamStats.getEncapsulation();
-			case STATE:
-				return streamStats.getState();
-			case OUTPUT:
-				return streamStats.getOutput();
-			case SOURCE_ADDRESS:
-				return streamStats.getSourceAddress();
-			case BIT_RATE:
-				return streamStats.getBitRate();
-			case RECEIVED_PACKET:
-				return streamStats.getReceivedPackets();
-			case RECEIVED_BYTES:
-				return streamStats.getReceivedBytes();
-			case LAST_RECEIVED:
-				return streamStats.getLastReceived();
-			case UP_TIME:
-				return streamStats.getUpTime();
-			case RECONNECTIONS:
-				return srt.getReconnections();
-			case SNCRYPTION:
-				return srt.getAeSncryption();
-			case KEY_LENGTH:
-				return srt.getKeyLength();
-			case DECRYPTION:
-				return srt.getDecryption();
-			case LOST_PACKETS:
-				return srt.getLostPackets();
-			case SKIPPED_PACKETS:
-				return srt.getSkippedPackets();
-			case SENT_ACKS:
-				return srt.getSentAcks();
-			case SENT_NAKS:
-				return srt.getSentNaks();
-			case LINK_BANDWIDTH:
-				return srt.getLinkBandwidth();
-			case RTT:
-				return srt.getRtt();
-			case BUFFER:
-				return srt.getBuffer();
-			case LATENCY:
-				return srt.getLatency();
-			case ERROR_MPEG_2_TS_LOST_PACKETS:
-				return streamStats.getMpeg2TSLostPackets();
-			case ERROR_CORRUPTED_FRAMES:
-				return streamStats.getCorruptedFrames();
-			case ERROR_PAUSES:
-				return streamStats.getPauses();
-			case LAST_ERROR:
-				return streamStats.getLastError();
-			case ERROR_OCCURRED:
-				return streamStats.getErrorOccurred();
-			default:
-				return DecoderConstant.NONE;
-		}
 	}
 }

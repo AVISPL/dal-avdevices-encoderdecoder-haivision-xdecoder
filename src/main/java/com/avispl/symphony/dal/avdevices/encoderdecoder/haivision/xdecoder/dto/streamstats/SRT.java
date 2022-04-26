@@ -6,6 +6,9 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
+
 /**
  * Stream SRT
  *
@@ -266,5 +269,41 @@ public class SRT {
 	 */
 	public void setLatency(String latency) {
 		this.latency = latency;
+	}
+
+	/**
+	 * @param streamMonitoringMetric
+	 *
+	 * @return String value of Stream monitoring properties by metric
+	 */
+	public String getValueByStreamMonitoringMetric(StreamMonitoringMetric streamMonitoringMetric) {
+		switch (streamMonitoringMetric) {
+			case RECONNECTIONS:
+				return getReconnections();
+			case SNCRYPTION:
+				return getAeSncryption();
+			case KEY_LENGTH:
+				return getKeyLength();
+			case DECRYPTION:
+				return getDecryption();
+			case LOST_PACKETS:
+				return getLostPackets();
+			case SKIPPED_PACKETS:
+				return getSkippedPackets();
+			case SENT_ACKS:
+				return getSentAcks();
+			case SENT_NAKS:
+				return getSentNaks();
+			case LINK_BANDWIDTH:
+				return getLinkBandwidth();
+			case RTT:
+				return getRtt();
+			case BUFFER:
+				return getBuffer();
+			case LATENCY:
+				return getLatency();
+			default:
+				return DecoderConstant.NONE;
+		}
 	}
 }
