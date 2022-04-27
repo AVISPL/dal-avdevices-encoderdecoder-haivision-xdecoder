@@ -6,6 +6,10 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
+
 /**
  * Set of stream configuration properties
  *
@@ -25,16 +29,16 @@ public class StreamConfig {
 	@JsonAlias("decoderId")
 	private String decoderId;
 
-	@JsonAlias("encapsulation")
-	private Integer encapsulation;
+	@JsonAlias("Encapsulation")
+	private String encapsulation;
 
 	@JsonAlias("userData")
 	private String userData;
 
-	@JsonAlias("address")
+	@JsonAlias("Address")
 	private String address;
 
-	@JsonAlias("port")
+	@JsonAlias("UDPPort")
 	private String port;
 
 	@JsonAlias("sourceIp")
@@ -135,7 +139,7 @@ public class StreamConfig {
 	 *
 	 * @return value of {@link #encapsulation}
 	 */
-	public Integer getEncapsulation() {
+	public String getEncapsulation() {
 		return encapsulation;
 	}
 
@@ -144,7 +148,7 @@ public class StreamConfig {
 	 *
 	 * @param encapsulation the {@code java.lang.Integer} field
 	 */
-	public void setEncapsulation(Integer encapsulation) {
+	public void setEncapsulation(String encapsulation) {
 		this.encapsulation = encapsulation;
 	}
 
@@ -434,5 +438,25 @@ public class StreamConfig {
 	 */
 	public void setFecRtp(Integer fecRtp) {
 		this.fecRtp = fecRtp;
+	}
+
+	/**
+	 * Retrieves default stream name when stream name is empty
+	 *
+	 * @return String default stream name
+	 */
+	public String getDefaultStreamName() {
+		Encapsulation encapsulationEnum = Encapsulation.getByName(getEncapsulation());
+		String encapsulationShortName = encapsulationEnum.getShortName();
+		if (getEncapsulation().equals(Encapsulation.RTSP.getName())) {
+			return getAddress();
+		} else if (getAddress().equals(DecoderConstant.ADDRESS_ANY.toUpperCase()) || getAddress().equals(DecoderConstant.EMPTY)) {
+			return encapsulationShortName + DecoderConstant.COLON + DecoderConstant.SLASH + DecoderConstant.SLASH + DecoderConstant.AT_SIGN + DecoderConstant.LEFT_PARENTHESES + DecoderConstant.ADDRESS_ANY
+					+ DecoderConstant.RIGHT_PARENTHESES +
+					DecoderConstant.COLON + getPort();
+		} else {
+			return encapsulationShortName + DecoderConstant.COLON + DecoderConstant.SLASH + DecoderConstant.SLASH + DecoderConstant.AT_SIGN + NormalizeData.getValueOnly(getAddress()) +
+					DecoderConstant.COLON + getPort();
+		}
 	}
 }

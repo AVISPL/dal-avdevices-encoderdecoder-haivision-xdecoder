@@ -10,13 +10,19 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
  * Created on 4/18/2022
  * @since 1.0.0
  */
-public enum DecoderMonitoringMetric {
+public enum DecoderAudioMonitoringMetric {
 
 	// Static metric
-	KLV("KeyLengthValue"),
-	TC("Timecode"),
-	CC("ClosedCaptioning"),
-	AFD("AActiveFormatDescription");
+	AUDIO_ALGORITHM("AudioAlgorithm"),
+	AUDIO_STATE("AudioState"),
+	AUDIO_BITRATE("AudioBitrate"),
+	AUDIO_SAMPLE_RATE("AudioSampleRate"),
+	AUDIO_NUMBER_OF_PAIR("AudioNumberOfPair"),
+	AUDIO_INPUT_LAYOUT_1("AudioInputLayout1"),
+	AUDIO_DECODED_FRAMES("AudioDecodedFrames"),
+	AUDIO_OUTPUT_FRAME("AudioOutputFrame"),
+	AUDIO_OUTPUT_LAYOUT("AudioOutputLayout"),
+	AUDIO_SKIPPED_FRAMES("AudioSkippedFrames");
 
 	private final String name;
 
@@ -25,7 +31,7 @@ public enum DecoderMonitoringMetric {
 	 *
 	 * @param name Name of decoder monitoring metric
 	 */
-	DecoderMonitoringMetric(String name) {
+	DecoderAudioMonitoringMetric(String name) {
 		this.name = name;
 	}
 

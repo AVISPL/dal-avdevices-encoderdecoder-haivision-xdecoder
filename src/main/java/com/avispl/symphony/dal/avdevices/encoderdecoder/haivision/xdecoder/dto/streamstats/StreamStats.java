@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamStatsMonitoringMetric;
 
 /**
  * Stream statistics
@@ -18,9 +18,6 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StreamStats {
-
-	@JsonAlias("Encapsulation")
-	private String encapsulation;
 
 	@JsonAlias("DecoderId")
 	private String output;
@@ -60,24 +57,6 @@ public class StreamStats {
 
 	@JsonAlias("Occurred")
 	private String errorOccurred;
-
-	/**
-	 * Retrieves {@code {@link #encapsulation}}
-	 *
-	 * @return value of {@link #encapsulation}
-	 */
-	public String getEncapsulation() {
-		return encapsulation;
-	}
-
-	/**
-	 * Sets {@code encapsulation}
-	 *
-	 * @param encapsulation the {@code java.lang.String} field
-	 */
-	public void setEncapsulation(String encapsulation) {
-		this.encapsulation = encapsulation;
-	}
 
 	/**
 	 * Retrieves {@code {@link #output }}
@@ -314,14 +293,10 @@ public class StreamStats {
 	}
 
 	/**
-	 * @param streamMonitoringMetric
-	 *
 	 * @return String value of Stream monitoring properties by metric
 	 */
-	public String getValueByStreamMonitoringMetric(StreamMonitoringMetric streamMonitoringMetric) {
-		switch (streamMonitoringMetric) {
-			case ENCAPSULATION:
-				return getEncapsulation();
+	public String getValueByStreamMonitoringMetric(StreamStatsMonitoringMetric streamStatsMonitoringMetric) {
+		switch (streamStatsMonitoringMetric) {
 			case STATE:
 				return getState();
 			case OUTPUT:

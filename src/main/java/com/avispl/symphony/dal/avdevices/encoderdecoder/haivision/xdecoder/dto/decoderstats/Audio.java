@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderAudioMonitoringMetric;
 
 /**
  * Decoder audio
@@ -230,12 +230,10 @@ public class Audio {
 	}
 
 	/**
-	 * @param decoderMonitoringMetric
-	 *
 	 * @return String value of decoder monitoring properties by metric
 	 */
-	public String getValueByDecoderMonitoringMetric(DecoderMonitoringMetric decoderMonitoringMetric) {
-		switch (decoderMonitoringMetric) {
+	public String getValueByDecoderMonitoringMetric(DecoderAudioMonitoringMetric decoderAudioMonitoringMetric) {
+		switch (decoderAudioMonitoringMetric) {
 			case AUDIO_ALGORITHM:
 				return getAlgorithm();
 			case AUDIO_STATE:

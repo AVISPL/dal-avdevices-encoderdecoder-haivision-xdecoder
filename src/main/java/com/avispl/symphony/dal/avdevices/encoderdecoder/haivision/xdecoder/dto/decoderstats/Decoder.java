@@ -19,6 +19,9 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Decoder {
 
+	@JsonAlias("DecoderID")
+	private String decoderID;
+
 	@JsonAlias("KLV")
 	private String keyLengthValue;
 
@@ -30,6 +33,24 @@ public class Decoder {
 
 	@JsonAlias("AFD")
 	private String activeFormatDescription;
+
+	/**
+	 * Retrieves {@code {@link #decoderID}}
+	 *
+	 * @return value of {@link #decoderID}
+	 */
+	public String getDecoderID() {
+		return decoderID;
+	}
+
+	/**
+	 * Sets {@code decoderID}
+	 *
+	 * @param decoderID the {@code java.lang.String} field
+	 */
+	public void setDecoderID(String decoderID) {
+		this.decoderID = decoderID;
+	}
 
 	/**
 	 * Retrieves {@code {@link #keyLengthValue }}

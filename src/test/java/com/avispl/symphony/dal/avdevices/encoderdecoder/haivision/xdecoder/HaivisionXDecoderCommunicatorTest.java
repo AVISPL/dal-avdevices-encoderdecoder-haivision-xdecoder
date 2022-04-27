@@ -55,15 +55,15 @@ class HaivisionXDecoderCommunicatorTest {
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionX4DecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 
-		Assertions.assertEquals(" HAI-031428030014", stats.get(DeviceInfoMetric.SERIAL_NUMBER.getName()));
-		Assertions.assertEquals(" \"U-Boot 2010.06 (Mar 19 2014 - 10:37:19)-MakitoXD 0.9.14\"", stats.get(DeviceInfoMetric.BOOT_VERSION.getName()));
-		Assertions.assertEquals(" \"Makito2 Decoder\"", stats.get(DeviceInfoMetric.CARD_TYPE.getName()));
-		Assertions.assertEquals(" 5 (Official, Internal flash)", stats.get(DeviceInfoMetric.CPLD_REVISION.getName()));
-		Assertions.assertEquals(" \"Feb 28 2022\"", stats.get(DeviceInfoMetric.FIRMWARE_DATE.getName()));
-		Assertions.assertEquals(" \"KLV, SRT\"", stats.get(DeviceInfoMetric.FIRMWARE_OPTIONS.getName()));
-		Assertions.assertEquals(" 2.5.1-9", stats.get(DeviceInfoMetric.FIRMWARE_VERSION.getName()));
-		Assertions.assertEquals(" -001G", stats.get(DeviceInfoMetric.HARDWARE_COMPATIBILITY.getName()));
-		Assertions.assertEquals(" --", stats.get(DeviceInfoMetric.HARDWARE_VERSION.getName()));
-		Assertions.assertEquals(" B-292D-HD2", stats.get(DeviceInfoMetric.PART_NUMBER.getName()));
+		Assertions.assertEquals("HAI-031428030014", stats.get(DeviceInfoMetric.SERIAL_NUMBER.getName()));
+		Assertions.assertEquals("\"U-Boot 2010.06 (Mar 19 2014 - 10:37:19)-MakitoXD 0.9.14\"", stats.get(DeviceInfoMetric.BOOT_VERSION.getName()));
+		Assertions.assertEquals("\"Makito2 Decoder\"", stats.get(DeviceInfoMetric.CARD_TYPE.getName()));
+		Assertions.assertEquals("5 (Official, Internal flash)", stats.get(DeviceInfoMetric.CPLD_REVISION.getName()));
+		Assertions.assertEquals("\"Feb 28 2022\"", stats.get(DeviceInfoMetric.FIRMWARE_DATE.getName()));
+		Assertions.assertEquals("\"KLV, SRT\"", stats.get(DeviceInfoMetric.FIRMWARE_OPTIONS.getName()));
+		Assertions.assertEquals("2.5.1-9", stats.get(DeviceInfoMetric.FIRMWARE_VERSION.getName()));
+		Assertions.assertEquals("-001G", stats.get(DeviceInfoMetric.HARDWARE_COMPATIBILITY.getName()));
+		Assertions.assertEquals("--", stats.get(DeviceInfoMetric.HARDWARE_VERSION.getName()));
+		Assertions.assertEquals("B-292D-HD2", stats.get(DeviceInfoMetric.PART_NUMBER.getName()));
 	}
 }

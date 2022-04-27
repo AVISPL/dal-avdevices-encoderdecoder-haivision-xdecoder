@@ -52,7 +52,7 @@ public class Deserializer {
 					objectWrapper.put(key.replaceAll("\\s+", ""), object);
 				} else {
 					// put data to object
-					object.put(key.replaceAll("\\s+", ""), fieldElement[1]);
+					object.put(key.replaceAll("\\s+", ""), fieldElement[1].replaceFirst(" ", ""));
 				}
 			}
 			return objectWrapper;
