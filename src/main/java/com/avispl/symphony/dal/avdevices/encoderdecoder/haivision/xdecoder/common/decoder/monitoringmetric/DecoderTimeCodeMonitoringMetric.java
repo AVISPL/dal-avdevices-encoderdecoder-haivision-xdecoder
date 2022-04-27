@@ -10,13 +10,13 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
  * Created on 4/18/2022
  * @since 1.0.0
  */
-public enum DecoderMonitoringMetric {
+public enum DecoderTimeCodeMonitoringMetric {
 
 	// Static metric
-	KLV("KeyLengthValue"),
-	TC("Timecode"),
-	CC("ClosedCaptioning"),
-	AFD("AActiveFormatDescription");
+	TIMECODE_STATE("TimecodeState"),
+	TIMECODE_DISPLAYED_FRAMES("TimecodeDisplayedFrames"),
+	TIMECODE_PROCESSED_BYTES("TimecodeProcessedBytes"),
+	CURRENT_TIMECODE("CurrentTimecode");
 
 	private final String name;
 
@@ -25,7 +25,7 @@ public enum DecoderMonitoringMetric {
 	 *
 	 * @param name Name of decoder monitoring metric
 	 */
-	DecoderMonitoringMetric(String name) {
+	DecoderTimeCodeMonitoringMetric(String name) {
 		this.name = name;
 	}
 

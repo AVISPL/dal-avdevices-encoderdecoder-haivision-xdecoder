@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderStatsMonitoringMetric;
 
 /**
  * Decoder statistics
@@ -84,12 +84,10 @@ public class DecoderStats {
 	}
 
 	/**
-	 * @param decoderMonitoringMetric
-	 *
 	 * @return String value of decoder monitoring properties by metric
 	 */
-	public String getValueByDecoderMonitoringMetric(DecoderMonitoringMetric decoderMonitoringMetric) {
-		switch (decoderMonitoringMetric) {
+	public String getValueByDecoderMonitoringMetric(DecoderStatsMonitoringMetric decoderStatsMonitoringMetric) {
+		switch (decoderStatsMonitoringMetric) {
 			case UPTIME:
 				return getUptime();
 			case RESTARTS:

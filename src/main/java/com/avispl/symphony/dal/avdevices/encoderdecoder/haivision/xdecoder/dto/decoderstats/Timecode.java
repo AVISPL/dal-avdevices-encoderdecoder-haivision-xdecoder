@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderTimeCodeMonitoringMetric;
 
 /**
  * Time code
@@ -104,12 +104,10 @@ public class Timecode {
 	}
 
 	/**
-	 * @param decoderMonitoringMetric
-	 *
 	 * @return String value of decoder monitoring properties by metric
 	 */
-	public String getValueByDecoderMonitoringMetric(DecoderMonitoringMetric decoderMonitoringMetric) {
-		switch (decoderMonitoringMetric) {
+	public String getValueByDecoderMonitoringMetric(DecoderTimeCodeMonitoringMetric decoderTimeCodeMonitoringMetric) {
+		switch (decoderTimeCodeMonitoringMetric) {
 			case TIMECODE_STATE:
 				return getState();
 			case CURRENT_TIMECODE:

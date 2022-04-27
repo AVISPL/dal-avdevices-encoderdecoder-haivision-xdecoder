@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderVideoMonitoringMetric;
 
 /**
  * Video decoder
@@ -356,12 +356,10 @@ public class VideoDecoder {
 	}
 
 	/**
-	 * @param decoderMonitoringMetric
-	 *
 	 * @return String value of decoder monitoring properties by metric
 	 */
-	public String getValueByDecoderMonitoringMetric(DecoderMonitoringMetric decoderMonitoringMetric) {
-		switch (decoderMonitoringMetric) {
+	public String getValueByDecoderMonitoringMetric(DecoderVideoMonitoringMetric decoderVideoMonitoringMetric) {
+		switch (decoderVideoMonitoringMetric) {
 			case VIDEO_ALGORITHM:
 				return getAlgorithm();
 			case VIDEO_PROFILE:

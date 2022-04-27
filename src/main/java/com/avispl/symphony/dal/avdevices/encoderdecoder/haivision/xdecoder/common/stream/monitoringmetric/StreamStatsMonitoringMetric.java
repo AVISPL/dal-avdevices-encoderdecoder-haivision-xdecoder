@@ -11,11 +11,22 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
  * Created on 4/18/2022
  * @since 1.0.0
  */
-public enum StreamMonitoringMetric {
+public enum StreamStatsMonitoringMetric {
 
 	// Static metric
-	NAME("GeneralName"),
-	ENCAPSULATION("GeneralEncapsulation");
+	STATE("StatsState"),
+	OUTPUT("StatsOutput"),
+	SOURCE_ADDRESS("StatsSourceAddress"),
+	BIT_RATE("StatsBitRate"),
+	RECEIVED_PACKET("StatsReceivedPacket"),
+	RECEIVED_BYTES("StatsReceivedBytes"),
+	LAST_RECEIVED("StatsLastReceived"),
+	UP_TIME("StatsUpTime"),
+	ERROR_MPEG_2_TS_LOST_PACKETS("ErrorMPEG2TSLostPackets"),
+	ERROR_CORRUPTED_FRAMES("ErrorCorruptedFrames"),
+	ERROR_PAUSES("ErrorPauses"),
+	LAST_ERROR("ErrorLastError"),
+	ERROR_OCCURRED("ErrorOccurred");
 
 	private final String name;
 
@@ -24,7 +35,7 @@ public enum StreamMonitoringMetric {
 	 *
 	 * @param name Name of Decoder monitoring metric
 	 */
-	StreamMonitoringMetric(String name) {
+	StreamStatsMonitoringMetric(String name) {
 		this.name = name;
 	}
 

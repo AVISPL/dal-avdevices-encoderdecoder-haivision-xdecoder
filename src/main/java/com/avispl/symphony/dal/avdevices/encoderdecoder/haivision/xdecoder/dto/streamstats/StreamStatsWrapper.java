@@ -6,6 +6,9 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
+
 /**
  * Stream info wrapper
  *
@@ -20,7 +23,7 @@ public class StreamStatsWrapper {
 	private SRT srt;
 
 	@JsonAlias("Configuration")
-	private StreamConfig streamConfigInfo;
+	private StreamConfig streamConfig;
 
 	@JsonAlias("Statistics")
 	private StreamStats streamStats;
@@ -47,21 +50,21 @@ public class StreamStatsWrapper {
 	}
 
 	/**
-	 * Retrieves {@code {@link #streamConfigInfo}}
+	 * Retrieves {@code {@link #streamConfig }}
 	 *
-	 * @return value of {@link #streamConfigInfo}
+	 * @return value of {@link #streamConfig}
 	 */
-	public StreamConfig getStreamConfigInfo() {
-		return streamConfigInfo;
+	public StreamConfig getStreamConfig() {
+		return streamConfig;
 	}
 
 	/**
 	 * Sets {@code streamConfigInfo}
 	 *
-	 * @param streamConfigInfo the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.StreamConfigInfo} field
+	 * @param streamConfig the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.StreamConfigInfo} field
 	 */
-	public void setStreamConfigInfo(StreamConfig streamConfigInfo) {
-		this.streamConfigInfo = streamConfigInfo;
+	public void setStreamConfig(StreamConfig streamConfig) {
+		this.streamConfig = streamConfig;
 	}
 
 	/**
@@ -98,5 +101,18 @@ public class StreamStatsWrapper {
 	 */
 	public void setStream(Stream stream) {
 		this.stream = stream;
+	}
+
+	/**
+	 * @return String value of Stream monitoring properties by metric
+	 */
+	public String getValueByStreamMonitoringMetric(StreamMonitoringMetric streamMonitoringMetric) {
+		if (StreamMonitoringMetric.NAME.equals(streamMonitoringMetric)) {
+			return stream.getStreamName();
+		}
+		if (StreamMonitoringMetric.ENCAPSULATION.equals(streamMonitoringMetric)) {
+			return streamConfig.getEncapsulation();
+		}
+		return DecoderConstant.NONE;
 	}
 }

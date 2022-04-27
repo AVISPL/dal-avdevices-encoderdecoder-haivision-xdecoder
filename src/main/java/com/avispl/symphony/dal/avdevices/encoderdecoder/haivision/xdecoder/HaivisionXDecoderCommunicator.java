@@ -26,8 +26,14 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.MonitoringMetricGroup;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderAudioMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderStatsMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderTimeCodeMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderVideoMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.SRTMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamStatsMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.Deserializer;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.authentication.AuthenticationRoleWrapper;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderConfig;
@@ -420,21 +426,29 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private void populateDecoderStats(Map<String, String> stats, DecoderStatsWrapper decoderInfoWrapper, Integer decoderID) {
 		String decoderStatisticGroup = MonitoringMetricGroup.DECODER_STATISTICS.getName() + decoderID + DecoderConstant.HASH;
 
-		for (DecoderMonitoringMetric item : DecoderMonitoringMetric.values()) {
-			if (decoderInfoWrapper.getDecoder() != null) {
+		if (decoderInfoWrapper.getDecoder() != null) {
+			for (DecoderMonitoringMetric item : DecoderMonitoringMetric.values()) {
 				stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getDecoder().getValueByDecoderMonitoringMetric(item)));
 			}
-			if (decoderInfoWrapper.getDecoderStats() != null) {
+		}
+		if (decoderInfoWrapper.getDecoderStats() != null) {
+			for (DecoderStatsMonitoringMetric item : DecoderStatsMonitoringMetric.values()) {
 				stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getDecoderStats().getValueByDecoderMonitoringMetric(item)));
 			}
-			if (decoderInfoWrapper.getTimecode() != null) {
+		}
+		if (decoderInfoWrapper.getTimecode() != null) {
+			for (DecoderTimeCodeMonitoringMetric item : DecoderTimeCodeMonitoringMetric.values()) {
 				stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getTimecode().getValueByDecoderMonitoringMetric(item)));
 			}
-			if (decoderInfoWrapper.getAudio() != null) {
+		}
+		if (decoderInfoWrapper.getAudio() != null) {
+			for (DecoderAudioMonitoringMetric item : DecoderAudioMonitoringMetric.values()) {
 				stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getAudio().getValueByDecoderMonitoringMetric(item)));
 			}
-			if (decoderInfoWrapper.getVideo() != null) {
-				stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getVideo().getValueByDecoderMonitoringMetric(item)));
+		}
+		if (decoderInfoWrapper.getVideo() != null) {
+			for (DecoderVideoMonitoringMetric item : DecoderVideoMonitoringMetric.values()) {
+			stats.put(decoderStatisticGroup + item.getName(), getDefaultValueForNullData(decoderInfoWrapper.getVideo().getValueByDecoderMonitoringMetric(item)));
 			}
 		}
 	}
@@ -533,7 +547,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 					// Port number filtering
 					if (this.portNumberFilter != null && portNumbersFiltered != null) {
-						Integer port = Integer.parseInt(streamInfoWrapper.getStreamConfigInfo().getPort());
+						Integer port = Integer.parseInt(streamInfoWrapper.getStreamConfig().getPort());
 						boolean isValidPort = validatePortRange(port);
 						if (!isValidPort) {
 							continue;
@@ -572,20 +586,28 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * This method is used update stream statistic from DTO
 	 *
 	 * @param stats list statistics property
-	 * @param stream pair of stream config and stats
+	 * @param streamStatsWrapper pair of stream config and stats
 	 */
-	private void populateStreamStats(Map<String, String> stats, StreamStatsWrapper stream) {
-		String streamStatisticGroup = MonitoringMetricGroup.STREAM_STATISTICS.getName() + stream.getStream().getStreamName() + DecoderConstant.HASH;
+	private void populateStreamStats(Map<String, String> stats, StreamStatsWrapper streamStatsWrapper) {
+		String streamName = streamStatsWrapper.getStream().getStreamName();
+		if (StringUtils.isNullOrEmpty(streamName) || streamName.equals(DecoderConstant.DEFAULT_STREAM_NAME)) {
+			streamName = streamStatsWrapper.getStreamConfig().getDefaultStreamName();
+		}
+		String streamStatisticGroup = MonitoringMetricGroup.STREAM_STATISTICS.getName() + streamName + DecoderConstant.HASH;
 
-		for (StreamMonitoringMetric item : StreamMonitoringMetric.values()) {
-			if (stream.getStream() != null) {
-				stats.put(streamStatisticGroup + item.getName(), getDefaultValueForNullData(stream.getStream().getValueByStreamMonitoringMetric(item)));
+		if (streamStatsWrapper.getStream() != null) {
+			for (StreamMonitoringMetric item : StreamMonitoringMetric.values()) {
+				stats.put(streamStatisticGroup + item.getName(), getDefaultValueForNullData(streamStatsWrapper.getValueByStreamMonitoringMetric(item)));
 			}
-			if (stream.getStreamStats() != null) {
-				stats.put(streamStatisticGroup + item.getName(), getDefaultValueForNullData(stream.getStreamStats().getValueByStreamMonitoringMetric(item)));
+		}
+		if (streamStatsWrapper.getStreamStats() != null) {
+			for (StreamStatsMonitoringMetric item : StreamStatsMonitoringMetric.values()) {
+				stats.put(streamStatisticGroup + item.getName(), getDefaultValueForNullData(streamStatsWrapper.getStreamStats().getValueByStreamMonitoringMetric(item)));
 			}
-			if (stream.getSrt() != null) {
-				stats.put(streamStatisticGroup + item.getName(), getDefaultValueForNullData(stream.getSrt().getValueByStreamMonitoringMetric(item)));
+		}
+		if (streamStatsWrapper.getSrt() != null) {
+			for (SRTMonitoringMetric item : SRTMonitoringMetric.values()) {
+				stats.put(streamStatisticGroup + item.getName(), getDefaultValueForNullData(streamStatsWrapper.getSrt().getValueByStreamMonitoringMetric(item)));
 			}
 		}
 	}
@@ -597,7 +619,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param streamID ID of decoder
 	 */
 	private void updateLocalStreamConfigInfo(StreamStatsWrapper streamInfoWrapper, Integer streamID) {
-		StreamConfig streamConfigInfo = streamInfoWrapper.getStreamConfigInfo();
+		StreamConfig streamConfigInfo = streamInfoWrapper.getStreamConfig();
 
 		Optional<StreamConfig> streamInfoDTO = this.streamConfigsDTO.stream().filter(st -> streamID.equals(st.getId())).findFirst();
 		Optional<StreamConfig> localStreamInfo = this.localStreamConfigs.stream().filter(st -> streamID.equals(st.getId())).findFirst();

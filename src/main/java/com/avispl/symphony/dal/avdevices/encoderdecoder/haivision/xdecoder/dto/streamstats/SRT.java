@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.SRTMonitoringMetric;
 
 /**
  * Stream SRT
@@ -272,12 +272,10 @@ public class SRT {
 	}
 
 	/**
-	 * @param streamMonitoringMetric
-	 *
 	 * @return String value of Stream monitoring properties by metric
 	 */
-	public String getValueByStreamMonitoringMetric(StreamMonitoringMetric streamMonitoringMetric) {
-		switch (streamMonitoringMetric) {
+	public String getValueByStreamMonitoringMetric(SRTMonitoringMetric srtMonitoringMetric) {
+		switch (srtMonitoringMetric) {
 			case RECONNECTIONS:
 				return getReconnections();
 			case SNCRYPTION:
