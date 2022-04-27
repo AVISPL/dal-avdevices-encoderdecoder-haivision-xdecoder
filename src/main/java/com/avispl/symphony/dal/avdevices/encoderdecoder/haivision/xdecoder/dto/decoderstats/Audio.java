@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderAudioMonitoringMetric;
+import com.avispl.symphony.dal.util.StringUtils;
 
 /**
  * Decoder audio
@@ -31,7 +32,7 @@ public class Audio {
 	@JsonAlias("SampleRate")
 	private String sampleRate;
 
-	@JsonAlias("NumberofPair")
+	@JsonAlias("NumberofPairs")
 	private String numberOfPair;
 
 	@JsonAlias("Audio1InputLayout")
@@ -217,6 +218,9 @@ public class Audio {
 	 * @return value of {@link #skippedFrames}
 	 */
 	public String getSkippedFrames() {
+		if (StringUtils.isNullOrEmpty(skippedFrames)) {
+			return DecoderConstant.DEFAULT_SKIPPED_FRAMES_VALUE;
+		}
 		return skippedFrames;
 	}
 

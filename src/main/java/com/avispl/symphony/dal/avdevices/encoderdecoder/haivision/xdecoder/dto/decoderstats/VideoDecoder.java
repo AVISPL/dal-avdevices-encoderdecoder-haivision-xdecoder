@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderVideoMonitoringMetric;
+import com.avispl.symphony.dal.util.StringUtils;
 
 /**
  * Video decoder
@@ -31,20 +32,20 @@ public class VideoDecoder {
 	@JsonAlias("State")
 	private String state;
 
-	@JsonAlias("BufferingMode")
+	@JsonAlias("Buffering")
 	private String bufferingMode;
 
-	@JsonAlias("MultisyncStatus")
-	private String videoMultisyncStatus;
+	@JsonAlias("MultiSyncStatus")
+	private String videoMultiSyncStatus;
 
-	@JsonAlias("MultisyncDelay")
-	private String videoMultisyncDelay;
+	@JsonAlias("MultiSyncDelay")
+	private String videoMultiSyncDelay;
 
-	@JsonAlias("MultisyncDelayRange")
-	private String multisyncDelayRange;
+	@JsonAlias("MultiSyncDelayRange")
+	private String multiSyncDelayRange;
 
-	@JsonAlias("MultisyncDelaySet")
-	private String multisyncDelaySet;
+	@JsonAlias("MultiSyncDelaySet")
+	private String multiSyncDelaySet;
 
 	@JsonAlias("InputFormat")
 	private String inputFormat;
@@ -61,10 +62,10 @@ public class VideoDecoder {
 	@JsonAlias("OutputFrames")
 	private String outputFrames;
 
-	@JsonAlias("SkippedOutputFrames")
+	@JsonAlias("SkippedFrames")
 	private String skippedOutputFrames;
 
-	@JsonAlias("ReplayedOutputFrames")
+	@JsonAlias("ReplayedFrames")
 	private String replayedOutputFrames;
 
 	/**
@@ -158,75 +159,75 @@ public class VideoDecoder {
 	}
 
 	/**
-	 * Retrieves {@code {@link #videoMultisyncStatus}}
+	 * Retrieves {@code {@link #videoMultiSyncStatus }}
 	 *
-	 * @return value of {@link #videoMultisyncStatus}
+	 * @return value of {@link #videoMultiSyncStatus}
 	 */
 	public String getMultisyncStatus() {
-		return videoMultisyncStatus;
+		return videoMultiSyncStatus;
 	}
 
 	/**
 	 * Sets {@code videoMultisyncStatus}
 	 *
-	 * @param videoMultisyncStatus the {@code java.lang.String} field
+	 * @param videoMultiSyncStatus the {@code java.lang.String} field
 	 */
-	public void setVideoMultisyncStatus(String videoMultisyncStatus) {
-		this.videoMultisyncStatus = videoMultisyncStatus;
+	public void setVideoMultiSyncStatus(String videoMultiSyncStatus) {
+		this.videoMultiSyncStatus = videoMultiSyncStatus;
 	}
 
 	/**
-	 * Retrieves {@code {@link #videoMultisyncDelay}}
+	 * Retrieves {@code {@link #videoMultiSyncDelay }}
 	 *
-	 * @return value of {@link #videoMultisyncDelay}
+	 * @return value of {@link #videoMultiSyncDelay}
 	 */
 	public String getMultisyncDelay() {
-		return videoMultisyncDelay;
+		return videoMultiSyncDelay;
 	}
 
 	/**
 	 * Sets {@code videoMultisyncDelay}
 	 *
-	 * @param videoMultisyncDelay the {@code java.lang.String} field
+	 * @param videoMultiSyncDelay the {@code java.lang.String} field
 	 */
-	public void setVideoMultisyncDelay(String videoMultisyncDelay) {
-		this.videoMultisyncDelay = videoMultisyncDelay;
+	public void setVideoMultiSyncDelay(String videoMultiSyncDelay) {
+		this.videoMultiSyncDelay = videoMultiSyncDelay;
 	}
 
 	/**
-	 * Retrieves {@code {@link #multisyncDelayRange}}
+	 * Retrieves {@code {@link #multiSyncDelayRange }}
 	 *
-	 * @return value of {@link #multisyncDelayRange}
+	 * @return value of {@link #multiSyncDelayRange}
 	 */
-	public String getMultisyncDelayRange() {
-		return multisyncDelayRange;
+	public String getMultiSyncDelayRange() {
+		return multiSyncDelayRange;
 	}
 
 	/**
 	 * Sets {@code multisyncDelayRange}
 	 *
-	 * @param multisyncDelayRange the {@code java.lang.String} field
+	 * @param multiSyncDelayRange the {@code java.lang.String} field
 	 */
-	public void setMultisyncDelayRange(String multisyncDelayRange) {
-		this.multisyncDelayRange = multisyncDelayRange;
+	public void setMultiSyncDelayRange(String multiSyncDelayRange) {
+		this.multiSyncDelayRange = multiSyncDelayRange;
 	}
 
 	/**
-	 * Retrieves {@code {@link #multisyncDelaySet}}
+	 * Retrieves {@code {@link #multiSyncDelaySet }}
 	 *
-	 * @return value of {@link #multisyncDelaySet}
+	 * @return value of {@link #multiSyncDelaySet}
 	 */
-	public String getMultisyncDelaySet() {
-		return multisyncDelaySet;
+	public String getMultiSyncDelaySet() {
+		return multiSyncDelaySet;
 	}
 
 	/**
 	 * Sets {@code multisyncDelaySet}
 	 *
-	 * @param multisyncDelaySet the {@code java.lang.String} field
+	 * @param multiSyncDelaySet the {@code java.lang.String} field
 	 */
-	public void setMultisyncDelaySet(String multisyncDelaySet) {
-		this.multisyncDelaySet = multisyncDelaySet;
+	public void setMultiSyncDelaySet(String multiSyncDelaySet) {
+		this.multiSyncDelaySet = multiSyncDelaySet;
 	}
 
 	/**
@@ -325,6 +326,9 @@ public class VideoDecoder {
 	 * @return value of {@link #skippedOutputFrames}
 	 */
 	public String getSkippedOutputFrames() {
+		if (StringUtils.isNullOrEmpty(skippedOutputFrames)) {
+			return DecoderConstant.DEFAULT_SKIPPED_FRAMES_VALUE;
+		}
 		return skippedOutputFrames;
 	}
 
@@ -343,6 +347,9 @@ public class VideoDecoder {
 	 * @return value of {@link #replayedOutputFrames}
 	 */
 	public String getReplayedOutputFrames() {
+		if (StringUtils.isNullOrEmpty(replayedOutputFrames)) {
+			return DecoderConstant.DEFAULT_SKIPPED_FRAMES_VALUE;
+		}
 		return replayedOutputFrames;
 	}
 
@@ -375,9 +382,9 @@ public class VideoDecoder {
 			case MULTISYNC_DELAY:
 				return getMultisyncDelay();
 			case MULTISYNC_DELAY_RANGE:
-				return getMultisyncDelayRange();
+				return getMultiSyncDelayRange();
 			case MULTISYNC_DELAY_SET:
-				return getMultisyncDelaySet();
+				return getMultiSyncDelaySet();
 			case VIDEO_INPUT_FORMAT:
 				return getInputFormat();
 			case VIDEO_BITRATE:
