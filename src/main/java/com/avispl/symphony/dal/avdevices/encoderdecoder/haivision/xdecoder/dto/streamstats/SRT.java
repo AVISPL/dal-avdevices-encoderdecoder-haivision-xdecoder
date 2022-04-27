@@ -34,13 +34,13 @@ public class SRT {
 	@JsonAlias("LostPackets")
 	private String lostPackets;
 
-	@JsonAlias("SkippedPackets")
+	@JsonAlias("DroppedPackets")
 	private String skippedPackets;
 
-	@JsonAlias("SentAcks")
+	@JsonAlias("SentACKs")
 	private String sentAcks;
 
-	@JsonAlias("SentNaks")
+	@JsonAlias("SentNAKs")
 	private String sentNaks;
 
 	@JsonAlias("LinkBandwidth")
@@ -49,7 +49,7 @@ public class SRT {
 	@JsonAlias("Rtt")
 	private String rtt;
 
-	@JsonAlias("Buffer")
+	@JsonAlias("LocalBufferLevel")
 	private String buffer;
 
 	@JsonAlias("Latency")

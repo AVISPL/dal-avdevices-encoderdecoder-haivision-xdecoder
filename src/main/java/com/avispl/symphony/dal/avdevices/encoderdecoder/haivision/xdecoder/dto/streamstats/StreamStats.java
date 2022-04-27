@@ -19,7 +19,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StreamStats {
 
-	@JsonAlias("DecoderId")
+	@JsonAlias("Output")
 	private String output;
 
 	@JsonAlias("State")
@@ -28,7 +28,7 @@ public class StreamStats {
 	@JsonAlias("SourceAddress")
 	private String sourceAddress;
 
-	@JsonAlias("BitRate")
+	@JsonAlias("Bitrate")
 	private String bitRate;
 
 	@JsonAlias("ReceivedPackets")

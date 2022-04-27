@@ -16,7 +16,7 @@ public enum DecoderMonitoringMetric {
 	KLV("KeyLengthValue"),
 	TC("Timecode"),
 	CC("ClosedCaptioning"),
-	AFD("AActiveFormatDescription");
+	AFD("ActiveFormatDescription");
 
 	private final String name;
 

@@ -37,6 +37,7 @@ public class DecoderConstant {
 	public static final String GETTING_DECODER_STATS_ERR = "Failed to get decoder statistic";
 	public static final String GETTING_STREAM_STATS_ERR = "Failed to get stream statistic";
 	public static final String PORT_NUMBER_ERROR = "Invalid port number";
+	public static final String DEFAULT_SKIPPED_FRAMES_VALUE = "0";
 	public static final int MIN_DECODER_ID = 1;
 	public static final int MAX_DECODER_ID = 2;
 	public static final int MIN_NUMBER_OF_FAILED_MONITOR_METRIC = 3;
