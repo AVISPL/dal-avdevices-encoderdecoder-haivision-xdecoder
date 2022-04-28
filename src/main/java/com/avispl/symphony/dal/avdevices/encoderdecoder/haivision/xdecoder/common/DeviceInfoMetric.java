@@ -20,7 +20,6 @@ public enum DeviceInfoMetric {
 	FIRMWARE_DATE("FirmwareDate"),
 	FIRMWARE_OPTIONS("FirmwareOptions"),
 	FIRMWARE_VERSION("FirmwareVersion"),
-	FIRMWARE_TIME("FirmwareTime"),
 	HARDWARE_COMPATIBILITY("HardwareCompatibility"),
 	HARDWARE_VERSION("HardwareVersion"),
 	PART_NUMBER("PartNumber"),

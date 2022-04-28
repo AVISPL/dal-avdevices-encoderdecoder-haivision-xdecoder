@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderAudioMonitoringMetric;
 import com.avispl.symphony.dal.util.StringUtils;
 
@@ -40,7 +41,6 @@ public class Audio {
 
 	@JsonAlias("AudioOutputLayout")
 	private String outputLayout;
-
 
 	@JsonAlias("DecodedFrames")
 	private String decodedFrames;
@@ -244,21 +244,27 @@ public class Audio {
 			case AUDIO_STATE:
 				return getState();
 			case AUDIO_BITRATE:
-				return getBitrate();
+				return NormalizeData.getDataNumberValue(getBitrate());
 			case AUDIO_SAMPLE_RATE:
-				return getSampleRate();
+				return NormalizeData.getDataNumberValue(getSampleRate());
 			case AUDIO_NUMBER_OF_PAIR:
 				return getNumberOfPair();
 			case AUDIO_INPUT_LAYOUT_1:
 				return getInputLayout1DecodedFrames();
 			case AUDIO_DECODED_FRAMES:
-				return getDecodedFrames();
+				return NormalizeData.getDataNumberValue(getDecodedFrames());
+			case AUDIO_DECODED_FRAMES_PERCENT:
+				return NormalizeData.getDataPercentValue(getDecodedFrames());
 			case AUDIO_OUTPUT_FRAME:
-				return getOutputFrames();
+				return NormalizeData.getDataNumberValue(getOutputFrames());
+			case AUDIO_OUTPUT_FRAME_PERCENT:
+				return NormalizeData.getDataPercentValue(getOutputFrames());
 			case AUDIO_OUTPUT_LAYOUT:
 				return getOutputLayout();
 			case AUDIO_SKIPPED_FRAMES:
-				return getSkippedFrames();
+				return NormalizeData.getDataNumberValue(getSkippedFrames());
+			case AUDIO_SKIPPED_FRAMES_PERCENT:
+				return NormalizeData.getDataPercentValue(getSkippedFrames());
 			default:
 				return DecoderConstant.EMPTY;
 		}

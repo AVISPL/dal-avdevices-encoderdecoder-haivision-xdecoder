@@ -22,10 +22,10 @@ public enum SRTMonitoringMetric {
 	SKIPPED_PACKETS("SRTSkippedPackets"),
 	SENT_ACKS("SRTSentAcks"),
 	SENT_NAKS("SRTSentNaks"),
-	LINK_BANDWIDTH("SRTLinkBandwidth"),
+	LINK_BANDWIDTH("SRTLinkBandwidth(ms)"),
 	RTT("SRTRtt"),
-	BUFFER("SRTBuffer"),
-	LATENCY("SRTLatency");
+	BUFFER("SRTBuffer(ms)"),
+	LATENCY("SRTLatency(ms)");
 
 	private final String name;
 

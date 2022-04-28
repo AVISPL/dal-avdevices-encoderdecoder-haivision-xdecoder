@@ -455,7 +455,7 @@ public class StreamConfig {
 					+ DecoderConstant.RIGHT_PARENTHESES +
 					DecoderConstant.COLON + getPort();
 		} else {
-			return encapsulationShortName + DecoderConstant.COLON + DecoderConstant.SLASH + DecoderConstant.SLASH + DecoderConstant.AT_SIGN + NormalizeData.getValueOnly(getAddress()) +
+			return encapsulationShortName + DecoderConstant.COLON + DecoderConstant.SLASH + DecoderConstant.SLASH + DecoderConstant.AT_SIGN + NormalizeData.convertToNumberValue(getAddress()) +
 					DecoderConstant.COLON + getPort();
 		}
 	}
