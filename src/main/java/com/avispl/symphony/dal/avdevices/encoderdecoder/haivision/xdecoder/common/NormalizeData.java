@@ -3,6 +3,7 @@
  */
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -45,7 +46,7 @@ public class NormalizeData {
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getValueOnly(String data) {
+	public static String convertToNumberValue(String data) {
 		if(data == null){
 			return DecoderConstant.EMPTY;
 		}
@@ -53,63 +54,36 @@ public class NormalizeData {
 	}
 
 	/**
-	 * get data value number in string
+	 * get data  number value in string, eg: 128 kbps
 	 *
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getDataValue(String data) {
-		if(data == null){
+	public static String getDataNumberValue(String data) {
+		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
 		String[] spiltDataList = data.split(DecoderConstant.SPACE, 2);
+		if (spiltDataList[0] == null) {
+			return DecoderConstant.EMPTY;
+		}
 		return spiltDataList[0].replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
 	}
 
 	/**
-	 * get data extra info in string in case the extra data is behind the "last" keyword eg: 0 [0.00%] (Last: Never)
+	 * get data extra info in string in case the extra data is behind the "at" keyword, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322
 	 *
 	 * @param data the normalized data
 	 * @return String
 	 */
 	public static String getDataExtraInfoCase1(String data) {
-		if(data == null){
+		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
-		StringBuilder stringBuilder = new StringBuilder();
-		String[] spiltDataList = data.split(DecoderConstant.SPACE);
-		for (int i = 0; i < spiltDataList.length; ++i) {
-			if (spiltDataList[i].contains("(")) {
-				for (int j = i; j < spiltDataList.length; j++) {
-					stringBuilder.append(spiltDataList[j] + DecoderConstant.SPACE);
-				}
-				break;
-			}
-		}
-		return stringBuilder.toString().replace(DecoderConstant.RIGHT_PARENTHESES, DecoderConstant.EMPTY);
-	}
+		String[] spiltDataList = data.split(DecoderConstant.AT);
+		Optional<String> result = Optional.ofNullable(spiltDataList[1]);
 
-	/**
-	 * get data extra info in string in case the extra data is cover by parenthesis's  eg: (TC - System Time)
-	 *
-	 * @param data the normalized data
-	 * @return String
-	 */
-	public static String getDataExtraInfoCase2(String data) {
-		if(data == null){
-			return DecoderConstant.EMPTY;
-		}
-		StringBuilder stringBuilder = new StringBuilder();
-		String[] spiltDataList = data.split(DecoderConstant.SPACE);
-		for (int i = 0; i < spiltDataList.length; i++) {
-			if (spiltDataList[i].contains("(")) {
-				for (int j = i; j < spiltDataList.length; j++) {
-					stringBuilder.append(spiltDataList[j] + DecoderConstant.SPACE);
-				}
-				break;
-			}
-		}
-		return stringBuilder.toString().replace(DecoderConstant.RIGHT_PARENTHESES, DecoderConstant.EMPTY).replace(DecoderConstant.LEFT_PARENTHESES, DecoderConstant.EMPTY);
+		return result.orElse(DecoderConstant.EMPTY);
 	}
 
 	/**
@@ -119,10 +93,13 @@ public class NormalizeData {
 	 * @return String
 	 */
 	public static String getDataPercentValue(String data) {
-		if(data == null){
+		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
 		String[] spiltDataList = data.split(DecoderConstant.SPACE, 3);
+		if (spiltDataList[1] == null) {
+			return DecoderConstant.EMPTY;
+		}
 		return spiltDataList[1].replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
 	}
 }

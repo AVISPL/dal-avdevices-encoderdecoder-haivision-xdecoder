@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderVideoMonitoringMetric;
 import com.avispl.symphony.dal.util.StringUtils;
 
@@ -36,10 +37,10 @@ public class VideoDecoder {
 	private String bufferingMode;
 
 	@JsonAlias("MultiSyncStatus")
-	private String videoMultiSyncStatus;
+	private String multiSyncStatus;
 
-	@JsonAlias("MultiSyncDelay")
-	private String videoMultiSyncDelay;
+	@JsonAlias("BufferingDelay")
+	private String bufferingDelay;
 
 	@JsonAlias("MultiSyncDelayRange")
 	private String multiSyncDelayRange;
@@ -59,7 +60,7 @@ public class VideoDecoder {
 	@JsonAlias("OutputFormat")
 	private String outputFormat;
 
-	@JsonAlias("OutputFrames")
+	@JsonAlias("DisplayedFrames")
 	private String outputFrames;
 
 	@JsonAlias("SkippedFrames")
@@ -159,39 +160,39 @@ public class VideoDecoder {
 	}
 
 	/**
-	 * Retrieves {@code {@link #videoMultiSyncStatus }}
+	 * Retrieves {@code {@link #multiSyncStatus }}
 	 *
-	 * @return value of {@link #videoMultiSyncStatus}
+	 * @return value of {@link #multiSyncStatus}
 	 */
 	public String getMultisyncStatus() {
-		return videoMultiSyncStatus;
+		return multiSyncStatus;
 	}
 
 	/**
 	 * Sets {@code videoMultisyncStatus}
 	 *
-	 * @param videoMultiSyncStatus the {@code java.lang.String} field
+	 * @param multiSyncStatus the {@code java.lang.String} field
 	 */
-	public void setVideoMultiSyncStatus(String videoMultiSyncStatus) {
-		this.videoMultiSyncStatus = videoMultiSyncStatus;
+	public void setMultiSyncStatus(String multiSyncStatus) {
+		this.multiSyncStatus = multiSyncStatus;
 	}
 
 	/**
-	 * Retrieves {@code {@link #videoMultiSyncDelay }}
+	 * Retrieves {@code {@link #bufferingDelay }}
 	 *
-	 * @return value of {@link #videoMultiSyncDelay}
+	 * @return value of {@link #bufferingDelay}
 	 */
 	public String getMultisyncDelay() {
-		return videoMultiSyncDelay;
+		return bufferingDelay;
 	}
 
 	/**
 	 * Sets {@code videoMultisyncDelay}
 	 *
-	 * @param videoMultiSyncDelay the {@code java.lang.String} field
+	 * @param bufferingDelay the {@code java.lang.String} field
 	 */
-	public void setVideoMultiSyncDelay(String videoMultiSyncDelay) {
-		this.videoMultiSyncDelay = videoMultiSyncDelay;
+	public void setBufferingDelay(String bufferingDelay) {
+		this.bufferingDelay = bufferingDelay;
 	}
 
 	/**
@@ -379,8 +380,8 @@ public class VideoDecoder {
 				return getBufferingMode();
 			case MULTISYNC_STATUS:
 				return getMultisyncStatus();
-			case MULTISYNC_DELAY:
-				return getMultisyncDelay();
+			case BUFFERING_DELAY:
+				return NormalizeData.getDataNumberValue(getMultisyncDelay());
 			case MULTISYNC_DELAY_RANGE:
 				return getMultiSyncDelayRange();
 			case MULTISYNC_DELAY_SET:
@@ -388,17 +389,29 @@ public class VideoDecoder {
 			case VIDEO_INPUT_FORMAT:
 				return getInputFormat();
 			case VIDEO_BITRATE:
-				return getBitrate();
+				return NormalizeData.getDataNumberValue(getBitrate());
 			case VIDEO_DECODED_FRAMES:
-				return getDecodedFrames();
+				return NormalizeData.getDataNumberValue(getDecodedFrames());
+			case VIDEO_DECODED_FRAMES_PERCENT:
+				return NormalizeData.getDataPercentValue(getDecodedFrames());
 			case VIDEO_OUTPUT_FORMAT:
 				return getOutputFormat();
 			case VIDEO_OUTPUT_FRAMES:
-				return getOutputFrames();
+				return  NormalizeData.getDataNumberValue(getOutputFrames());
+			case VIDEO_OUTPUT_FRAMES_PERCENT:
+				return  NormalizeData.getDataPercentValue(getOutputFrames());
 			case VIDEO_SKIPPED_OUTPUT_FRAMES:
-				return getSkippedOutputFrames();
+				return NormalizeData.getDataNumberValue(getSkippedOutputFrames());
+			case VIDEO_SKIPPED_OUTPUT_FRAMES_PERCENT:
+				return NormalizeData.getDataPercentValue(getSkippedOutputFrames());
+			case LAST_VIDEO_SKIPPED_OUTPUT_FRAMES_PERCENT:
+				return NormalizeData.getDataExtraInfoCase1(getSkippedOutputFrames());
 			case VIDEO_REPLAYED_OUTPUT_FRAMES:
-				return getReplayedOutputFrames();
+				return NormalizeData.getDataNumberValue(getReplayedOutputFrames());
+			case VIDEO_REPLAYED_OUTPUT_FRAMES_PERCENT:
+				return NormalizeData.getDataPercentValue(getReplayedOutputFrames());
+			case LAST_VIDEO_REPLAYED_OUTPUT_FRAMES:
+				return NormalizeData.getDataExtraInfoCase1(getReplayedOutputFrames());
 			default:
 				return DecoderConstant.EMPTY;
 		}

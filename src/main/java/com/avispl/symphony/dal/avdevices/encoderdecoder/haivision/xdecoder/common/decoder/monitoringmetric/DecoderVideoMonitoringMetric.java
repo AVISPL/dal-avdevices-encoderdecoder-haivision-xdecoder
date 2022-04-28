@@ -19,16 +19,22 @@ public enum DecoderVideoMonitoringMetric {
 	VIDEO_STATE("VideoState"),
 	VIDEO_BUFFERING_MODE("VideoBufferingMode"),
 	MULTISYNC_STATUS("MultisyncStatus"),
-	MULTISYNC_DELAY("MultisyncDelay"),
+	BUFFERING_DELAY("BufferingDelay(ms)"),
 	MULTISYNC_DELAY_RANGE("MultisyncDelayRange"),
 	MULTISYNC_DELAY_SET("MultisyncDelaySet"),
 	VIDEO_INPUT_FORMAT("VideoInputFormat"),
-	VIDEO_BITRATE("VideoBitrate"),
+	VIDEO_BITRATE("VideoBitrate(kbps)"),
 	VIDEO_DECODED_FRAMES("VideoDecodedFrames"),
+	VIDEO_DECODED_FRAMES_PERCENT("VideoDecodedFramesPercent(%)"),
 	VIDEO_OUTPUT_FORMAT("VideoOutputFormat"),
 	VIDEO_OUTPUT_FRAMES("VideoOutputFrames"),
+	VIDEO_OUTPUT_FRAMES_PERCENT("VideoOutputFramesPercent(%)"),
 	VIDEO_SKIPPED_OUTPUT_FRAMES("VideoSkippedOutputFrames"),
-	VIDEO_REPLAYED_OUTPUT_FRAMES("VideoReplayedOutputFrames");
+	VIDEO_SKIPPED_OUTPUT_FRAMES_PERCENT("VideoSkippedOutputFramesPercent(%)"),
+	LAST_VIDEO_SKIPPED_OUTPUT_FRAMES_PERCENT("LastVideoSkippedOutputFrames"),
+	VIDEO_REPLAYED_OUTPUT_FRAMES("VideoReplayedOutputFrames"),
+	VIDEO_REPLAYED_OUTPUT_FRAMES_PERCENT("VideoReplayedOutputFramesPercent(%)"),
+	LAST_VIDEO_REPLAYED_OUTPUT_FRAMES("LastVideoReplayedOutputFrames");
 
 	private final String name;
 

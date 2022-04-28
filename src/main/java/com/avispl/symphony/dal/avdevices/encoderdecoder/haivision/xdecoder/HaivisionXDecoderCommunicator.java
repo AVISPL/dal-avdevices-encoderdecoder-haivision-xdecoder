@@ -26,6 +26,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.MonitoringMetricGroup;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderAudioMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderStatsMonitoringMetric;
@@ -237,7 +238,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			if (response != null) {
 				Map<String, Object> responseMap = Deserializer.convertDataToObject(response, request);
 				AuthenticationRoleWrapper authenticationRoleWrapper = objectMapper.convertValue(responseMap, AuthenticationRoleWrapper.class);
-				role = authenticationRoleWrapper.getAuthenticationRole().getRole();
+				if (authenticationRoleWrapper.getAuthenticationRole() != null){
+					role = authenticationRoleWrapper.getAuthenticationRole().getRole();
+				}
 			}
 			if (StringUtils.isNullOrEmpty(role)) {
 				throw new ResourceNotReachableException("Role based is empty");
@@ -312,7 +315,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					stats.put(DeviceInfoMetric.FIRMWARE_DATE.getName(), getDefaultValueForNullData(deviceInfo.getFirmwareDate()));
 					stats.put(DeviceInfoMetric.FIRMWARE_OPTIONS.getName(), getDefaultValueForNullData(deviceInfo.getFirmwareOptions()));
 					stats.put(DeviceInfoMetric.FIRMWARE_VERSION.getName(), getDefaultValueForNullData(deviceInfo.getFirmwareVersion()));
-					stats.put(DeviceInfoMetric.FIRMWARE_TIME.getName(), getDefaultValueForNullData(deviceInfo.getFirmwareTime()));
 					stats.put(DeviceInfoMetric.HARDWARE_COMPATIBILITY.getName(), getDefaultValueForNullData(deviceInfo.getHardwareCompatibility()));
 					stats.put(DeviceInfoMetric.HARDWARE_VERSION.getName(), getDefaultValueForNullData(deviceInfo.getHardwareVersion()));
 					stats.put(DeviceInfoMetric.PART_NUMBER.getName(), getDefaultValueForNullData(deviceInfo.getPartNumber()));
@@ -343,8 +345,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				Map<String, Object> responseMap = Deserializer.convertDataToObject(response, request);
 				DeviceInfo deviceInfo = objectMapper.convertValue(responseMap, DeviceInfo.class);
 
-				if (deviceInfo != null) {
-					stats.put(DeviceInfoMetric.TEMPERATURE.getName(), getDefaultValueForNullData(deviceInfo.getTemperatureStatus().getTemperature()));
+				if (deviceInfo.getTemperatureStatus() != null) {
+					stats.put(DeviceInfoMetric.TEMPERATURE.getName(), getDefaultValueForNullData(NormalizeData.getDataNumberValue(deviceInfo.getTemperatureStatus().getTemperature())));
 				} else {
 					updateDeviceInfoFailedMonitor();
 				}
@@ -716,6 +718,27 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		noOfFailedMonitorMetric += EnumSet.allOf(MonitoringMetricGroup.class).stream().count();
 		return noOfFailedMonitorMetric;
 	}
+
+	//--------------------------------------------------------------------------------------------------------------------------------
+	//endregion
+
+	//region populate decoder controlling metric
+	//--------------------------------------------------------------------------------------------------------------------------------
+
+
+	//--------------------------------------------------------------------------------------------------------------------------------
+	//endregion
+
+	//region perform decoder control
+	//--------------------------------------------------------------------------------------------------------------------------------
+
+
+	//--------------------------------------------------------------------------------------------------------------------------------
+	//endregion
+
+	//region perform stream control
+	//--------------------------------------------------------------------------------------------------------------------------------
+
 
 	//--------------------------------------------------------------------------------------------------------------------------------
 	//endregion

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.SRTMonitoringMetric;
 
 /**
@@ -293,13 +294,13 @@ public class SRT {
 			case SENT_NAKS:
 				return getSentNaks();
 			case LINK_BANDWIDTH:
-				return getLinkBandwidth();
+				return NormalizeData.getDataNumberValue(getLinkBandwidth());
 			case RTT:
 				return getRtt();
 			case BUFFER:
-				return getBuffer();
+				return NormalizeData.getDataNumberValue(getBuffer());
 			case LATENCY:
-				return getLatency();
+				return NormalizeData.getDataNumberValue(getLatency());
 			default:
 				return DecoderConstant.NONE;
 		}
