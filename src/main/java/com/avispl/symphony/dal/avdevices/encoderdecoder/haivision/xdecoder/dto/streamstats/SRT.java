@@ -23,9 +23,6 @@ public class SRT {
 	@JsonAlias("Reconnections")
 	private String reconnections;
 
-	@JsonAlias("AESncryption")
-	private String aeSncryption;
-
 	@JsonAlias("KeyLength")
 	private String keyLength;
 
@@ -47,7 +44,7 @@ public class SRT {
 	@JsonAlias("LinkBandwidth")
 	private String linkBandwidth;
 
-	@JsonAlias("Rtt")
+	@JsonAlias("RTT")
 	private String rtt;
 
 	@JsonAlias("LocalBufferLevel")
@@ -72,24 +69,6 @@ public class SRT {
 	 */
 	public void setReconnections(String reconnections) {
 		this.reconnections = reconnections;
-	}
-
-	/**
-	 * Retrieves {@code {@link #aeSncryption}}
-	 *
-	 * @return value of {@link #aeSncryption}
-	 */
-	public String getAeSncryption() {
-		return aeSncryption;
-	}
-
-	/**
-	 * Sets {@code aeSncryption}
-	 *
-	 * @param aeSncryption the {@code java.lang.String} field
-	 */
-	public void setAeSncryption(String aeSncryption) {
-		this.aeSncryption = aeSncryption;
 	}
 
 	/**
@@ -279,8 +258,6 @@ public class SRT {
 		switch (srtMonitoringMetric) {
 			case RECONNECTIONS:
 				return getReconnections();
-			case SNCRYPTION:
-				return getAeSncryption();
 			case KEY_LENGTH:
 				return getKeyLength();
 			case DECRYPTION:
@@ -296,7 +273,7 @@ public class SRT {
 			case LINK_BANDWIDTH:
 				return NormalizeData.getDataNumberValue(getLinkBandwidth());
 			case RTT:
-				return getRtt();
+				return NormalizeData.getDataNumberValue(getRtt());
 			case BUFFER:
 				return NormalizeData.getDataNumberValue(getBuffer());
 			case LATENCY:

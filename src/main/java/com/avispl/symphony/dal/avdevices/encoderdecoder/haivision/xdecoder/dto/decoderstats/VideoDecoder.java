@@ -405,13 +405,13 @@ public class VideoDecoder {
 			case VIDEO_SKIPPED_OUTPUT_FRAMES_PERCENT:
 				return NormalizeData.getDataPercentValue(getSkippedOutputFrames());
 			case LAST_VIDEO_SKIPPED_OUTPUT_FRAMES_PERCENT:
-				return NormalizeData.getDataExtraInfoCase1(getSkippedOutputFrames());
+				return NormalizeData.getDataExtraInfo(getSkippedOutputFrames());
 			case VIDEO_REPLAYED_OUTPUT_FRAMES:
 				return NormalizeData.getDataNumberValue(getReplayedOutputFrames());
 			case VIDEO_REPLAYED_OUTPUT_FRAMES_PERCENT:
 				return NormalizeData.getDataPercentValue(getReplayedOutputFrames());
 			case LAST_VIDEO_REPLAYED_OUTPUT_FRAMES:
-				return NormalizeData.getDataExtraInfoCase1(getReplayedOutputFrames());
+				return NormalizeData.getDataExtraInfo(getReplayedOutputFrames());
 			default:
 				return DecoderConstant.EMPTY;
 		}

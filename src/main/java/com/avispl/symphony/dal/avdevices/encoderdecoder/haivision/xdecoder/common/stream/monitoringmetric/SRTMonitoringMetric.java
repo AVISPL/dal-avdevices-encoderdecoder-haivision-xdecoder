@@ -15,7 +15,6 @@ public enum SRTMonitoringMetric {
 
 	// Static metric
 	RECONNECTIONS("SRTReconnections"),
-	SNCRYPTION("SRTAESncryption"),
 	KEY_LENGTH("SRTKeyLength"),
 	DECRYPTION("SRTDecryption"),
 	LOST_PACKETS("SRTLostPackets"),
@@ -23,7 +22,7 @@ public enum SRTMonitoringMetric {
 	SENT_ACKS("SRTSentAcks"),
 	SENT_NAKS("SRTSentNaks"),
 	LINK_BANDWIDTH("SRTLinkBandwidth(ms)"),
-	RTT("SRTRtt"),
+	RTT("SRTRtt(ms)"),
 	BUFFER("SRTBuffer(ms)"),
 	LATENCY("SRTLatency(ms)");
 

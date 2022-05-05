@@ -3,14 +3,15 @@
  */
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common;
 
-import java.util.Optional;
 import java.util.UUID;
+
+import com.avispl.symphony.dal.util.StringUtils;
 
 /**
  * Normalizing Data
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 5/4/2022
  * @since 1.0.0
  */
 public class NormalizeData {
@@ -64,10 +65,11 @@ public class NormalizeData {
 			return DecoderConstant.EMPTY;
 		}
 		String[] spiltDataList = data.split(DecoderConstant.SPACE, 2);
-		if (spiltDataList[0] == null) {
+		int dataNumberIndex = 0;
+		if (StringUtils.isNullOrEmpty(spiltDataList[dataNumberIndex])) {
 			return DecoderConstant.EMPTY;
 		}
-		return spiltDataList[0].replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
+		return spiltDataList[dataNumberIndex].replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
 	}
 
 	/**
@@ -76,18 +78,19 @@ public class NormalizeData {
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getDataExtraInfoCase1(String data) {
+	public static String getDataExtraInfo(String data) {
 		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
 		String[] spiltDataList = data.split(DecoderConstant.AT);
-		Optional<String> result = Optional.ofNullable(spiltDataList[1]);
-
-		return result.orElse(DecoderConstant.EMPTY);
+		int extraInfoIndex = 1;
+		if (extraInfoIndex > spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[extraInfoIndex]))
+			return DecoderConstant.EMPTY;
+		return spiltDataList[extraInfoIndex];
 	}
 
 	/**
-	 * get data percent value in string
+	 * get data percent value in string, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322
 	 *
 	 * @param data the normalized data
 	 * @return String
@@ -97,9 +100,10 @@ public class NormalizeData {
 			return DecoderConstant.EMPTY;
 		}
 		String[] spiltDataList = data.split(DecoderConstant.SPACE, 3);
-		if (spiltDataList[1] == null) {
+		int dataPercentValueIndex = 1;
+		if (dataPercentValueIndex > spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[dataPercentValueIndex])) {
 			return DecoderConstant.EMPTY;
 		}
-		return spiltDataList[1].replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
+		return spiltDataList[dataPercentValueIndex].replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
 	}
 }

@@ -44,7 +44,10 @@ public enum CommandOperation {
 	OPERATION_TALKBACK("talkback"),
 
 	// Video command
-	OPERATION_VIDDEC("viddec");
+	OPERATION_VIDDEC("viddec"),
+
+	// Still image command
+	OPERATION_STILL_IMAGE("still list");
 
 	private final String name;
 
