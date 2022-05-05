@@ -14,7 +14,9 @@ public enum MonitoringMetricGroup {
 
 	DECODER_STATISTICS("DecoderStatistics"),
 	STREAM_STATISTICS("StreamStatistics"),
-	DEVICE_INFO("DeviceInfo");
+	DEVICE_INFO("DeviceInfo"),
+	TEMPERATURE("Temperature"),
+	STILL_IMAGE("Still Image");
 
 	private final String name;
 
