@@ -110,6 +110,9 @@ public class StreamStatsWrapper {
 		if (StreamMonitoringMetric.NAME.equals(streamMonitoringMetric)) {
 			return stream.getStreamName();
 		}
+		if (StreamMonitoringMetric.STREAM_ID.equals(streamMonitoringMetric)) {
+			return stream.getStreamId();
+		}
 		if (StreamMonitoringMetric.ENCAPSULATION.equals(streamMonitoringMetric)) {
 			return streamConfig.getEncapsulation();
 		}

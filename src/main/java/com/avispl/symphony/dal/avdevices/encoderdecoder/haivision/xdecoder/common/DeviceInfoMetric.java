@@ -16,7 +16,7 @@ public enum DeviceInfoMetric {
 	SERIAL_NUMBER("SerialNumber"),
 	BOOT_VERSION("BootVersion"),
 	CARD_TYPE("CardType"),
-	CPLD_REVISION("CpldRevision"),
+	CPLD_VERSION("CpldVersion"),
 	FIRMWARE_DATE("FirmwareDate"),
 	FIRMWARE_OPTIONS("FirmwareOptions"),
 	FIRMWARE_VERSION("FirmwareVersion"),
