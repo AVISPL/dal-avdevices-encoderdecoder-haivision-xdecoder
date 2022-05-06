@@ -4,7 +4,6 @@
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -458,13 +457,19 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			String response = send(request);
 
 			if (response != null) {
-				String[] splitResponses = response.split(DecoderConstant.COLON);
+				String[] splitResponses = response.split(DecoderConstant.COLON + "\r\n");
 				int stillImageDataIndex = 1;
-				if (stillImageDataIndex > splitResponses.length || StringUtils.isNullOrEmpty(splitResponses[1])) {
+				if (stillImageDataIndex <= splitResponses.length || !StringUtils.isNullOrEmpty(splitResponses[1])) {
 					stillImages = new ArrayList<>();
-					stillImages = Arrays.asList(splitResponses[stillImageDataIndex].split("\r\n"));
 					stillImages.addAll(DropdownList.names(StillImage.class));
 
+					String[] deviceStillImage = splitResponses[stillImageDataIndex].split("\r\n");
+					for (int i = 0; i < deviceStillImage.length; i++) {
+						if (StringUtils.isNullOrEmpty(deviceStillImage[i])) {
+							break;
+						}
+						stillImages.add(deviceStillImage[i].trim());
+					}
 				} else {
 					updateFailedMonitor(MonitoringMetricGroup.STILL_IMAGE.getName(), DecoderConstant.GETTING_DEVICE_STILL_IMAGE_ERR);
 				}
@@ -916,7 +921,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				switch (outputResolution) {
 					case TV_RESOLUTIONS_1080P:
 						frameRateModes = DropdownList.names(OutputFrameRate.class);
-						frameRateModes.remove(OutputFrameRate.OUTPUT_FRAME_RATE_75);
+						frameRateModes.remove(OutputFrameRate.OUTPUT_FRAME_RATE_75.getUiName());
 						break;
 					case TV_RESOLUTIONS_1080I:
 						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
@@ -1005,7 +1010,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		}
 
 		advancedControllableProperties.add(
-				createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_RESOLUTION.getName(), resolutionModes, outputFrameRate.getUiName()));
+				createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_RESOLUTION.getName(), resolutionModes, outputResolution.getUiName()));
 
 		advancedControllableProperties.add(
 				createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_FRAME_RATE.getName(), frameRateModes, outputFrameRate.getUiName()));
@@ -1149,7 +1154,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				switch (outputResolution) {
 					case TV_RESOLUTIONS_1080P:
 						frameRateModes = DropdownList.names(OutputFrameRate.class);
-						frameRateModes.remove(OutputFrameRate.OUTPUT_FRAME_RATE_75);
+						frameRateModes.remove(OutputFrameRate.OUTPUT_FRAME_RATE_75.getUiName());
 						break;
 					case TV_RESOLUTIONS_1080I:
 						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
