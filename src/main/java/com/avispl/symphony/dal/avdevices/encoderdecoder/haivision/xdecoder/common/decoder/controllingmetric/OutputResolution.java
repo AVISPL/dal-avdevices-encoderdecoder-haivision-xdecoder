@@ -10,13 +10,13 @@ import java.util.Optional;
  * Set of still image mode option
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 5/4/2022
  * @since 1.0.0
  */
 public enum OutputResolution {
 
-	AUTOMATIC("1920x1080p", "Auto", "Automatic"),
-	NATIVE("1920x1080p", "Native", "Native"),
+	AUTOMATIC("Automatic", "Auto", "Automatic"),
+	NATIVE("Native", "Native", "Native"),
 	TV_RESOLUTIONS_1080P("1920x1080p", "1080p", "TV"),
 	TV_RESOLUTIONS_1080I("1920x1080i", "1080i", "TV"),
 	TV_RESOLUTIONS_720P("1280x720p", "720p", "TV"),

@@ -9,9 +9,10 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.SyncMode;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.BufferingMode;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.SyncMode;
 import com.avispl.symphony.dal.util.StringUtils;
 
 /**
@@ -23,6 +24,8 @@ import com.avispl.symphony.dal.util.StringUtils;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DecoderConfig {
+
+	private String decoderID;
 
 	@JsonAlias("StreamID")
 	private String primaryStream;
@@ -63,6 +66,7 @@ public class DecoderConfig {
 	 * @param decoderConfig Decoder config info
 	 */
 	public DecoderConfig(DecoderConfig decoderConfig) {
+		this.decoderID = decoderConfig.getDecoderID();
 		this.primaryStream = decoderConfig.getPrimaryStream();
 		this.secondaryStream = decoderConfig.getSecondaryStream();
 		this.stillImage = decoderConfig.getStillImage();
@@ -73,6 +77,24 @@ public class DecoderConfig {
 		this.outputResolution = decoderConfig.getOutputResolution();
 		this.outputFrameRate = decoderConfig.getOutputFrameRate();
 		this.state = decoderConfig.getState();
+	}
+
+	/**
+	 * Retrieves {@code {@link #decoderID}}
+	 *
+	 * @return value of {@link #decoderID}
+	 */
+	public String getDecoderID() {
+		return decoderID;
+	}
+
+	/**
+	 * Sets {@code decoderID}
+	 *
+	 * @param decoderID the {@code java.lang.String} field
+	 */
+	public void setDecoderID(String decoderID) {
+		this.decoderID = decoderID;
 	}
 
 	/**
@@ -340,28 +362,28 @@ public class DecoderConfig {
 				.concat(decoderID.toString())
 				.concat(DecoderConstant.SPACE)
 				.concat(action));
-		if (StringUtils.isNullOrEmpty(primaryStream)) {
+		if (!StringUtils.isNullOrEmpty(primaryStream)) {
 			request.append(" streamId=" + primaryStream);
 		}
-		if (StringUtils.isNullOrEmpty(secondaryStream)) {
+		if (!StringUtils.isNullOrEmpty(secondaryStream)) {
 			request.append(" altStreamId=" + secondaryStream);
 		}
-		if (StringUtils.isNullOrEmpty(stillImage)) {
+		if (!StringUtils.isNullOrEmpty(stillImage)) {
 			request.append(" stillImage=" + stillImage);
 		}
-		if (StringUtils.isNullOrEmpty(stillImageDelay)) {
-			request.append(" stillDelay=" + stillImageDelay);
+		if (!StringUtils.isNullOrEmpty(stillImageDelay)) {
+			request.append(" stillDelay=" + NormalizeData.getDataNumberValue(stillImageDelay));
 		}
-		if (StringUtils.isNullOrEmpty(bufferingMode)) {
+		if (!StringUtils.isNullOrEmpty(bufferingMode)) {
 			request.append(" buffering=" + bufferingMode);
 		}
-		if (StringUtils.isNullOrEmpty(bufferingDelay)) {
-			request.append(" delay=" + bufferingDelay);
+		if (!StringUtils.isNullOrEmpty(bufferingDelay)) {
+			request.append(" delay=" + NormalizeData.getDataNumberValue(bufferingDelay));
 		}
-		if (StringUtils.isNullOrEmpty(outputResolution)) {
+		if (!StringUtils.isNullOrEmpty(outputResolution)) {
 			request.append(" resolution=" + outputResolution);
 		}
-		if (StringUtils.isNullOrEmpty(outputFrameRate)) {
+		if (!StringUtils.isNullOrEmpty(outputFrameRate)) {
 			request.append(" frameRate=" + outputFrameRate);
 		}
 		return request.toString();

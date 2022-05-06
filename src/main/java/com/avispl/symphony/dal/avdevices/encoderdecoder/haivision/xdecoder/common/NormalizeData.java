@@ -42,7 +42,7 @@ public class NormalizeData {
 	}
 
 	/**
-	 * get value contain number only
+	 * get value contain number only, eg: 1,000 => 1000
 	 *
 	 * @param data the normalized data
 	 * @return String
@@ -51,11 +51,11 @@ public class NormalizeData {
 		if(data == null){
 			return DecoderConstant.EMPTY;
 		}
-		return data.replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
+		return data.replaceAll(DecoderConstant.REGEX, DecoderConstant.EMPTY);
 	}
 
 	/**
-	 * get data  number value in string, eg: 128 kbps
+	 * get data  number value in string, eg: 128 kbps => 128
 	 *
 	 * @param data the normalized data
 	 * @return String
@@ -69,11 +69,11 @@ public class NormalizeData {
 		if (StringUtils.isNullOrEmpty(spiltDataList[dataNumberIndex])) {
 			return DecoderConstant.EMPTY;
 		}
-		return spiltDataList[dataNumberIndex].replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
+		return spiltDataList[dataNumberIndex].replaceAll(DecoderConstant.REGEX, DecoderConstant.EMPTY);
 	}
 
 	/**
-	 * get data extra info in string in case the extra data is behind the "at" keyword, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322
+	 * get data extra info in string in case the extra data is behind the "at" keyword, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 => 2019-01-17 13:40:31.322
 	 *
 	 * @param data the normalized data
 	 * @return String
@@ -90,7 +90,7 @@ public class NormalizeData {
 	}
 
 	/**
-	 * get data percent value in string, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322
+	 * get data percent value in string, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 => 0.00
 	 *
 	 * @param data the normalized data
 	 * @return String
@@ -104,6 +104,6 @@ public class NormalizeData {
 		if (dataPercentValueIndex >= spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[dataPercentValueIndex])) {
 			return DecoderConstant.EMPTY;
 		}
-		return spiltDataList[dataPercentValueIndex].replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
+		return spiltDataList[dataPercentValueIndex].replaceAll(DecoderConstant.REGEX, DecoderConstant.EMPTY);
 	}
 }

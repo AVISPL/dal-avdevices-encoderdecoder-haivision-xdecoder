@@ -15,21 +15,23 @@ import java.util.Optional;
  */
 public enum SyncMode {
 
-	ENABLE_SYNC_MODE("stc", true),
-	DISABLE_SYNC_MODE("pass through", false);
+	ENABLE_SYNC_MODE("stc", true, 1),
+	DISABLE_SYNC_MODE("pass through", false, 0);
 
 	private final String name;
 	private final boolean isEnable;
+	private final int code;
 
 	/**
 	 * Parameterized constructor
-	 *
-	 * @param name Name of decoder monitoring metric
+	 *  @param name Name of enable buffering mode
 	 * @param isEnable status of enable buffering mode
+	 * @param code code of enable buffering mode
 	 */
-	SyncMode(String name, boolean isEnable) {
+	SyncMode(String name, boolean isEnable, int code) {
 		this.name = name;
 		this.isEnable = isEnable;
+		this.code = code;
 	}
 
 	/**
@@ -48,6 +50,15 @@ public enum SyncMode {
 	 */
 	public boolean isEnable() {
 		return isEnable;
+	}
+
+	/**
+	 * Retrieves {@code {@link #code}}
+	 *
+	 * @return value of {@link #code}
+	 */
+	public int getCode() {
+		return code;
 	}
 
 	/**
