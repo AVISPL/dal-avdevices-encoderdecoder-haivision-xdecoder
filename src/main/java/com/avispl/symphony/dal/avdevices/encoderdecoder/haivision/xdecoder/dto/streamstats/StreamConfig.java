@@ -6,24 +6,24 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 
 /**
  * Set of stream configuration properties
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 4/19/2022
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StreamConfig {
 
-	@JsonAlias("name")
+	@JsonAlias("Name")
 	private String name;
 
-	@JsonAlias("id")
+	@JsonAlias("StreamID")
 	private String id;
 
 	@JsonAlias("decoderId")

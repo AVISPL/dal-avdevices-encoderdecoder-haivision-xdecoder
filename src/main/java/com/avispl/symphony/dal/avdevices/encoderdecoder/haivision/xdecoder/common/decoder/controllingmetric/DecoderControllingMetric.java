@@ -23,7 +23,7 @@ public enum DecoderControllingMetric {
 	BUFFERING_DELAY("Delay"),
 	BUFFERING_MODE("BufferingMode"),
 	MULTI_SYNC_BUFFERING_DELAY("MultiSyncDelay"),
-	OUTPUT_RESOLUTION("OutputFrameRate"),
+	OUTPUT_RESOLUTION("OutputResolution"),
 	OUTPUT_FRAME_RATE("OutputFrameRate"),
 	STATE("Active"),
 	APPLY_CHANGE("ApplyChange"),
@@ -58,7 +58,11 @@ public enum DecoderControllingMetric {
 	 */
 	public static DecoderControllingMetric getByName(String name) {
 		Optional<DecoderControllingMetric> decoderControllingMetric = Arrays.stream(DecoderControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();
-		return decoderControllingMetric.orElse(null);
+		if(decoderControllingMetric.isPresent()) {
+			return decoderControllingMetric.get();
+		}else {
+			throw new IllegalArgumentException("Can not find the enum with name: " + name);
+		}
 	}
 }
 

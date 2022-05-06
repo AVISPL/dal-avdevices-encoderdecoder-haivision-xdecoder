@@ -27,6 +27,7 @@ public class DecoderConstant {
 	public static final String SPACE =  " ";
 	public static final String EMPTY = "";
 	public static final String AT = "at";
+	public static final String REGEX = "[^0-9?!\\\\.]";
 	public static final String ADDRESS_ANY = "Any";
 	public static final String NONE = "None";
 	public static final String DEFAULT_STREAM_NAME = "(None)";
@@ -55,11 +56,11 @@ public class DecoderConstant {
 	public static final String ENABLE = "Enable";
 	public static final String DISABLE = "Disable";
 	public static final String DEFAULT_STREAM_ID = "None";
-	public static final String SUCCESSFUL_RESPONSE = "Successfully";
+	public static final String SUCCESSFUL_RESPONSE = "successfully";
 	public static final String OPERATOR_ROLE = "Operator";
 	public static final String ADMIN_ROLE = "Administrator";
 	public static final int MIN_DECODER_ID = 1;
-	public static final int MAX_DECODER_ID = 2;
+	public static final int MAX_DECODER_ID = 3;
 	public static final int MIN_NUMBER_OF_FAILED_MONITOR_METRIC = 3;
 	public static final Integer MIN_STILL_IMAGE_DELAY = 1;
 	public static final Integer DEFAULT_STILL_IMAGE_DELAY = 1;

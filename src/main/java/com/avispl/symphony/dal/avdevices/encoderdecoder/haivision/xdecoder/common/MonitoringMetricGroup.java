@@ -12,7 +12,7 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
  */
 public enum MonitoringMetricGroup {
 
-	DECODER_STATISTICS("DecoderStatistics"),
+	DECODER_STATISTICS("DecoderStatisticsSDI"),
 	STREAM_STATISTICS("StreamStatistics"),
 	DEVICE_INFO("DeviceInfo"),
 	TEMPERATURE("Temperature"),

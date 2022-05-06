@@ -49,7 +49,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamStatsMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.Deserializer;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.authentication.AuthenticationRoleWrapper;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.authentication.AuthenticationRole;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderConfig;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderStatsWrapper;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.deviceinfo.DeviceInfo;
@@ -229,7 +229,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				if (isUpdateLocalStreamControl || cachedStreamConfigs.size() != filteredStreamIDSet.size()) {
 					cachedStreamConfigs.clear();
 					cachedStreamConfigs = realtimeStreamConfigs.stream().map(streamInfo -> new StreamConfig(streamInfo))
-							.filter(streamInfo -> filteredStreamIDSet.contains(streamInfo.getId())).collect(Collectors.toList());
+							.filter(streamInfo -> filteredStreamIDSet.contains(Integer.parseInt(streamInfo.getId()))).collect(Collectors.toList());
 					isUpdateLocalStreamControl = false;
 				}
 				// check Role is Admin or Operator
@@ -275,7 +275,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 			switch (controllingGroup) {
 				case DECODER:
-					String name = splitProperty[0].substring(7);
+					String name = splitProperty[0].substring(10);
 					Integer decoderID = Integer.parseInt(name);
 					decoderControl(stats, advancedControllableProperties, decoderID, splitProperty[1], value);
 					break;
@@ -312,7 +312,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		retrieveDeviceStillImage();
 		retrieveStreamStats(stats);
 
-		for (int decoderID = DecoderConstant.MIN_DECODER_ID; decoderID <= DecoderConstant.MAX_DECODER_ID; decoderID++) {
+		for (int decoderID = DecoderConstant.MIN_DECODER_ID; decoderID < DecoderConstant.MAX_DECODER_ID; decoderID++) {
 			retrieveDecoderStats(stats, decoderID);
 		}
 
@@ -357,9 +357,10 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			String role = null;
 			if (response != null) {
 				Map<String, Object> responseMap = Deserializer.convertDataToObject(response, request);
-				AuthenticationRoleWrapper authenticationRoleWrapper = objectMapper.convertValue(responseMap, AuthenticationRoleWrapper.class);
-				if (authenticationRoleWrapper.getAuthenticationRole() != null){
-					role = authenticationRoleWrapper.getAuthenticationRole().getRole();
+				Object objectResponse = responseMap.get(request.replaceAll("[1-9\\s+]", DecoderConstant.EMPTY));
+				AuthenticationRole authenticationRole = objectMapper.convertValue(objectResponse, AuthenticationRole.class);
+				if (authenticationRole != null) {
+					role = authenticationRole.getRole();
 				}
 			}
 			if (StringUtils.isNullOrEmpty(role)) {
@@ -461,7 +462,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				int stillImageDataIndex = 1;
 				if (stillImageDataIndex <= splitResponses.length || !StringUtils.isNullOrEmpty(splitResponses[1])) {
 					stillImages = new ArrayList<>();
-					stillImages.addAll(DropdownList.names(StillImage.class));
+					stillImages.addAll(DropdownList.getListOfEnumNames(StillImage.class));
 
 					String[] deviceStillImage = splitResponses[stillImageDataIndex].split("\r\n");
 					for (int i = 0; i < deviceStillImage.length; i++) {
@@ -590,22 +591,19 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param decoderID ID of decoder
 	 */
 	private void updateLocalDecoderConfigInfo(DecoderStatsWrapper decoderInfoWrapper, Integer decoderID) {
-		DecoderConfig decoderInfo = decoderInfoWrapper.getDecoderConfigInfo();
+		DecoderConfig decoderConfig = decoderInfoWrapper.getDecoderConfigInfo();
+		decoderConfig.setDecoderID(decoderID.toString());
 
-		if (cachedDecoderConfigs.size() > decoderID) {
-			DecoderConfig localDecoderInfo = this.cachedDecoderConfigs.get(decoderID);
-			DecoderConfig decoderInfoDTO = this.realtimeDecoderConfigs.get(decoderID);
-			if (decoderInfoDTO.equals(localDecoderInfo) && !decoderInfo.equals(decoderInfoDTO)) {
-				this.realtimeDecoderConfigs.set(decoderID, decoderInfo);
-				this.isUpdateLocalDecoderControl = true;
-			}
+		Optional<DecoderConfig> realtimeDecoderConfig = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+		Optional<DecoderConfig> cachedDecoderConfig = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+		if (cachedDecoderConfig.isPresent() && realtimeDecoderConfig.isPresent() && cachedDecoderConfig.get().equals(realtimeDecoderConfig.get()) && realtimeDecoderConfig.get().equals(decoderConfig)) {
+			this.realtimeDecoderConfigs.remove(realtimeDecoderConfig.get());
+			this.realtimeDecoderConfigs.add(decoderConfig);
+			this.isUpdateLocalDecoderControl = true;
 		}
 		if (!isUpdateLocalDecoderControl) {
-			if (this.realtimeDecoderConfigs.size() > decoderID) {
-				this.realtimeDecoderConfigs.set(decoderID, decoderInfo);
-			} else {
-				this.realtimeDecoderConfigs.add(decoderInfo);
-			}
+			realtimeDecoderConfig.ifPresent(config -> this.realtimeDecoderConfigs.remove(config));
+			this.realtimeDecoderConfigs.add(decoderConfig);
 		}
 	}
 
@@ -743,17 +741,20 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 */
 	private void updateLocalStreamConfigInfo(StreamStatsWrapper streamInfoWrapper, Integer streamID) {
 		StreamConfig streamConfigInfo = streamInfoWrapper.getStreamConfig();
+		Stream stream = streamInfoWrapper.getStream();
+		streamConfigInfo.setId(stream.getStreamId());
+		streamConfigInfo.setName(stream.getStreamName());
 
-		Optional<StreamConfig> streamInfoDTO = this.realtimeStreamConfigs.stream().filter(st -> streamID.toString().equals(st.getId())).findFirst();
-		Optional<StreamConfig> localStreamInfo = this.cachedStreamConfigs.stream().filter(st -> streamID.toString().equals(st.getId())).findFirst();
-		if (localStreamInfo.isPresent() && streamInfoDTO.isPresent() && localStreamInfo.get().equals(streamInfoDTO.get()) && !streamInfoDTO.get().equals(streamConfigInfo)) {
-			this.realtimeStreamConfigs.remove(streamInfoDTO.get());
+		Optional<StreamConfig> realtimeStreamConfig = this.realtimeStreamConfigs.stream().filter(st -> streamID.toString().equals(st.getId())).findFirst();
+		Optional<StreamConfig> cachedStreamConfig = this.cachedStreamConfigs.stream().filter(st -> streamID.toString().equals(st.getId())).findFirst();
+		if (cachedStreamConfig.isPresent() && realtimeStreamConfig.isPresent() && cachedStreamConfig.get().equals(realtimeStreamConfig.get()) && !realtimeStreamConfig.get().equals(streamConfigInfo)) {
+			this.realtimeStreamConfigs.remove(realtimeStreamConfig.get());
 			this.realtimeStreamConfigs.add(streamConfigInfo);
 			this.isUpdateLocalStreamControl = true;
 		}
 
 		if (!isUpdateLocalStreamControl) {
-			streamInfoDTO.ifPresent(config -> this.realtimeStreamConfigs.remove(config));
+			realtimeStreamConfig.ifPresent(config -> this.realtimeStreamConfigs.remove(config));
 			this.realtimeStreamConfigs.add(streamConfigInfo);
 		}
 		filteredStreamIDSet.add(streamID);
@@ -829,13 +830,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * <li>Still Image</li>
 	 * <li>Still Image Delay</li>
 	 * <li>Buffering Mode</li>
-	 * <li>Hdr Dynamic Range</li>
-	 * <li>Output 1</li>
-	 * <li>Output 2</li>
-	 * <li>Output 3</li>
-	 * <li>Output 4</li>
 	 * <li>Output Frame Rate</li>
-	 * <li>Quad Mode</li>
+	 * <li>Output Resolution</li>
 	 *
 	 * Buffering Mode: Fixed
 	 * <li>Stream ID</li>
@@ -843,13 +839,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * <li>Still Image Delay</li>
 	 * <li>Buffering Mode</li>
 	 * <li>Buffering Delay</li>
-	 * <li>Hdr Dynamic Range</li>
-	 * <li>Output 1</li>
-	 * <li>Output 2</li>
-	 * <li>Output 3</li>
-	 * <li>Output 4</li>
 	 * <li>Output Frame Rate</li>
-	 * <li>Quad Mode</li>
+	 * <li>Output Resolution</li>
 	 *
 	 * Buffering Mode: MultiSync
 	 * <li>Stream ID</li>
@@ -857,13 +848,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * <li>Still Image Delay</li>
 	 * <li>Buffering Mode</li>
 	 * <li>Multi Sync Buffering Delay</li>
-	 * <li>Hdr Dynamic Range</li>
-	 * <li>Output 1</li>
-	 * <li>Output 2</li>
-	 * <li>Output 3</li>
-	 * <li>Output 4</li>
 	 * <li>Output Frame Rate</li>
-	 * <li>Quad Mode</li>
+	 * <li>Output Resolution</li>
 	 *
 	 * @param stats is the map that store all statistics
 	 * @param advancedControllableProperties is the list that store all controllable properties
@@ -871,154 +857,163 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 */
 	private void populateDecoderControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, Integer decoderID) {
 		// Get controllable property current value
-		DecoderConfig cachedDecoderConfig = this.cachedDecoderConfigs.get(decoderID);
-
-		String primaryStreamID = getDefaultValueForNullData(cachedDecoderConfig.getPrimaryStream(), DecoderConstant.NONE);
-		String primaryStreamName = DecoderConstant.DEFAULT_STREAM_NAME;
-		if (this.cachedStreamConfigs != null) {
-			for (StreamConfig cachedStreamInfo : cachedStreamConfigs) {
-				if (primaryStreamID.equals(cachedStreamInfo.getId())) {
-					primaryStreamName = cachedStreamInfo.getName();
-					if (StringUtils.isNullOrEmpty(primaryStreamName)) {
-						primaryStreamName = cachedStreamInfo.getDefaultStreamName();
-					}
-					break;
-				}
-			}
-		}
-
-		String secondaryStreamID = getDefaultValueForNullData(cachedDecoderConfig.getSecondaryStream(), DecoderConstant.NONE);
-		String secondaryStreamName = DecoderConstant.DEFAULT_STREAM_NAME;
-		if (this.cachedStreamConfigs != null) {
-			for (StreamConfig cachedStreamInfo : cachedStreamConfigs) {
-				if (secondaryStreamID.equals(cachedStreamInfo.getId())) {
-					secondaryStreamName = cachedStreamInfo.getName();
-					if (StringUtils.isNullOrEmpty(secondaryStreamName)) {
-						secondaryStreamName = cachedStreamInfo.getDefaultStreamName();
-					}
-					break;
-				}
-			}
-		}
-
-		StillImage stillImage = StillImage.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getStillImage(), DecoderConstant.EMPTY));
-		String stillImageDelay = getDefaultValueForNullData(cachedDecoderConfig.getStillImageDelay(), DecoderConstant.EMPTY);
-		SyncMode enableBuffering = SyncMode.getByName(getDefaultValueForNullData(cachedDecoderConfig.getEnableBuffering(), DecoderConstant.EMPTY));
-		OutputResolution outputResolution = OutputResolution.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getOutputResolution(), DecoderConstant.EMPTY));
-		OutputFrameRate outputFrameRate = OutputFrameRate.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getOutputFrameRate(), DecoderConstant.EMPTY));
-		State decoderSDIState = State.getByName(getDefaultValueForNullData(cachedDecoderConfig.getState(), DecoderConstant.EMPTY));
-
-		// Get list values of controllable property (dropdown list)
-		List<String> resolutionModes = DropdownList.names(OutputResolution.class);
-		List<String> frameRateModes = new ArrayList<>();
-		List<String> streamNames = new ArrayList<>();
-
-		switch (outputResolution.getResolutionCategory()) {
-			case DecoderConstant.AUTOMATIC_RESOLUTION:
-				frameRateModes = DropdownList.names(OutputFrameRate.class);
-				break;
-			case DecoderConstant.TV_RESOLUTION:
-				switch (outputResolution) {
-					case TV_RESOLUTIONS_1080P:
-						frameRateModes = DropdownList.names(OutputFrameRate.class);
-						frameRateModes.remove(OutputFrameRate.OUTPUT_FRAME_RATE_75.getUiName());
-						break;
-					case TV_RESOLUTIONS_1080I:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-						break;
-					case TV_RESOLUTIONS_720P:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_59.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_50.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-						break;
-					case TV_RESOLUTIONS_576P:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_50.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-						break;
-					case TV_RESOLUTIONS_576I:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-						break;
-					case TV_RESOLUTIONS_480P:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_59.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-						break;
-					case TV_RESOLUTIONS_480I:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-						break;
-					default:
-						if (logger.isWarnEnabled()) {
-							logger.warn(String.format("Output resolution %s is not supported.", outputResolution.getUiName()));
+		Optional<DecoderConfig> cachedDecoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+		if (cachedDecoderConfigOptional.isPresent()) {
+			DecoderConfig cachedDecoderConfig = cachedDecoderConfigOptional.get();
+			String primaryStreamID = getDefaultValueForNullData(cachedDecoderConfig.getPrimaryStream(), DecoderConstant.NONE);
+			String primaryStreamName = DecoderConstant.DEFAULT_STREAM_NAME;
+			if (this.cachedStreamConfigs != null) {
+				for (StreamConfig cachedStreamInfo : cachedStreamConfigs) {
+					if (primaryStreamID.equals(cachedStreamInfo.getId())) {
+						primaryStreamName = cachedStreamInfo.getName();
+						if (primaryStreamName.equals(DecoderConstant.DEFAULT_STREAM_NAME)) {
+							primaryStreamName = cachedStreamInfo.getDefaultStreamName();
 						}
 						break;
-				}
-				break;
-			case DecoderConstant.COMPUTER_RESOLUTION:
-				frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-				frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
-				break;
-			case DecoderConstant.NATIVE_RESOLUTION:
-				break;
-			default:
-				if (logger.isWarnEnabled()) {
-					logger.warn(String.format("Output resolution %s is not supported.", outputResolution.getUiName()));
-				}
-				break;
-		}
-
-		streamNames.add(DecoderConstant.NONE);
-		if (this.cachedStreamConfigs != null) {
-			for (StreamConfig streamConfig : cachedStreamConfigs) {
-				if (!StringUtils.isNullOrEmpty(streamConfig.getName())) {
-					streamNames.add(streamConfig.getName());
-				} else {
-					streamNames.add(streamConfig.getDefaultStreamName());
+					}
 				}
 			}
-		}
 
-		String decoderControllingGroup = ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH;
+			String secondaryStreamID = getDefaultValueForNullData(cachedDecoderConfig.getSecondaryStream(), DecoderConstant.NONE);
+			String secondaryStreamName = DecoderConstant.DEFAULT_STREAM_NAME;
+			if (this.cachedStreamConfigs != null) {
+				for (StreamConfig cachedStreamInfo : cachedStreamConfigs) {
+					if (secondaryStreamID.equals(cachedStreamInfo.getId())) {
+						secondaryStreamName = cachedStreamInfo.getName();
+						if (secondaryStreamName.equals(DecoderConstant.DEFAULT_STREAM_NAME)) {
+							secondaryStreamName = cachedStreamInfo.getDefaultStreamName();
+						}
+						break;
+					}
+				}
+			}
 
-		// Populate control
-		addAdvanceControlProperties(advancedControllableProperties, createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.PRIMARY_STREAM.getName(), streamNames, primaryStreamName));
+			String stillImage ;
+			Optional<String> stillImageOptional = stillImages.stream().filter(st -> st.equals(cachedDecoderConfig.getStillImage())).findFirst();
+			if (!stillImageOptional.isPresent()) {
+				StillImage stillImageEnum = StillImage.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getStillImage(), DecoderConstant.EMPTY));
+				stillImage = stillImageEnum.getUiName();
+			}else {
+				stillImage = stillImageOptional.get();
+			}
 
-		addAdvanceControlProperties(advancedControllableProperties, createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.SECONDARY_STREAM.getName(), streamNames, secondaryStreamName));
 
-		addAdvanceControlProperties(advancedControllableProperties, createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE.getName(), stillImages, stillImage.getUiName()));
+			String stillImageDelay = getDefaultValueForNullData(NormalizeData.getDataNumberValue(cachedDecoderConfig.getStillImageDelay()), DecoderConstant.EMPTY);
+			SyncMode enableBuffering = SyncMode.getByName(getDefaultValueForNullData(cachedDecoderConfig.getEnableBuffering(), DecoderConstant.EMPTY));
+			OutputResolution outputResolution = OutputResolution.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getOutputResolution(), DecoderConstant.EMPTY));
+			OutputFrameRate outputFrameRate = OutputFrameRate.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getOutputFrameRate(), DecoderConstant.EMPTY));
+			State decoderSDIState = State.getByName(getDefaultValueForNullData(cachedDecoderConfig.getState(), DecoderConstant.EMPTY));
 
-		addAdvanceControlProperties(advancedControllableProperties, createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE_DELAY.getName(), stillImageDelay));
+			// Get list values of controllable property (dropdown list)
+			List<String> resolutionModes = DropdownList.getListOfEnumNames(OutputResolution.class);
+			List<String> frameRateModes = new ArrayList<>();
+			List<String> streamNames = new ArrayList<>();
 
-		if (enableBuffering.isEnable()) {
+			switch (outputResolution.getResolutionCategory()) {
+				case DecoderConstant.AUTOMATIC_RESOLUTION:
+					frameRateModes = DropdownList.getListOfEnumNames(OutputFrameRate.class);
+					break;
+				case DecoderConstant.TV_RESOLUTION:
+					switch (outputResolution) {
+						case TV_RESOLUTIONS_1080P:
+							frameRateModes = DropdownList.getListOfEnumNames(OutputFrameRate.class);
+							frameRateModes.remove(OutputFrameRate.OUTPUT_FRAME_RATE_75.getUiName());
+							break;
+						case TV_RESOLUTIONS_1080I:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
+							break;
+						case TV_RESOLUTIONS_720P:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_59.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_50.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
+							break;
+						case TV_RESOLUTIONS_576P:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_50.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
+							break;
+						case TV_RESOLUTIONS_576I:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
+							break;
+						case TV_RESOLUTIONS_480P:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_59.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
+							break;
+						case TV_RESOLUTIONS_480I:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
+							break;
+						default:
+							if (logger.isWarnEnabled()) {
+								logger.warn(String.format("Output resolution %s is not supported.", outputResolution.getUiName()));
+							}
+							break;
+					}
+					break;
+				case DecoderConstant.COMPUTER_RESOLUTION:
+					frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+					frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
+					break;
+				case DecoderConstant.NATIVE_RESOLUTION:
+					break;
+				default:
+					if (logger.isWarnEnabled()) {
+						logger.warn(String.format("Output resolution %s is not supported.", outputResolution.getUiName()));
+					}
+					break;
+			}
+
+			streamNames.add(DecoderConstant.DEFAULT_STREAM_NAME);
+			if (this.cachedStreamConfigs != null) {
+				for (StreamConfig streamConfig : cachedStreamConfigs) {
+					if (!streamConfig.getName().equals(DecoderConstant.DEFAULT_STREAM_NAME)) {
+						streamNames.add(streamConfig.getName());
+					} else {
+						streamNames.add(streamConfig.getDefaultStreamName());
+					}
+				}
+			}
+
+			String decoderControllingGroup = ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH;
+
+			// Populate control
+			addAdvanceControlProperties(advancedControllableProperties, createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.PRIMARY_STREAM.getName(), streamNames, primaryStreamName));
+
+			addAdvanceControlProperties(advancedControllableProperties,
+					createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.SECONDARY_STREAM.getName(), streamNames, secondaryStreamName));
+
+			addAdvanceControlProperties(advancedControllableProperties, createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE.getName(), stillImages, stillImage));
+
+			addAdvanceControlProperties(advancedControllableProperties, createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE_DELAY.getName(), stillImageDelay));
+
+			advancedControllableProperties.add(createSwitch(stats, decoderControllingGroup + DecoderControllingMetric.SYNC_MODE.getName(), enableBuffering.getCode(),
+					DecoderConstant.OFF, DecoderConstant.ON));
+
 			populateDecoderControlBufferingMode(stats, advancedControllableProperties, cachedDecoderConfig, decoderID);
-		} else {
-			stats.remove(decoderControllingGroup + DecoderControllingMetric.BUFFERING_MODE.getName());
-			stats.remove(decoderControllingGroup + DecoderControllingMetric.BUFFERING_DELAY.getName());
-			stats.remove(decoderControllingGroup + DecoderControllingMetric.MULTI_SYNC_BUFFERING_DELAY.getName());
+
+			advancedControllableProperties.add(
+					createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_RESOLUTION.getName(), resolutionModes, outputResolution.getUiName()));
+
+			advancedControllableProperties.add(
+					createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_FRAME_RATE.getName(), frameRateModes, outputFrameRate.getUiName()));
+
+			advancedControllableProperties.add(createSwitch(stats, decoderControllingGroup + DecoderControllingMetric.STATE.getName(), decoderSDIState.getCode(),
+					DecoderConstant.OFF, DecoderConstant.ON));
+
+			populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
 		}
-
-		advancedControllableProperties.add(
-				createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_RESOLUTION.getName(), resolutionModes, outputResolution.getUiName()));
-
-		advancedControllableProperties.add(
-				createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_FRAME_RATE.getName(), frameRateModes, outputFrameRate.getUiName()));
-
-		advancedControllableProperties.add(createSwitch(stats, decoderControllingGroup + DecoderControllingMetric.STATE.getName(), decoderSDIState.getCode(),
-				DecoderConstant.OFF, DecoderConstant.ON));
-
-		populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
 	}
 
 	/**
@@ -1026,45 +1021,49 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 *
 	 * @param stats is the map that store all statistics
 	 * @param advancedControllableProperties is the list that store all controllable properties
-	 * @param cachedDecoderInfo set of decoder configuration
+	 * @param cachedDecoderConfig set of decoder configuration
+	 * @param decoderID ID of decoder SDI
 	 */
-	private void populateDecoderControlBufferingMode(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, DecoderConfig cachedDecoderInfo, Integer decoderID) {
+	private void populateDecoderControlBufferingMode(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, DecoderConfig cachedDecoderConfig, Integer decoderID) {
 		// Get controllable property current value
-		BufferingMode bufferingMode = BufferingMode.getByAPIName(getDefaultValueForNullData(cachedDecoderInfo.getBufferingMode(), DecoderConstant.EMPTY));
-		String bufferingDelay = getDefaultValueForNullData(cachedDecoderInfo.getBufferingDelay(), DecoderConstant.EMPTY);
+		BufferingMode bufferingMode = BufferingMode.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getBufferingMode(), DecoderConstant.EMPTY));
+		String bufferingDelay = getDefaultValueForNullData(cachedDecoderConfig.getBufferingDelay(), DecoderConstant.EMPTY);
+		SyncMode enableBuffering = SyncMode.getByName(getDefaultValueForNullData(cachedDecoderConfig.getEnableBuffering(), DecoderConstant.EMPTY));
 
 		// Get list values of controllable property (dropdown)
-		List<String> bufferingModeList = DropdownList.names(BufferingMode.class);
+		List<String> bufferingModeList = DropdownList.getListOfEnumNames(BufferingMode.class);
 		String decoderControllingGroup = ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH;
 
 		// remove unused keys
 		stats.remove(decoderControllingGroup + DecoderControllingMetric.BUFFERING_MODE.getName());
 		stats.remove(decoderControllingGroup + DecoderControllingMetric.BUFFERING_DELAY.getName());
 		stats.remove(decoderControllingGroup + DecoderControllingMetric.MULTI_SYNC_BUFFERING_DELAY.getName());
-		switch (bufferingMode) {
-			case AUTO:
-			case ADAPTIVE_LOW_LATENCY:
-				addAdvanceControlProperties(advancedControllableProperties,
-						createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.BUFFERING_MODE.getName(), bufferingModeList, bufferingMode.getUiName()));
-				break;
-			case FIXED:
-				addAdvanceControlProperties(advancedControllableProperties,
-						createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.BUFFERING_MODE.getName(), bufferingModeList, bufferingMode.getUiName()));
+		if (enableBuffering.isEnable()) {
+			switch (bufferingMode) {
+				case AUTO:
+				case ADAPTIVE_LOW_LATENCY:
+					addAdvanceControlProperties(advancedControllableProperties,
+							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.BUFFERING_MODE.getName(), bufferingModeList, bufferingMode.getUiName()));
+					break;
+				case FIXED:
+					addAdvanceControlProperties(advancedControllableProperties,
+							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.BUFFERING_MODE.getName(), bufferingModeList, bufferingMode.getUiName()));
 
-				addAdvanceControlProperties(advancedControllableProperties, createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.BUFFERING_DELAY.getName(), bufferingDelay));
-				break;
-			case MULTI_SYNC:
-				addAdvanceControlProperties(advancedControllableProperties,
-						createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.BUFFERING_MODE.getName(), bufferingModeList, bufferingMode.getUiName()));
+					addAdvanceControlProperties(advancedControllableProperties, createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.BUFFERING_DELAY.getName(), bufferingDelay));
+					break;
+				case MULTI_SYNC:
+					addAdvanceControlProperties(advancedControllableProperties,
+							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.BUFFERING_MODE.getName(), bufferingModeList, bufferingMode.getUiName()));
 
-				addAdvanceControlProperties(advancedControllableProperties,
-						createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.MULTI_SYNC_BUFFERING_DELAY.getName(), bufferingDelay));
-				break;
-			default:
-				if (logger.isWarnEnabled()) {
-					logger.warn(String.format("Buffering mode %s is not supported.", bufferingMode.getUiName()));
-				}
-				break;
+					addAdvanceControlProperties(advancedControllableProperties,
+							createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.MULTI_SYNC_BUFFERING_DELAY.getName(), bufferingDelay));
+					break;
+				default:
+					if (logger.isWarnEnabled()) {
+						logger.warn(String.format("Buffering mode %s is not supported.", bufferingMode.getUiName()));
+					}
+					break;
+			}
 		}
 	}
 
@@ -1076,33 +1075,38 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param decoderID ID of decoder
 	 */
 	private void populateApplyChangeAndCancelButtonForDecoder(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, Integer decoderID) {
-		DecoderConfig cachedDecoderConfig = this.cachedDecoderConfigs.get(decoderID);
-		DecoderConfig realtimeDecoderConfig = this.realtimeDecoderConfigs.get(decoderID);
+		Optional<DecoderConfig> cachedDecoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+		Optional<DecoderConfig> realtimeDecoderConfigOptional = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
 
-		String applyChange = ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.APPLY_CHANGE.getName();
-		String cancel = ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.CANCEL.getName();
+		if (cachedDecoderConfigOptional.isPresent() && realtimeDecoderConfigOptional.isPresent()) {
+			DecoderConfig cachedDecoderConfig = cachedDecoderConfigOptional.get();
+			DecoderConfig realtimeDecoderConfig = realtimeDecoderConfigOptional.get();
 
-		if (!cachedDecoderConfig.deepEquals(realtimeDecoderConfig)) {
-			stats.put(ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.EDITED.getName(), "True");
-			stats.put(applyChange, DecoderConstant.EMPTY);
-			stats.put(cancel, DecoderConstant.EMPTY);
-			addAdvanceControlProperties(advancedControllableProperties, createButton(applyChange, DecoderConstant.APPLY, DecoderConstant.APPLYING));
-			addAdvanceControlProperties(advancedControllableProperties, createButton(cancel, DecoderConstant.CANCEL, DecoderConstant.CANCELLING));
-		} else {
-			stats.remove(applyChange);
-			stats.remove(cancel);
-			stats.put(ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.EDITED.getName(), "False");
+			String applyChange = ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.APPLY_CHANGE.getName();
+			String cancel = ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.CANCEL.getName();
 
-			for (AdvancedControllableProperty controllableProperty : advancedControllableProperties) {
-				if (controllableProperty.getName().equals(applyChange)) {
-					advancedControllableProperties.remove(controllableProperty);
-					break;
+			if (!cachedDecoderConfig.deepEquals(realtimeDecoderConfig)) {
+				stats.put(ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.EDITED.getName(), "True");
+				stats.put(applyChange, DecoderConstant.EMPTY);
+				stats.put(cancel, DecoderConstant.EMPTY);
+				addAdvanceControlProperties(advancedControllableProperties, createButton(applyChange, DecoderConstant.APPLY, DecoderConstant.APPLYING));
+				addAdvanceControlProperties(advancedControllableProperties, createButton(cancel, DecoderConstant.CANCEL, DecoderConstant.CANCELLING));
+			} else {
+				stats.remove(applyChange);
+				stats.remove(cancel);
+				stats.put(ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.EDITED.getName(), "False");
+
+				for (AdvancedControllableProperty controllableProperty : advancedControllableProperties) {
+					if (controllableProperty.getName().equals(applyChange)) {
+						advancedControllableProperties.remove(controllableProperty);
+						break;
+					}
 				}
-			}
-			for (AdvancedControllableProperty controllableProperty : advancedControllableProperties) {
-				if (controllableProperty.getName().equals(cancel)) {
-					advancedControllableProperties.remove(controllableProperty);
-					break;
+				for (AdvancedControllableProperty controllableProperty : advancedControllableProperties) {
+					if (controllableProperty.getName().equals(cancel)) {
+						advancedControllableProperties.remove(controllableProperty);
+						break;
+					}
 				}
 			}
 		}
@@ -1135,306 +1139,370 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param decoderID ID of decoder
 	 * @param controllableProperty name of controllable property
 	 * @param value value of controllable property
+	 *
+	 * @throws ResourceNotReachableException when start/ stop/ update decoder SDI is failed
 	 */
 	private void decoderControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, Integer decoderID, String controllableProperty, String value) {
 		DecoderControllingMetric decoderControllingMetric = DecoderControllingMetric.getByName(controllableProperty);
-		DecoderConfig cachedDecoderConfig = this.cachedDecoderConfigs.get(decoderID);
-		OutputResolution outputResolution = OutputResolution.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getOutputResolution(), DecoderConstant.EMPTY));
+		Optional<DecoderConfig> cachedDecoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+		if (cachedDecoderConfigOptional.isPresent()) {
+			DecoderConfig cachedDecoderConfig = cachedDecoderConfigOptional.get();
+			OutputResolution outputResolution = OutputResolution.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getOutputResolution(), DecoderConstant.EMPTY));
 
-		// Get list values of controllable property (dropdown)
-		List<String> resolutionModes = DropdownList.names(OutputResolution.class);
-		List<String> frameRateModes = new ArrayList<>();
-		List<String> streamNames = new ArrayList<>();
+			// Get list values of controllable property (dropdown)
+			List<String> resolutionModes = DropdownList.getListOfEnumNames(OutputResolution.class);
+			List<String> frameRateModes = new ArrayList<>();
+			List<String> streamNames = new ArrayList<>();
 
-		switch (outputResolution.getResolutionCategory()) {
-			case DecoderConstant.AUTOMATIC_RESOLUTION:
-				frameRateModes = DropdownList.names(OutputFrameRate.class);
-				break;
-			case DecoderConstant.TV_RESOLUTION:
-				switch (outputResolution) {
-					case TV_RESOLUTIONS_1080P:
-						frameRateModes = DropdownList.names(OutputFrameRate.class);
-						frameRateModes.remove(OutputFrameRate.OUTPUT_FRAME_RATE_75.getUiName());
-						break;
-					case TV_RESOLUTIONS_1080I:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-						break;
-					case TV_RESOLUTIONS_720P:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_59.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_50.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-						break;
-					case TV_RESOLUTIONS_576P:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_50.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-						break;
-					case TV_RESOLUTIONS_576I:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-						break;
-					case TV_RESOLUTIONS_480P:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_59.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-						break;
-					case TV_RESOLUTIONS_480I:
-						frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-						frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-						break;
-					default:
-						if (logger.isWarnEnabled()) {
-							logger.warn(String.format("Output resolution %s is not supported.", outputResolution.getUiName()));
-						}
-						break;
-				}
-				break;
-			case DecoderConstant.COMPUTER_RESOLUTION:
-				frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-				frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
-				break;
-			case DecoderConstant.NATIVE_RESOLUTION:
-				break;
-			default:
-				if (logger.isWarnEnabled()) {
-					logger.warn(String.format("Output resolution %s is not supported.", outputResolution.getUiName()));
-				}
-				break;
-		}
+			switch (outputResolution.getResolutionCategory()) {
+				case DecoderConstant.AUTOMATIC_RESOLUTION:
+					frameRateModes = DropdownList.getListOfEnumNames(OutputFrameRate.class);
+					break;
+				case DecoderConstant.TV_RESOLUTION:
+					switch (outputResolution) {
+						case TV_RESOLUTIONS_1080P:
+							frameRateModes = DropdownList.getListOfEnumNames(OutputFrameRate.class);
+							frameRateModes.remove(OutputFrameRate.OUTPUT_FRAME_RATE_75.getUiName());
+							break;
+						case TV_RESOLUTIONS_1080I:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
+							break;
+						case TV_RESOLUTIONS_720P:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_59.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_50.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
+							break;
+						case TV_RESOLUTIONS_576P:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_50.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
+							break;
+						case TV_RESOLUTIONS_576I:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
+							break;
+						case TV_RESOLUTIONS_480P:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_59.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
+							break;
+						case TV_RESOLUTIONS_480I:
+							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
+							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
+							break;
+						default:
+							if (logger.isWarnEnabled()) {
+								logger.warn(String.format("Output resolution %s is not supported.", outputResolution.getUiName()));
+							}
+							break;
+					}
+					break;
+				case DecoderConstant.COMPUTER_RESOLUTION:
+					frameRateModes.add(OutputFrameRate.AUTO.getUiName());
+					frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
+					break;
+				case DecoderConstant.NATIVE_RESOLUTION:
+					break;
+				default:
+					if (logger.isWarnEnabled()) {
+						logger.warn(String.format("Output resolution %s is not supported.", outputResolution.getUiName()));
+					}
+					break;
+			}
 
-		streamNames.add(DecoderConstant.NONE);
-		if (this.cachedStreamConfigs != null) {
-			for (StreamConfig streamConfig : cachedStreamConfigs) {
-				if (!StringUtils.isNullOrEmpty(streamConfig.getName())) {
-					streamNames.add(streamConfig.getName());
-				} else {
-					streamNames.add(streamConfig.getDefaultStreamName());
+			streamNames.add(DecoderConstant.DEFAULT_STREAM_NAME);
+			if (this.cachedStreamConfigs != null) {
+				for (StreamConfig streamConfig : cachedStreamConfigs) {
+					if (!streamConfig.getName().equals(DecoderConstant.DEFAULT_STREAM_NAME)) {
+						streamNames.add(streamConfig.getName());
+					} else {
+						streamNames.add(streamConfig.getDefaultStreamName());
+					}
 				}
 			}
-		}
 
-		String decoderControllingGroup = ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH;
+			String decoderControllingGroup = ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH;
 
-		switch (decoderControllingMetric) {
-			case PRIMARY_STREAM:
-				String primaryStreamID = DecoderConstant.DEFAULT_STREAM_ID;
-				String primaryStreamName = DecoderConstant.NONE;
-				for (StreamConfig cachedStreamConfig : cachedStreamConfigs) {
-					if (value.equals(cachedStreamConfig.getName()) || value.equals(cachedStreamConfig.getDefaultStreamName())) {
-						primaryStreamID = cachedStreamConfig.getId();
-						primaryStreamName = value;
-						break;
-					}
-				}
-				cachedDecoderConfig.setPrimaryStream(primaryStreamID);
-				this.cachedDecoderConfigs.set(decoderID, cachedDecoderConfig);
-				addAdvanceControlProperties(advancedControllableProperties, createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.PRIMARY_STREAM.getName(), streamNames, primaryStreamName));
-				populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
-				break;
-			case SECONDARY_STREAM:
-				String secondaryStreamID = DecoderConstant.DEFAULT_STREAM_ID;
-				String secondaryStreamName = DecoderConstant.NONE;
-				for (StreamConfig cachedStreamConfig : cachedStreamConfigs) {
-					if (value.equals(cachedStreamConfig.getName()) || value.equals(cachedStreamConfig.getDefaultStreamName())) {
-						secondaryStreamID = cachedStreamConfig.getId();
-						secondaryStreamName = value;
-						break;
-					}
-				}
-				cachedDecoderConfig.setPrimaryStream(secondaryStreamID);
-				this.cachedDecoderConfigs.set(decoderID, cachedDecoderConfig);
-				addAdvanceControlProperties(advancedControllableProperties,
-						createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.PRIMARY_STREAM.getName(), streamNames, secondaryStreamName));
-				populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
-				break;
-			case STILL_IMAGE:
-				StillImage stillImage = StillImage.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getStillImage(), DecoderConstant.EMPTY));
-				cachedDecoderConfig.setStillImage(stillImage.getApiName());
-				this.cachedDecoderConfigs.set(decoderID, cachedDecoderConfig);
-				addAdvanceControlProperties(advancedControllableProperties,
-						createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE.getName(), stillImages, stillImage.getUiName()));
-				populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
-				break;
-			case STILL_IMAGE_DELAY:
-				Integer stillImageDelay = DecoderConstant.DEFAULT_STILL_IMAGE_DELAY;
-				try {
-					stillImageDelay = Integer.parseInt(value);
-					if (stillImageDelay < DecoderConstant.MIN_STILL_IMAGE_DELAY) {
-						stillImageDelay = DecoderConstant.MIN_STILL_IMAGE_DELAY;
-					}
-					if (stillImageDelay > DecoderConstant.MAX_STILL_IMAGE_DELAY) {
-						stillImageDelay = DecoderConstant.MAX_STILL_IMAGE_DELAY;
-					}
-				} catch (Exception e) {
-					if (logger.isWarnEnabled()) {
-						logger.warn("Invalid still image delay value");
-					}
-				}
-				cachedDecoderConfig.setStillImageDelay(value);
-				this.cachedDecoderConfigs.set(decoderID, cachedDecoderConfig);
-				addAdvanceControlProperties(advancedControllableProperties,
-						createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE_DELAY.getName(), stillImageDelay.toString()));
-				populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
-				break;
-			case SYNC_MODE:
-				boolean isEnableSyncMode = mapSwitchControlValue(value);
-				String enableSyncMode = SyncMode.ENABLE_SYNC_MODE.getName();
-				if (!isEnableSyncMode) {
-					enableSyncMode = SyncMode.DISABLE_SYNC_MODE.getName();
-				}
-				cachedDecoderConfig.setEnableBuffering(enableSyncMode);
-				this.cachedDecoderConfigs.set(decoderID, cachedDecoderConfig);
-				addAdvanceControlProperties(advancedControllableProperties, createSwitch(stats, decoderControllingGroup + DecoderControllingMetric.SYNC_MODE.getName(), Integer.parseInt(value),
-						DecoderConstant.DISABLE, DecoderConstant.ENABLE));
-				populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
-				break;
-			case BUFFERING_MODE:
-				BufferingMode bufferingMode = BufferingMode.getByUiName(value);
-				cachedDecoderConfig.setBufferingMode(bufferingMode.getApiName());
-				this.cachedDecoderConfigs.set(decoderID, cachedDecoderConfig);
-				populateDecoderControlBufferingMode(stats, advancedControllableProperties, cachedDecoderConfig, decoderID);
-				populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
-				break;
-			case BUFFERING_DELAY:
-				Integer bufferingDelay = DecoderConstant.MIN_BUFFERING_DELAY;
-				try {
-					bufferingDelay = Integer.parseInt(value);
-					if (bufferingDelay < DecoderConstant.MIN_BUFFERING_DELAY) {
-						bufferingDelay = DecoderConstant.MIN_BUFFERING_DELAY;
-					}
-					if (bufferingDelay > DecoderConstant.MAX_BUFFERING_DELAY) {
-						bufferingDelay = DecoderConstant.MAX_BUFFERING_DELAY;
-					}
-				} catch (Exception e) {
-					if (logger.isWarnEnabled()) {
-						logger.warn("Invalid buffering delay value");
-					}
-				}
-				cachedDecoderConfig.setBufferingDelay(value);
-				this.cachedDecoderConfigs.set(decoderID, cachedDecoderConfig);
-				advancedControllableProperties.add(createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.BUFFERING_DELAY.getName(), bufferingDelay.toString()));
-				populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
-				break;
-			case MULTI_SYNC_BUFFERING_DELAY:
-				Integer multiSyncBufferingDelay = DecoderConstant.DEFAULT_MULTI_SYNC_BUFFERING_DELAY;
-				try {
-					multiSyncBufferingDelay = Integer.parseInt(value);
-					if (multiSyncBufferingDelay < DecoderConstant.MIN_MULTI_SYNC_BUFFERING_DELAY) {
-						multiSyncBufferingDelay = DecoderConstant.MIN_MULTI_SYNC_BUFFERING_DELAY;
-					}
-					if (multiSyncBufferingDelay > DecoderConstant.MAX_MULTI_SYNC_BUFFERING_DELAY) {
-						multiSyncBufferingDelay = DecoderConstant.MAX_MULTI_SYNC_BUFFERING_DELAY;
-					}
-				} catch (Exception e) {
-					if (logger.isWarnEnabled()) {
-						logger.warn("Invalid buffering delay value");
-					}
-				}
-				cachedDecoderConfig.setBufferingDelay(value);
-				this.cachedDecoderConfigs.set(decoderID, cachedDecoderConfig);
-				advancedControllableProperties.add(
-						createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.MULTI_SYNC_BUFFERING_DELAY.getName(), multiSyncBufferingDelay.toString()));
-				populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
-				break;
-			case OUTPUT_FRAME_RATE:
-				OutputFrameRate outputFrameRate = OutputFrameRate.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getOutputFrameRate(), DecoderConstant.EMPTY));
-				cachedDecoderConfig.setOutputFrameRate(outputFrameRate.getApiName());
-				this.cachedDecoderConfigs.set(decoderID, cachedDecoderConfig);
-				addAdvanceControlProperties(advancedControllableProperties,
-						createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_FRAME_RATE.getName(), frameRateModes, outputFrameRate.getUiName()));
-				populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
-				break;
-			case OUTPUT_RESOLUTION:
-				cachedDecoderConfig.setOutputFrameRate(outputResolution.getApiName());
-				this.cachedDecoderConfigs.set(decoderID, cachedDecoderConfig);
-				addAdvanceControlProperties(advancedControllableProperties,
-						createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_RESOLUTION.getName(), resolutionModes, outputResolution.getUiName()));
-				populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
-				break;
-			case STATE:
-				DecoderConfig realtimeDecoderConfig = this.realtimeDecoderConfigs.get(decoderID);
-				State state = State.getByCode(Integer.parseInt(value));
-				cachedDecoderConfig.setState(state.getName());
-				this.cachedDecoderConfigs.set(decoderID, cachedDecoderConfig);
-				switch (state) {
-					case STOPPED:
-						boolean isStopSuccessfully = performActiveDecoderSDIControl(cachedDecoderConfig, decoderID, CommandOperation.STOP.getName());
-
-						if (!cachedDecoderConfig.deepEquals(realtimeDecoderConfig)) {
-							this.cachedDecoderConfigs.set(decoderID, realtimeDecoderConfig);
+			switch (decoderControllingMetric) {
+				case PRIMARY_STREAM:
+					String primaryStreamID = DecoderConstant.DEFAULT_STREAM_ID;
+					String primaryStreamName = DecoderConstant.NONE;
+					for (StreamConfig cachedStreamConfig : cachedStreamConfigs) {
+						if (value.equals(cachedStreamConfig.getName()) || value.equals(cachedStreamConfig.getDefaultStreamName())) {
+							primaryStreamID = cachedStreamConfig.getId();
+							primaryStreamName = value;
+							break;
 						}
-						if (!isStopSuccessfully) {
-							reverseActiveControlAfterControlFailed(cachedDecoderConfig, decoderID);
-						}
-						populateDecoderControl(stats, advancedControllableProperties, decoderID);
-						break;
-					case START:
-						// update decoder SDI if properties of decoder SDI is changed
-						if (!cachedDecoderConfig.deepEquals(realtimeDecoderConfig)) {
-							String response = performDecoderSDIUpdateControl(cachedDecoderConfig, decoderID);
+					}
+					cachedDecoderConfig.setPrimaryStream(primaryStreamID);
 
-							if (response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
-								this.realtimeDecoderConfigs.set(decoderID, cachedDecoderConfig);
-							} else {
-								throw new ResourceNotReachableException("failed to start decoder SDI " + decoderID + DecoderConstant.NEXT_LINE + response);
-							}
-						}
+					Optional<DecoderConfig> decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
 
-						// start decoder SDI
-						boolean isStartSuccessfully = performActiveDecoderSDIControl(cachedDecoderConfig, decoderID, CommandOperation.START.getName());
-						if (!isStartSuccessfully) {
-							reverseActiveControlAfterControlFailed(cachedDecoderConfig, decoderID);
+					addAdvanceControlProperties(advancedControllableProperties,
+							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.PRIMARY_STREAM.getName(), streamNames, primaryStreamName));
+					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
+					populateLocalExtendedStats(stats, advancedControllableProperties);
+					break;
+				case SECONDARY_STREAM:
+					String secondaryStreamID = DecoderConstant.DEFAULT_STREAM_ID;
+					String secondaryStreamName = DecoderConstant.NONE;
+					for (StreamConfig cachedStreamConfig : cachedStreamConfigs) {
+						if (value.equals(cachedStreamConfig.getName()) || value.equals(cachedStreamConfig.getDefaultStreamName())) {
+							secondaryStreamID = cachedStreamConfig.getId();
+							secondaryStreamName = value;
+							break;
 						}
+					}
+					cachedDecoderConfig.setSecondaryStream(secondaryStreamID);
 
-						populateDecoderControl(stats, advancedControllableProperties, decoderID);
-						break;
-					default:
+					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
+
+					addAdvanceControlProperties(advancedControllableProperties,
+							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.SECONDARY_STREAM.getName(), streamNames, secondaryStreamName));
+					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
+					populateLocalExtendedStats(stats, advancedControllableProperties);
+					break;
+				case STILL_IMAGE:
+					Optional<String> stillImageOptional = stillImages.stream().filter(st -> st.equals(value)).findFirst();
+					if (stillImageOptional.isPresent()) {
+						cachedDecoderConfig.setStillImage(stillImageOptional.get());
+					}else {
+						StillImage stillImageEnum = StillImage.getByUIName(value);
+						cachedDecoderConfig.setStillImage(stillImageEnum.getApiName());
+					}
+
+					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
+
+					addAdvanceControlProperties(advancedControllableProperties,
+							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE.getName(), stillImages, value));
+					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
+					populateLocalExtendedStats(stats, advancedControllableProperties);
+					break;
+				case STILL_IMAGE_DELAY:
+					Integer stillImageDelay = DecoderConstant.DEFAULT_STILL_IMAGE_DELAY;
+					try {
+						stillImageDelay = Integer.parseInt(value);
+						if (stillImageDelay < DecoderConstant.MIN_STILL_IMAGE_DELAY) {
+							stillImageDelay = DecoderConstant.MIN_STILL_IMAGE_DELAY;
+						}
+						if (stillImageDelay > DecoderConstant.MAX_STILL_IMAGE_DELAY) {
+							stillImageDelay = DecoderConstant.MAX_STILL_IMAGE_DELAY;
+						}
+					} catch (Exception e) {
 						if (logger.isWarnEnabled()) {
-							logger.warn(String.format("Decoder state %s is not supported.", state.getName()));
+							logger.warn("Invalid still image delay value", e);
 						}
-						break;
-				}
-				break;
-			case APPLY_CHANGE:
-				String response = performDecoderSDIUpdateControl(cachedDecoderConfig, decoderID);
+					}
+					cachedDecoderConfig.setStillImageDelay(value);
 
-				if (response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
-					this.realtimeDecoderConfigs.set(decoderID, cachedDecoderConfig);
+					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
+
+					addAdvanceControlProperties(advancedControllableProperties,
+							createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE_DELAY.getName(), stillImageDelay.toString()));
+					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
+					populateLocalExtendedStats(stats, advancedControllableProperties);
+					break;
+				case SYNC_MODE:
+					boolean isEnableSyncMode = mapSwitchControlValue(value);
+					String enableSyncMode = SyncMode.ENABLE_SYNC_MODE.getName();
+					if (!isEnableSyncMode) {
+						enableSyncMode = SyncMode.DISABLE_SYNC_MODE.getName();
+					}
+					cachedDecoderConfig.setEnableBuffering(enableSyncMode);
+
+					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
+
+					addAdvanceControlProperties(advancedControllableProperties, createSwitch(stats, decoderControllingGroup + DecoderControllingMetric.SYNC_MODE.getName(), Integer.parseInt(value),
+							DecoderConstant.DISABLE, DecoderConstant.ENABLE));
+					populateDecoderControlBufferingMode(stats, advancedControllableProperties, cachedDecoderConfig, decoderID);
+					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
+					populateLocalExtendedStats(stats, advancedControllableProperties);
+					break;
+				case BUFFERING_MODE:
+					BufferingMode bufferingMode = BufferingMode.getByUiName(value);
+					cachedDecoderConfig.setBufferingMode(bufferingMode.getApiName());
+
+					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
+
+					populateDecoderControlBufferingMode(stats, advancedControllableProperties, cachedDecoderConfig, decoderID);
+					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
+					populateLocalExtendedStats(stats, advancedControllableProperties);
+					break;
+				case BUFFERING_DELAY:
+					Integer bufferingDelay = DecoderConstant.MIN_BUFFERING_DELAY;
+					try {
+						bufferingDelay = Integer.parseInt(value);
+						if (bufferingDelay < DecoderConstant.MIN_BUFFERING_DELAY) {
+							bufferingDelay = DecoderConstant.MIN_BUFFERING_DELAY;
+						}
+						if (bufferingDelay > DecoderConstant.MAX_BUFFERING_DELAY) {
+							bufferingDelay = DecoderConstant.MAX_BUFFERING_DELAY;
+						}
+					} catch (Exception e) {
+						if (logger.isWarnEnabled()) {
+							logger.warn("Invalid buffering delay value", e);
+						}
+					}
+					cachedDecoderConfig.setBufferingDelay(value);
+
+					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
+
+					advancedControllableProperties.add(createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.BUFFERING_DELAY.getName(), bufferingDelay.toString()));
+					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
+					populateLocalExtendedStats(stats, advancedControllableProperties);
+					break;
+				case MULTI_SYNC_BUFFERING_DELAY:
+					Integer multiSyncBufferingDelay = DecoderConstant.DEFAULT_MULTI_SYNC_BUFFERING_DELAY;
+					try {
+						multiSyncBufferingDelay = Integer.parseInt(value);
+						if (multiSyncBufferingDelay < DecoderConstant.MIN_MULTI_SYNC_BUFFERING_DELAY) {
+							multiSyncBufferingDelay = DecoderConstant.MIN_MULTI_SYNC_BUFFERING_DELAY;
+						}
+						if (multiSyncBufferingDelay > DecoderConstant.MAX_MULTI_SYNC_BUFFERING_DELAY) {
+							multiSyncBufferingDelay = DecoderConstant.MAX_MULTI_SYNC_BUFFERING_DELAY;
+						}
+					} catch (Exception e) {
+						if (logger.isWarnEnabled()) {
+							logger.warn("Invalid buffering delay value", e);
+						}
+					}
+					cachedDecoderConfig.setBufferingDelay(value);
+
+					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
+
+					advancedControllableProperties.add(
+							createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.MULTI_SYNC_BUFFERING_DELAY.getName(), multiSyncBufferingDelay.toString()));
+					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
+					populateLocalExtendedStats(stats, advancedControllableProperties);
+					break;
+				case OUTPUT_FRAME_RATE:
+					OutputFrameRate outputFrameRate = OutputFrameRate.getByUIName(value);
+					cachedDecoderConfig.setOutputFrameRate(outputFrameRate.getApiName());
+
+					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
+
+					addAdvanceControlProperties(advancedControllableProperties,
+							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_FRAME_RATE.getName(), frameRateModes, outputFrameRate.getUiName()));
+					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
+					populateLocalExtendedStats(stats, advancedControllableProperties);
+					break;
+				case OUTPUT_RESOLUTION:
+					OutputResolution outputResolutionControl = OutputResolution.getByUIName(value);
+					cachedDecoderConfig.setOutputResolution(outputResolutionControl.getApiName());
+
+					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
+
+					addAdvanceControlProperties(advancedControllableProperties,
+							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_RESOLUTION.getName(), resolutionModes, outputResolution.getUiName()));
 					populateDecoderControl(stats, advancedControllableProperties, decoderID);
-				} else {
-					throw new ResourceNotReachableException("failed to update decoder SDI " + decoderID + DecoderConstant.NEXT_LINE + response);
-				}
-				break;
-			case CANCEL:
-				this.cachedDecoderConfigs.clear();
-				this.cachedDecoderConfigs.addAll(this.realtimeDecoderConfigs);
-				populateDecoderControl(stats, advancedControllableProperties, decoderID);
-				break;
-			default:
-				if (logger.isWarnEnabled()) {
-					logger.warn(String.format("Operation %s with value %s is not supported.", controllableProperty, value));
-				}
-				throw new IllegalStateException(String.format("Operation %s with value %s is not supported.", controllableProperty, value));
+					populateLocalExtendedStats(stats, advancedControllableProperties);
+					break;
+				case STATE:
+					DecoderConfig realtimeDecoderConfig = this.realtimeDecoderConfigs.get(decoderID);
+					State state = State.getByCode(Integer.parseInt(value));
+					cachedDecoderConfig.setState(state.getName());
+
+					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
+
+					switch (state) {
+						case STOPPED:
+							boolean isStopSuccessfully = performActiveDecoderSDIControl(cachedDecoderConfig, decoderID, CommandOperation.STOP.getName());
+
+							if (!cachedDecoderConfig.deepEquals(realtimeDecoderConfig)) {
+								decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+								decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+								this.cachedDecoderConfigs.add(realtimeDecoderConfig);
+							}
+							if (!isStopSuccessfully) {
+								reverseActiveControlAfterControlFailed(cachedDecoderConfig, decoderID);
+								throw new ResourceNotReachableException("failed to stop decoder SDI " + decoderID + DecoderConstant.NEXT_LINE);
+							}
+							populateDecoderControl(stats, advancedControllableProperties, decoderID);
+							break;
+						case START:
+							// update decoder SDI if properties of decoder SDI is changed
+							if (!cachedDecoderConfig.deepEquals(realtimeDecoderConfig)) {
+								String response = performDecoderSDIUpdateControl(cachedDecoderConfig, decoderID);
+
+								if (response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
+									decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+									decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+									this.realtimeDecoderConfigs.add(cachedDecoderConfig);
+								} else {
+									throw new ResourceNotReachableException("failed to start decoder SDI " + decoderID + DecoderConstant.NEXT_LINE + response);
+								}
+							}
+
+							// start decoder SDI
+							boolean isStartSuccessfully = performActiveDecoderSDIControl(cachedDecoderConfig, decoderID, CommandOperation.START.getName());
+							if (!isStartSuccessfully) {
+								reverseActiveControlAfterControlFailed(cachedDecoderConfig, decoderID);
+							}
+
+							populateDecoderControl(stats, advancedControllableProperties, decoderID);
+							break;
+						default:
+							if (logger.isWarnEnabled()) {
+								logger.warn(String.format("Decoder state %s is not supported.", state.getName()));
+							}
+							break;
+					}
+					break;
+				case APPLY_CHANGE:
+					String response = performDecoderSDIUpdateControl(cachedDecoderConfig, decoderID);
+
+					if (response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
+						Optional<DecoderConfig> realtimeDecoderConfigOptional = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+						realtimeDecoderConfigOptional.ifPresent(config -> this.realtimeDecoderConfigs.remove(config));
+						this.realtimeDecoderConfigs.add(cachedDecoderConfig);
+						populateDecoderControl(stats, advancedControllableProperties, decoderID);
+					} else {
+						throw new ResourceNotReachableException("failed to update decoder SDI " + decoderID + DecoderConstant.NEXT_LINE + response);
+					}
+					break;
+				case CANCEL:
+					this.cachedDecoderConfigs.clear();
+					this.cachedDecoderConfigs.addAll(this.realtimeDecoderConfigs);
+					populateDecoderControl(stats, advancedControllableProperties, decoderID);
+					break;
+				default:
+					if (logger.isWarnEnabled()) {
+						logger.warn(String.format("Operation %s with value %s is not supported.", controllableProperty, value));
+					}
+					throw new IllegalStateException(String.format("Operation %s with value %s is not supported.", controllableProperty, value));
+			}
 		}
 	}
 
@@ -1455,7 +1523,10 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 *
 	 * @param decoderConfig set of decoder config info
 	 * @param decoderID is ID of decoder
+	 *
 	 * @return String response
+	 *
+	 * @throws ResourceNotReachableException when fail to send CLI command
 	 */
 	private String performDecoderSDIUpdateControl(DecoderConfig decoderConfig, Integer decoderID) {
 		try {
@@ -1473,9 +1544,13 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	/**
 	 * This method is used to perform decoder SDI control: start/ stop
 	 *
+	 * @param decoderConfig is set of decoder config info
 	 * @param decoderID is ID of decoder
 	 * @param active start/ stop activation
+	 *
 	 * @return Boolean control result
+	 *
+	 * @throws ResourceNotReachableException when fail to send CLI command
 	 */
 	private boolean performActiveDecoderSDIControl(DecoderConfig decoderConfig, Integer decoderID, String active) {
 		try {
@@ -1496,6 +1571,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * This method is used to reverse active control value after control failed
 	 *
 	 * @param decoderConfig list of decoder data
+	 * @param decoderID id of decoder SDI
 	 */
 	private void reverseActiveControlAfterControlFailed(DecoderConfig decoderConfig, Integer decoderID) {
 		State state = State.getByName(getDefaultValueForNullData(decoderConfig.getState(), DecoderConstant.EMPTY));
@@ -1503,12 +1579,18 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			case STOPPED:
 				state = State.START;
 				decoderConfig.setState(state.getName());
-				this.cachedDecoderConfigs.set(decoderID, decoderConfig);
+
+				Optional<DecoderConfig> decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+				decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+				this.cachedDecoderConfigs.add(decoderConfig);
 				break;
 			case START:
 				state = State.STOPPED;
 				decoderConfig.setState(state.getName());
-				this.cachedDecoderConfigs.set(decoderID, decoderConfig);
+
+			  decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+				decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+				this.cachedDecoderConfigs.add(decoderConfig);
 				break;
 			default:
 				if (logger.isWarnEnabled()) {

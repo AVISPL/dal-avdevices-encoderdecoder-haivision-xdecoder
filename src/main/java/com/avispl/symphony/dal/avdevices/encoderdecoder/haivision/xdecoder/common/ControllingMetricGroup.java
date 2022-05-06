@@ -7,7 +7,7 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
  * Set of controlling metric group keys
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 4/19/2022
  * @since 1.0.0
  */
 public enum ControllingMetricGroup {
@@ -43,11 +43,8 @@ public enum ControllingMetricGroup {
 	 * @return ControllingMetric is the controlling metric group that want to get
 	 */
 	public static ControllingMetricGroup getByName(String name) {
-		if (name.contains("DecoderSDI")) {
+		if (name.contains(ControllingMetricGroup.DECODER.getName())) {
 			return ControllingMetricGroup.DECODER;
-		}
-		if (name.contains("Create")) {
-			return ControllingMetricGroup.CREATE_STREAM;
 		} else {
 			return null;
 		}
