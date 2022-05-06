@@ -42,9 +42,9 @@ public class DecoderConstant {
 	public static final String DECODER_CONTROL_ERR = "Failed to control decoder: ";
 	public static final String PORT_NUMBER_ERROR = "Invalid port number";
 	public static final String DEFAULT_SKIPPED_FRAMES_VALUE = "0";
-	public static final String AUTOMATIC_RESOLUTION = "automatic";
-	public static final String NATIVE_RESOLUTION = "native";
-	public static final String COMPUTER_RESOLUTION = "computer";
+	public static final String AUTOMATIC_RESOLUTION = "Automatic";
+	public static final String NATIVE_RESOLUTION = "Native";
+	public static final String COMPUTER_RESOLUTION = "Computer";
 	public static final String TV_RESOLUTION = "TV";
 	public static final String APPLY = "Apply";
 	public static final String CANCEL = "Cancel";

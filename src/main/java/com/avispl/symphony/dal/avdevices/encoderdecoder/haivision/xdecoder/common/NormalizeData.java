@@ -84,7 +84,7 @@ public class NormalizeData {
 		}
 		String[] spiltDataList = data.split(DecoderConstant.AT);
 		int extraInfoIndex = 1;
-		if (extraInfoIndex > spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[extraInfoIndex]))
+		if (extraInfoIndex >= spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[extraInfoIndex]))
 			return DecoderConstant.EMPTY;
 		return spiltDataList[extraInfoIndex];
 	}
@@ -101,7 +101,7 @@ public class NormalizeData {
 		}
 		String[] spiltDataList = data.split(DecoderConstant.SPACE, 3);
 		int dataPercentValueIndex = 1;
-		if (dataPercentValueIndex > spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[dataPercentValueIndex])) {
+		if (dataPercentValueIndex >= spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[dataPercentValueIndex])) {
 			return DecoderConstant.EMPTY;
 		}
 		return spiltDataList[dataPercentValueIndex].replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);

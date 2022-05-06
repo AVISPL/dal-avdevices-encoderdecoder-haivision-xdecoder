@@ -27,7 +27,7 @@ public class DropdownList {
 		List<String> names = new ArrayList<>();
 		for (T c : enumType.getEnumConstants()) {
 			try {
-				Method method = c.getClass().getMethod("getName");
+				Method method = c.getClass().getMethod("getUiName");
 				String name = (String) method.invoke(c); // getName executed
 				names.add(name);
 			} catch (Exception e) {
