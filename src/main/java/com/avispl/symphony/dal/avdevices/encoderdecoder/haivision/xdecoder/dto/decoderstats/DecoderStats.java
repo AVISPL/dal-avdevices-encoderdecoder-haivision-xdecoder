@@ -19,7 +19,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DecoderStats {
 
-	@JsonAlias("Uptime")
+	@JsonAlias("UpTime")
 	private String uptime;
 
 	@JsonAlias("NumberofRestarts")

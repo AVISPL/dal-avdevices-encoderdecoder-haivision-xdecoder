@@ -6,14 +6,15 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamStatsMonitoringMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 
 /**
  * Stream statistics
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 4/19/2022
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -304,15 +305,15 @@ public class StreamStats {
 			case SOURCE_ADDRESS:
 				return getSourceAddress();
 			case BIT_RATE:
-				return getBitRate();
+				return NormalizeData.getDataNumberValue(getBitRate());
 			case RECEIVED_PACKET:
-				return getReceivedPackets();
+				return NormalizeData.convertToNumberValue(getReceivedPackets());
 			case RECEIVED_BYTES:
-				return getReceivedBytes();
+				return NormalizeData.convertToNumberValue(getReceivedBytes());
 			case LAST_RECEIVED:
 				return getLastReceived();
 			case UP_TIME:
-				return getUpTime();
+				return NormalizeData.formatTimeData(getUpTime());
 			case ERROR_MPEG_2_TS_LOST_PACKETS:
 				return getMpeg2TSLostPackets();
 			case ERROR_CORRUPTED_FRAMES:
@@ -322,7 +323,7 @@ public class StreamStats {
 			case LAST_ERROR:
 				return getLastError();
 			case ERROR_OCCURRED:
-				return getErrorOccurred();
+				return NormalizeData.formatTimeData(getErrorOccurred());
 			default:
 				return DecoderConstant.NONE;
 		}
