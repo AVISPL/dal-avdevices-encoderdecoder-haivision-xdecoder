@@ -6,25 +6,25 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 
 /**
  * Set of stream configuration properties
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 4/19/2022
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StreamConfig {
 
-	@JsonAlias("name")
+	@JsonAlias("Name")
 	private String name;
 
-	@JsonAlias("id")
-	private Integer id;
+	@JsonAlias("StreamID")
+	private String id;
 
 	@JsonAlias("decoderId")
 	private String decoderId;
@@ -80,6 +80,37 @@ public class StreamConfig {
 	@JsonAlias("fecRtp")
 	private Integer fecRtp;
 
+	public StreamConfig() {
+	}
+
+	/**
+	 * This constructor is used for deep clone object
+	 *
+	 * @param streamInfo Stream config info
+	 */
+	public StreamConfig(StreamConfig streamInfo) {
+		this.name = streamInfo.getName();
+		this.id = streamInfo.getId();
+		this.decoderId = streamInfo.getDecoderId();
+		this.encapsulation = streamInfo.getEncapsulation();
+		this.userData = streamInfo.getUserData();
+		this.address = streamInfo.getAddress();
+		this.port = streamInfo.getPort();
+		this.sourceIp = streamInfo.getSourceIp();
+		this.latency = streamInfo.getLatency();
+		this.srtMode = streamInfo.getSrtMode();
+		this.sourcePort = streamInfo.getSourcePort();
+		this.strictMode = streamInfo.getStrictMode();
+		this.passphrase = streamInfo.getPassphrase();
+		this.passphraseSet = streamInfo.getPassphraseSet();
+		this.srtToUdp = streamInfo.getSrtToUdp();
+		this.srtToUdpAddress = streamInfo.getSrtToUdpAddress();
+		this.srtToUdpPort = streamInfo.getSrtToUdpPort();
+		this.srtToUdpTos = streamInfo.getSrtToUdpTos();
+		this.srtToUdpTtl = streamInfo.getSrtToUdpTtl();
+		this.fecRtp = streamInfo.getFecRtp();
+	}
+
 	/**
 	 * Retrieves {@code {@link #name}}
 	 *
@@ -103,16 +134,16 @@ public class StreamConfig {
 	 *
 	 * @return value of {@link #id}
 	 */
-	public Integer getId() {
+	public String getId() {
 		return id;
 	}
 
 	/**
 	 * Sets {@code id}
 	 *
-	 * @param id the {@code java.lang.Integer} field
+	 * @param id the {@code java.lang.String} field
 	 */
-	public void setId(Integer id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
@@ -146,7 +177,7 @@ public class StreamConfig {
 	/**
 	 * Sets {@code encapsulation}
 	 *
-	 * @param encapsulation the {@code java.lang.Integer} field
+	 * @param encapsulation the {@code java.lang.String} field
 	 */
 	public void setEncapsulation(String encapsulation) {
 		this.encapsulation = encapsulation;
@@ -455,7 +486,7 @@ public class StreamConfig {
 					+ DecoderConstant.RIGHT_PARENTHESES +
 					DecoderConstant.COLON + getPort();
 		} else {
-			return encapsulationShortName + DecoderConstant.COLON + DecoderConstant.SLASH + DecoderConstant.SLASH + DecoderConstant.AT_SIGN + NormalizeData.getValueOnly(getAddress()) +
+			return encapsulationShortName + DecoderConstant.COLON + DecoderConstant.SLASH + DecoderConstant.SLASH + DecoderConstant.AT_SIGN + NormalizeData.convertToNumberValue(getAddress()) +
 					DecoderConstant.COLON + getPort();
 		}
 	}

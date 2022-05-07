@@ -3,8 +3,17 @@
  */
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.SyncMode;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.BufferingMode;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
+import com.avispl.symphony.dal.util.StringUtils;
 
 /**
  * Set of decoder configuration properties
@@ -16,160 +25,112 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DecoderConfig {
 
-	@JsonAlias("id")
-	private String id;
+	private String decoderID;
 
-	@JsonAlias("streamId")
-	private Integer streamId;
+	@JsonAlias("StreamID")
+	private String primaryStream;
 
-	@JsonAlias("altStreamId")
-	private Integer altStreamId;
+	@JsonAlias(" AlternativeStreamID")
+	private String secondaryStream;
 
-	@JsonAlias("state")
-	private Integer state;
+	@JsonAlias("StillImage")
+	private String stillImage;
 
-	@JsonAlias("latency")
-	private String latency;
-
-	@JsonAlias("stillImage")
-	private Integer stillImage;
-
-	@JsonAlias("stillImageDelay")
+	@JsonAlias("StillDelay")
 	private String stillImageDelay;
 
-	@JsonAlias("szStillImageFileName")
-	private String szStillImageFileName;
-
-	@JsonAlias("enableBuffering")
+	@JsonAlias("SyncMode")
 	private String enableBuffering;
 
-	@JsonAlias("bufferingMode")
-	private Integer bufferingMode;
+	@JsonAlias("Buffering")
+	private String bufferingMode;
 
-	@JsonAlias("bufferingDelay")
+	@JsonAlias("Delay")
 	private String bufferingDelay;
 
-	@JsonAlias("multisyncBufferingDelay")
-	private String multisyncBufferingDelay;
+	@JsonAlias("Resolution")
+	private String outputResolution;
 
-	@JsonAlias("hdrDynamicRange")
-	private Integer hdrDynamicRange;
+	@JsonAlias("FrameRate")
+	private String outputFrameRate;
 
-	@JsonAlias("nNumOfOutputs")
-	private String nNumOfOutputs;
+	@JsonAlias("State")
+	private String state;
 
-	@JsonAlias("output1")
-	private Boolean output1;
-
-	@JsonAlias("output2")
-	private Boolean output2;
-
-	@JsonAlias("output3")
-	private Boolean output3;
-
-	@JsonAlias("output4")
-	private Boolean output4;
-
-	@JsonAlias("outputFrameRate")
-	private Integer outputFrameRate;
-
-	@JsonAlias("previewEnabled")
-	private String previewEnabled;
-
-	@JsonAlias("previewIntervalSec")
-	private String previewIntervalSec;
-
-	@JsonAlias("quadMode")
-	private Integer quadMode;
-
-	/**
-	 * Retrieves {@code {@link #id}}
-	 *
-	 * @return value of {@link #id}
-	 */
-	public String getId() {
-		return id;
+	public DecoderConfig() {
 	}
 
 	/**
-	 * Sets {@code id}
+	 * This constructor is used for deep clone object
 	 *
-	 * @param id the {@code java.lang.String} field
+	 * @param decoderConfig Decoder config info
 	 */
-	public void setId(String id) {
-		this.id = id;
+	public DecoderConfig(DecoderConfig decoderConfig) {
+		this.decoderID = decoderConfig.getDecoderID();
+		this.primaryStream = decoderConfig.getPrimaryStream();
+		this.secondaryStream = decoderConfig.getSecondaryStream();
+		this.stillImage = decoderConfig.getStillImage();
+		this.stillImageDelay = decoderConfig.getStillImageDelay();
+		this.enableBuffering = decoderConfig.getEnableBuffering();
+		this.bufferingMode = decoderConfig.getBufferingMode();
+		this.bufferingDelay = decoderConfig.getBufferingDelay();
+		this.outputResolution = decoderConfig.getOutputResolution();
+		this.outputFrameRate = decoderConfig.getOutputFrameRate();
+		this.state = decoderConfig.getState();
 	}
 
 	/**
-	 * Retrieves {@code {@link #streamId}}
+	 * Retrieves {@code {@link #decoderID}}
 	 *
-	 * @return value of {@link #streamId}
+	 * @return value of {@link #decoderID}
 	 */
-	public Integer getStreamId() {
-		return streamId;
+	public String getDecoderID() {
+		return decoderID;
 	}
 
 	/**
-	 * Sets {@code streamId}
+	 * Sets {@code decoderID}
 	 *
-	 * @param streamId the {@code java.lang.Integer} field
+	 * @param decoderID the {@code java.lang.String} field
 	 */
-	public void setStreamId(Integer streamId) {
-		this.streamId = streamId;
+	public void setDecoderID(String decoderID) {
+		this.decoderID = decoderID;
 	}
 
 	/**
-	 * Retrieves {@code {@link #altStreamId}}
+	 * Retrieves {@code {@link #primaryStream}}
 	 *
-	 * @return value of {@link #altStreamId}
+	 * @return value of {@link #primaryStream}
 	 */
-	public Integer getAltStreamId() {
-		return altStreamId;
+	public String getPrimaryStream() {
+		return primaryStream;
 	}
 
 	/**
-	 * Sets {@code altStreamId}
+	 * Sets {@code primaryStream}
 	 *
-	 * @param altStreamId the {@code java.lang.Integer} field
+	 * @param primaryStream the {@code java.lang.String} field
 	 */
-	public void setAltStreamId(Integer altStreamId) {
-		this.altStreamId = altStreamId;
+	public void setPrimaryStream(String primaryStream) {
+		this.primaryStream = primaryStream;
 	}
 
 	/**
-	 * Retrieves {@code {@link #state}}
+	 * Retrieves {@code {@link #secondaryStream}}
 	 *
-	 * @return value of {@link #state}
+	 * @return value of {@link #secondaryStream}
 	 */
-	public Integer getState() {
-		return state;
+	public String getSecondaryStream() {
+		return secondaryStream;
 	}
 
 	/**
-	 * Sets {@code state}
+	 * Sets {@code secondaryStream}
 	 *
-	 * @param state the {@code java.lang.Integer} field
+	 * @param secondaryStream the {@code java.lang.String} field
 	 */
-	public void setState(Integer state) {
-		this.state = state;
-	}
-
-	/**
-	 * Retrieves {@code {@link #latency}}
-	 *
-	 * @return value of {@link #latency}
-	 */
-	public String getLatency() {
-		return latency;
-	}
-
-	/**
-	 * Sets {@code latency}
-	 *
-	 * @param latency the {@code java.lang.String} field
-	 */
-	public void setLatency(String latency) {
-		this.latency = latency;
+	public void setSecondaryStream(String secondaryStream) {
+		this.secondaryStream = secondaryStream;
 	}
 
 	/**
@@ -177,16 +138,16 @@ public class DecoderConfig {
 	 *
 	 * @return value of {@link #stillImage}
 	 */
-	public Integer getStillImage() {
+	public String getStillImage() {
 		return stillImage;
 	}
 
 	/**
 	 * Sets {@code stillImage}
 	 *
-	 * @param stillImage the {@code java.lang.Integer} field
+	 * @param stillImage the {@code java.lang.String} field
 	 */
-	public void setStillImage(Integer stillImage) {
+	public void setStillImage(String stillImage) {
 		this.stillImage = stillImage;
 	}
 
@@ -206,24 +167,6 @@ public class DecoderConfig {
 	 */
 	public void setStillImageDelay(String stillImageDelay) {
 		this.stillImageDelay = stillImageDelay;
-	}
-
-	/**
-	 * Retrieves {@code {@link #szStillImageFileName}}
-	 *
-	 * @return value of {@link #szStillImageFileName}
-	 */
-	public String getSzStillImageFileName() {
-		return szStillImageFileName;
-	}
-
-	/**
-	 * Sets {@code szStillImageFileName}
-	 *
-	 * @param szStillImageFileName the {@code java.lang.String} field
-	 */
-	public void setSzStillImageFileName(String szStillImageFileName) {
-		this.szStillImageFileName = szStillImageFileName;
 	}
 
 	/**
@@ -249,16 +192,16 @@ public class DecoderConfig {
 	 *
 	 * @return value of {@link #bufferingMode}
 	 */
-	public Integer getBufferingMode() {
+	public String getBufferingMode() {
 		return bufferingMode;
 	}
 
 	/**
 	 * Sets {@code bufferingMode}
 	 *
-	 * @param bufferingMode the {@code java.lang.Integer} field
+	 * @param bufferingMode the {@code java.lang.String} field
 	 */
-	public void setBufferingMode(Integer bufferingMode) {
+	public void setBufferingMode(String bufferingMode) {
 		this.bufferingMode = bufferingMode;
 	}
 
@@ -281,129 +224,21 @@ public class DecoderConfig {
 	}
 
 	/**
-	 * Retrieves {@code {@link #multisyncBufferingDelay}}
+	 * Retrieves {@code {@link #outputResolution}}
 	 *
-	 * @return value of {@link #multisyncBufferingDelay}
+	 * @return value of {@link #outputResolution}
 	 */
-	public String getMultisyncBufferingDelay() {
-		return multisyncBufferingDelay;
+	public String getOutputResolution() {
+		return outputResolution;
 	}
 
 	/**
-	 * Sets {@code multisyncBufferingDelay}
+	 * Sets {@code outputResolution}
 	 *
-	 * @param multisyncBufferingDelay the {@code java.lang.String} field
+	 * @param outputResolution the {@code java.lang.String} field
 	 */
-	public void setMultisyncBufferingDelay(String multisyncBufferingDelay) {
-		this.multisyncBufferingDelay = multisyncBufferingDelay;
-	}
-
-	/**
-	 * Retrieves {@code {@link #hdrDynamicRange}}
-	 *
-	 * @return value of {@link #hdrDynamicRange}
-	 */
-	public Integer getHdrDynamicRange() {
-		return hdrDynamicRange;
-	}
-
-	/**
-	 * Sets {@code hdrDynamicRange}
-	 *
-	 * @param hdrDynamicRange the {@code java.lang.Integer} field
-	 */
-	public void setHdrDynamicRange(Integer hdrDynamicRange) {
-		this.hdrDynamicRange = hdrDynamicRange;
-	}
-
-	/**
-	 * Retrieves {@code {@link #nNumOfOutputs}}
-	 *
-	 * @return value of {@link #nNumOfOutputs}
-	 */
-	public String getnNumOfOutputs() {
-		return nNumOfOutputs;
-	}
-
-	/**
-	 * Sets {@code nNumOfOutputs}
-	 *
-	 * @param nNumOfOutputs the {@code java.lang.String} field
-	 */
-	public void setnNumOfOutputs(String nNumOfOutputs) {
-		this.nNumOfOutputs = nNumOfOutputs;
-	}
-
-	/**
-	 * Retrieves {@code {@link #output1}}
-	 *
-	 * @return value of {@link #output1}
-	 */
-	public Boolean getOutput1() {
-		return output1;
-	}
-
-	/**
-	 * Sets {@code output1}
-	 *
-	 * @param output1 the {@code java.lang.Boolean} field
-	 */
-	public void setOutput1(Boolean output1) {
-		this.output1 = output1;
-	}
-
-	/**
-	 * Retrieves {@code {@link #output2}}
-	 *
-	 * @return value of {@link #output2}
-	 */
-	public Boolean getOutput2() {
-		return output2;
-	}
-
-	/**
-	 * Sets {@code output2}
-	 *
-	 * @param output2 the {@code java.lang.Boolean} field
-	 */
-	public void setOutput2(Boolean output2) {
-		this.output2 = output2;
-	}
-
-	/**
-	 * Retrieves {@code {@link #output3}}
-	 *
-	 * @return value of {@link #output3}
-	 */
-	public Boolean getOutput3() {
-		return output3;
-	}
-
-	/**
-	 * Sets {@code output3}
-	 *
-	 * @param output3 the {@code java.lang.Boolean} field
-	 */
-	public void setOutput3(Boolean output3) {
-		this.output3 = output3;
-	}
-
-	/**
-	 * Retrieves {@code {@link #output4}}
-	 *
-	 * @return value of {@link #output4}
-	 */
-	public Boolean getOutput4() {
-		return output4;
-	}
-
-	/**
-	 * Sets {@code output4}
-	 *
-	 * @param output4 the {@code java.lang.Boolean} field
-	 */
-	public void setOutput4(Boolean output4) {
-		this.output4 = output4;
+	public void setOutputResolution(String outputResolution) {
+		this.outputResolution = outputResolution;
 	}
 
 	/**
@@ -411,71 +246,183 @@ public class DecoderConfig {
 	 *
 	 * @return value of {@link #outputFrameRate}
 	 */
-	public Integer getOutputFrameRate() {
+	public String getOutputFrameRate() {
 		return outputFrameRate;
 	}
 
 	/**
 	 * Sets {@code outputFrameRate}
 	 *
-	 * @param outputFrameRate the {@code java.lang.Integer} field
+	 * @param outputFrameRate the {@code java.lang.String} field
 	 */
-	public void setOutputFrameRate(Integer outputFrameRate) {
+	public void setOutputFrameRate(String outputFrameRate) {
 		this.outputFrameRate = outputFrameRate;
 	}
 
 	/**
-	 * Retrieves {@code {@link #previewEnabled}}
+	 * Retrieves {@code {@link #state}}
 	 *
-	 * @return value of {@link #previewEnabled}
+	 * @return value of {@link #state}
 	 */
-	public String getPreviewEnabled() {
-		return previewEnabled;
+	public String getState() {
+		return state;
 	}
 
 	/**
-	 * Sets {@code previewEnabled}
+	 * Sets {@code state}
 	 *
-	 * @param previewEnabled the {@code java.lang.String} field
+	 * @param state the {@code java.lang.String} field
 	 */
-	public void setPreviewEnabled(String previewEnabled) {
-		this.previewEnabled = previewEnabled;
+	public void setState(String state) {
+		this.state = state;
 	}
 
 	/**
-	 * Retrieves {@code {@link #previewIntervalSec}}
-	 *
-	 * @return value of {@link #previewIntervalSec}
+	 * This method is used to compare object in specify case
 	 */
-	public String getPreviewIntervalSec() {
-		return previewIntervalSec;
+	public boolean deepEquals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		DecoderConfig that = (DecoderConfig) o;
+		return Objects.equals(primaryStream, that.primaryStream)
+				&& Objects.equals(secondaryStream, that.secondaryStream)
+				&& Objects.equals(stillImage, that.stillImage)
+				&& Objects.equals(stillImageDelay, that.stillImageDelay)
+				&& Objects.equals(enableBuffering, that.enableBuffering)
+				&& Objects.equals(outputResolution, that.outputResolution)
+				&& equalsByOutputResolution(o)
+				&& equalsByBufferingMode(o);
 	}
 
 	/**
-	 * Sets {@code previewIntervalSec}
-	 *
-	 * @param previewIntervalSec the {@code java.lang.String} field
+	 * This method is used to compare object in specify BufferingMode
 	 */
-	public void setPreviewIntervalSec(String previewIntervalSec) {
-		this.previewIntervalSec = previewIntervalSec;
+	public boolean equalsByBufferingMode(Object o) {
+		BufferingMode bufferingModeEnum = BufferingMode.getByAPIName(getDefaultValueForNullData(getBufferingMode(), DecoderConstant.EMPTY));
+		SyncMode syncModeEnum = SyncMode.getByName(getDefaultValueForNullData(getEnableBuffering(), DecoderConstant.EMPTY));
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		DecoderConfig that = (DecoderConfig) o;
+		if (!syncModeEnum.isEnable()) {
+			return true;
+		}
+		switch (bufferingModeEnum) {
+			case AUTO:
+			case ADAPTIVE_LOW_LATENCY:
+				return Objects.equals(bufferingMode, that.bufferingMode);
+			case FIXED:
+			case MULTI_SYNC:
+				return Objects.equals(bufferingMode, that.bufferingMode)
+						&& Objects.equals(bufferingDelay, that.bufferingDelay);
+			default:
+				return false;
+		}
 	}
 
 	/**
-	 * Retrieves {@code {@link #quadMode}}
-	 *
-	 * @return value of {@link #quadMode}
+	 * This method is used to compare object in specify OutputResolution
 	 */
-	public Integer getQuadMode() {
-		return quadMode;
+	public boolean equalsByOutputResolution(Object o) {
+		OutputResolution outputResolutionEnum = OutputResolution.getByAPIName(getDefaultValueForNullData(getOutputResolution(), DecoderConstant.EMPTY));
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		DecoderConfig that = (DecoderConfig) o;
+		switch (outputResolutionEnum.getResolutionCategory()) {
+			case DecoderConstant.AUTOMATIC_RESOLUTION:
+			case DecoderConstant.TV_RESOLUTION:
+			case DecoderConstant.COMPUTER_RESOLUTION:
+				return Objects.equals(outputFrameRate, that.outputFrameRate);
+			case DecoderConstant.NATIVE_RESOLUTION:
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	/**
-	 * Sets {@code quadMode}
+	 * This method is used to create command for decoder SDI controlling: update
 	 *
-	 * @param quadMode the {@code java.lang.Integer} field
+	 * @return String CLI command
 	 */
-	public void setQuadMode(Integer quadMode) {
-		this.quadMode = quadMode;
+	public String contributeCommand(String command, Integer decoderID, String action) {
+		StringBuilder request = new StringBuilder();
+		request.append(command.concat(DecoderConstant.SPACE)
+				.concat(decoderID.toString())
+				.concat(DecoderConstant.SPACE)
+				.concat(action));
+		if (!StringUtils.isNullOrEmpty(primaryStream)) {
+			request.append(" streamId=" + primaryStream);
+		}
+		if (!StringUtils.isNullOrEmpty(secondaryStream)) {
+			request.append(" altStreamId=" + secondaryStream);
+		}
+		if (!StringUtils.isNullOrEmpty(stillImage)) {
+			request.append(" stillImage=" + stillImage);
+		}
+		if (!StringUtils.isNullOrEmpty(stillImageDelay)) {
+			request.append(" stillDelay=" + NormalizeData.getDataNumberValue(stillImageDelay));
+		}
+		if (!StringUtils.isNullOrEmpty(bufferingMode)) {
+			request.append(" buffering=" + bufferingMode);
+		}
+		if (!StringUtils.isNullOrEmpty(bufferingDelay)) {
+			request.append(" delay=" + NormalizeData.getDataNumberValue(bufferingDelay));
+		}
+		if (!StringUtils.isNullOrEmpty(outputResolution)) {
+			request.append(" resolution=" + outputResolution);
+		}
+		if (!StringUtils.isNullOrEmpty(outputFrameRate)) {
+			request.append(" frameRate=" + outputFrameRate);
+		}
+		return request.toString();
+	}
+
+	/**
+	 * get default value for null data
+	 *
+	 * @param value value of monitoring properties
+	 * @return String (none/value)
+	 */
+	private String getDefaultValueForNullData(String value, String defaultValue) {
+		return StringUtils.isNullOrEmpty(value) ? defaultValue : value;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		DecoderConfig that = (DecoderConfig) o;
+		return Objects.equals(primaryStream, that.primaryStream)
+				&& Objects.equals(secondaryStream, that.secondaryStream)
+				&& Objects.equals(stillImage, that.stillImage)
+				&& Objects.equals(stillImageDelay, that.stillImageDelay)
+				&& Objects.equals(enableBuffering, that.enableBuffering)
+				&& Objects.equals(bufferingMode, that.bufferingMode)
+				&& Objects.equals(bufferingDelay, that.bufferingDelay)
+				&& Objects.equals(outputResolution, that.outputResolution)
+				&& Objects.equals(outputFrameRate, that.outputFrameRate)
+				&& Objects.equals(state, that.state);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(primaryStream, secondaryStream, stillImage, stillImageDelay, enableBuffering, bufferingMode, bufferingDelay, outputResolution, outputFrameRate, state);
 	}
 }
 
