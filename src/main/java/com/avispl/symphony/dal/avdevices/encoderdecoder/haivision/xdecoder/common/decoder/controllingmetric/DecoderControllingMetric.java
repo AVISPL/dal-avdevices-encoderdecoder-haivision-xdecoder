@@ -18,6 +18,7 @@ public enum DecoderControllingMetric {
 	PRIMARY_STREAM("PrimaryStream"),
 	SECONDARY_STREAM("SecondaryStream"),
 	STILL_IMAGE("StillImage"),
+	SELECT_STILL_IMAGE("SelectStillImage"),
 	STILL_IMAGE_DELAY("StillImageDelay"),
 	SYNC_MODE("EnableBuffering"),
 	BUFFERING_DELAY("Delay"),
@@ -26,8 +27,8 @@ public enum DecoderControllingMetric {
 	OUTPUT_RESOLUTION("OutputResolution"),
 	OUTPUT_FRAME_RATE("OutputFrameRate"),
 	STATE("Active"),
-	APPLY_CHANGE("ApplyChange"),
-	CANCEL("Cancel"),
+	APPLY_CHANGE("ApplyChanges"),
+	CANCEL("CancelChanges"),
 	EDITED("Edited");
 
 	private final String name;
@@ -60,9 +61,8 @@ public enum DecoderControllingMetric {
 		Optional<DecoderControllingMetric> decoderControllingMetric = Arrays.stream(DecoderControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();
 		if(decoderControllingMetric.isPresent()) {
 			return decoderControllingMetric.get();
-		}else {
-			throw new IllegalArgumentException("Can not find the enum with name: " + name);
 		}
+		throw new IllegalArgumentException("Can not find the enum with name: " + name);
 	}
 }
 

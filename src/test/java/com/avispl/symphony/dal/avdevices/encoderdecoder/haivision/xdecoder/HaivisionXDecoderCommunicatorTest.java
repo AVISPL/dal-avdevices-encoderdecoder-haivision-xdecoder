@@ -68,4 +68,32 @@ class HaivisionXDecoderCommunicatorTest {
 		Assertions.assertEquals("B-292D-HD2", stats.get(DeviceInfoMetric.PART_NUMBER.getName()));
 	}
 
+
+	/**
+	 * Test HaivisionX4Decoder.controlProperty decoder control: output control (switch control)
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testSetOutputControl() {
+		ControllableProperty controllableProperty = new ControllableProperty();
+		controllableProperty.setProperty("DecoderSDI2" + "#OutputResolution");
+		controllableProperty.setValue("1280x1024 (SXGA)");
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+
+
+		controllableProperty.setProperty("DecoderSDI2" + "#EnableBuffering");
+		controllableProperty.setValue("1");
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+
+
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+
+	}
 }
