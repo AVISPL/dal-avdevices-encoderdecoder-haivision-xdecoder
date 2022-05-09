@@ -16,7 +16,7 @@ import java.util.Optional;
 public enum State {
 
 	STOPPED("STOPPED", 0),
-	START("START", 1);
+	START("STARTED", 1);
 
 	private final String name;
 	private final Integer code;

@@ -15,10 +15,10 @@ import java.util.Optional;
  */
 public enum Encapsulation {
 
-	TS_OVER_UDP(" TS-UDP", "Udp"),
-	TS_OVER_RTP(" TS-RTP", "Rtp"),
-	TS_OVER_SRT(" TS-SRT", "Srt"),
-	RTSP(" RTSP", "rtsp");
+	TS_OVER_UDP("TS-UDP", "Udp"),
+	TS_OVER_RTP("TS-RTP", "Rtp"),
+	TS_OVER_SRT("TS-SRT", "Srt"),
+	RTSP("RTSP", "rtsp");
 
 	private final String name;
 	private final String shortName;

@@ -18,8 +18,9 @@ public enum StillImage {
 	FREEZE("Freeze", "Freeze"),
 	BLACK("Black Screen", "Black"),
 	BLUE("Blue  Screen", "Blue"),
-	COLOR_BARS("Color Bars", "ColorBars"),
-	MUTE("Mute", "Mute");
+	COLOR_BARS("Color Bars", "Bars"),
+	MUTE("Mute", "Mute"),
+	CUSTOM("Select Image", "Custom");
 
 	private final String uiName;
 	private final String apiName;
@@ -56,11 +57,11 @@ public enum StillImage {
 	/**
 	 * This method is used to get still image by name
 	 *
-	 * @param uinName is the ui name of still image that want to get
+	 * @param uiName is the ui name of still image that want to get
 	 * @return StillImage is the still image that want to get
 	 */
-	public static StillImage getByUIName(String uinName) {
-		Optional<StillImage> stillImage = Arrays.stream(StillImage.values()).filter(com -> com.getUiName().equals(uinName)).findFirst();
+	public static StillImage getByUIName(String uiName) {
+		Optional<StillImage> stillImage = Arrays.stream(StillImage.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
 		return stillImage.orElse(StillImage.FREEZE);
 	}
 

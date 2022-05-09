@@ -20,20 +20,13 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StreamConfig {
 
-	@JsonAlias("Name")
-	private String name;
-
-	@JsonAlias("StreamID")
 	private String id;
-
-	@JsonAlias("decoderId")
-	private String decoderId;
+	private String name;
+	private String sourceAddress;
+	private StreamConversion streamConversion;
 
 	@JsonAlias("Encapsulation")
 	private String encapsulation;
-
-	@JsonAlias("userData")
-	private String userData;
 
 	@JsonAlias("Address")
 	private String address;
@@ -41,44 +34,26 @@ public class StreamConfig {
 	@JsonAlias("UDPPort")
 	private String port;
 
-	@JsonAlias("sourceIp")
-	private String sourceIp;
-
-	@JsonAlias("latency")
-	private String latency;
-
-	@JsonAlias("srtMode")
-	private Integer srtMode;
-
-	@JsonAlias("sourcePort")
+	@JsonAlias("SourcePort")
 	private String sourcePort;
 
-	@JsonAlias("strictMode")
-	private Boolean strictMode;
+	@JsonAlias("DestinationPort")
+	private String destinationPort;
 
-	@JsonAlias("passphrase")
-	private String passphrase;
+	@JsonAlias("Latency")
+	private String latency;
 
-	@JsonAlias("passphraseSet")
-	private Boolean passphraseSet;
+	@JsonAlias("Mode")
+	private String srtMode;
 
-	@JsonAlias("srtToUdp")
-	private Boolean srtToUdp;
+	@JsonAlias("AESEncryption")
+	private String srtSettings;
 
-	@JsonAlias("srtToUdp_address")
-	private String srtToUdpAddress;
+	@JsonAlias("RejectUnencrypted")
+	private String rejectUnencrypted;
 
-	@JsonAlias("srtToUdp_port")
-	private String srtToUdpPort;
-
-	@JsonAlias("srtToUdp_tos")
-	private String srtToUdpTos;
-
-	@JsonAlias("srtToUdp_ttl")
-	private String srtToUdpTtl;
-
-	@JsonAlias("fecRtp")
-	private Integer fecRtp;
+	@JsonAlias("FEC")
+	private String fec;
 
 	public StreamConfig() {
 	}
@@ -91,42 +66,12 @@ public class StreamConfig {
 	public StreamConfig(StreamConfig streamInfo) {
 		this.name = streamInfo.getName();
 		this.id = streamInfo.getId();
-		this.decoderId = streamInfo.getDecoderId();
 		this.encapsulation = streamInfo.getEncapsulation();
-		this.userData = streamInfo.getUserData();
 		this.address = streamInfo.getAddress();
 		this.port = streamInfo.getPort();
-		this.sourceIp = streamInfo.getSourceIp();
 		this.latency = streamInfo.getLatency();
 		this.srtMode = streamInfo.getSrtMode();
 		this.sourcePort = streamInfo.getSourcePort();
-		this.strictMode = streamInfo.getStrictMode();
-		this.passphrase = streamInfo.getPassphrase();
-		this.passphraseSet = streamInfo.getPassphraseSet();
-		this.srtToUdp = streamInfo.getSrtToUdp();
-		this.srtToUdpAddress = streamInfo.getSrtToUdpAddress();
-		this.srtToUdpPort = streamInfo.getSrtToUdpPort();
-		this.srtToUdpTos = streamInfo.getSrtToUdpTos();
-		this.srtToUdpTtl = streamInfo.getSrtToUdpTtl();
-		this.fecRtp = streamInfo.getFecRtp();
-	}
-
-	/**
-	 * Retrieves {@code {@link #name}}
-	 *
-	 * @return value of {@link #name}
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Sets {@code name}
-	 *
-	 * @param name the {@code java.lang.String} field
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	/**
@@ -148,21 +93,57 @@ public class StreamConfig {
 	}
 
 	/**
-	 * Retrieves {@code {@link #decoderId}}
+	 * Retrieves {@code {@link #name}}
 	 *
-	 * @return value of {@link #decoderId}
+	 * @return value of {@link #name}
 	 */
-	public String getDecoderId() {
-		return decoderId;
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * Sets {@code decoderId}
+	 * Sets {@code name}
 	 *
-	 * @param decoderId the {@code java.lang.String} field
+	 * @param name the {@code java.lang.String} field
 	 */
-	public void setDecoderId(String decoderId) {
-		this.decoderId = decoderId;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Retrieves {@code {@link #sourceAddress}}
+	 *
+	 * @return value of {@link #sourceAddress}
+	 */
+	public String getSourceAddress() {
+		return sourceAddress;
+	}
+
+	/**
+	 * Sets {@code sourceAddress}
+	 *
+	 * @param sourceAddress the {@code java.lang.String} field
+	 */
+	public void setSourceAddress(String sourceAddress) {
+		this.sourceAddress = sourceAddress;
+	}
+
+	/**
+	 * Retrieves {@code {@link #streamConversion}}
+	 *
+	 * @return value of {@link #streamConversion}
+	 */
+	public StreamConversion getStreamConversion() {
+		return streamConversion;
+	}
+
+	/**
+	 * Sets {@code streamConversion}
+	 *
+	 * @param streamConversion the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.StreamConversion} field
+	 */
+	public void setStreamConversion(StreamConversion streamConversion) {
+		this.streamConversion = streamConversion;
 	}
 
 	/**
@@ -181,24 +162,6 @@ public class StreamConfig {
 	 */
 	public void setEncapsulation(String encapsulation) {
 		this.encapsulation = encapsulation;
-	}
-
-	/**
-	 * Retrieves {@code {@link #userData}}
-	 *
-	 * @return value of {@link #userData}
-	 */
-	public String getUserData() {
-		return userData;
-	}
-
-	/**
-	 * Sets {@code userData}
-	 *
-	 * @param userData the {@code java.lang.String} field
-	 */
-	public void setUserData(String userData) {
-		this.userData = userData;
 	}
 
 	/**
@@ -238,21 +201,39 @@ public class StreamConfig {
 	}
 
 	/**
-	 * Retrieves {@code {@link #sourceIp}}
+	 * Retrieves {@code {@link #sourcePort}}
 	 *
-	 * @return value of {@link #sourceIp}
+	 * @return value of {@link #sourcePort}
 	 */
-	public String getSourceIp() {
-		return sourceIp;
+	public String getSourcePort() {
+		return sourcePort;
 	}
 
 	/**
-	 * Sets {@code sourceIp}
+	 * Sets {@code sourcePort}
 	 *
-	 * @param sourceIp the {@code java.lang.String} field
+	 * @param sourcePort the {@code java.lang.String} field
 	 */
-	public void setSourceIp(String sourceIp) {
-		this.sourceIp = sourceIp;
+	public void setSourcePort(String sourcePort) {
+		this.sourcePort = sourcePort;
+	}
+
+	/**
+	 * Retrieves {@code {@link #destinationPort}}
+	 *
+	 * @return value of {@link #destinationPort}
+	 */
+	public String getDestinationPort() {
+		return destinationPort;
+	}
+
+	/**
+	 * Sets {@code destinationPort}
+	 *
+	 * @param destinationPort the {@code java.lang.String} field
+	 */
+	public void setDestinationPort(String destinationPort) {
+		this.destinationPort = destinationPort;
 	}
 
 	/**
@@ -278,197 +259,71 @@ public class StreamConfig {
 	 *
 	 * @return value of {@link #srtMode}
 	 */
-	public Integer getSrtMode() {
+	public String getSrtMode() {
 		return srtMode;
 	}
 
 	/**
 	 * Sets {@code srtMode}
 	 *
-	 * @param srtMode the {@code java.lang.Integer} field
+	 * @param srtMode the {@code java.lang.String} field
 	 */
-	public void setSrtMode(Integer srtMode) {
+	public void setSrtMode(String srtMode) {
 		this.srtMode = srtMode;
 	}
 
 	/**
-	 * Retrieves {@code {@link #sourcePort}}
+	 * Retrieves {@code {@link #srtSettings}}
 	 *
-	 * @return value of {@link #sourcePort}
+	 * @return value of {@link #srtSettings}
 	 */
-	public String getSourcePort() {
-		return sourcePort;
+	public String getSrtSettings() {
+		return srtSettings;
 	}
 
 	/**
-	 * Sets {@code sourcePort}
+	 * Sets {@code srtSettings}
 	 *
-	 * @param sourcePort the {@code java.lang.String} field
+	 * @param srtSettings the {@code java.lang.String} field
 	 */
-	public void setSourcePort(String sourcePort) {
-		this.sourcePort = sourcePort;
+	public void setSrtSettings(String srtSettings) {
+		this.srtSettings = srtSettings;
 	}
 
 	/**
-	 * Retrieves {@code {@link #strictMode}}
+	 * Retrieves {@code {@link #rejectUnencrypted}}
 	 *
-	 * @return value of {@link #strictMode}
+	 * @return value of {@link #rejectUnencrypted}
 	 */
-	public Boolean getStrictMode() {
-		return strictMode;
+	public String getRejectUnencrypted() {
+		return rejectUnencrypted;
 	}
 
 	/**
-	 * Sets {@code strictMode}
+	 * Sets {@code rejectUnencrypted}
 	 *
-	 * @param strictMode the {@code java.lang.Boolean} field
+	 * @param rejectUnencrypted the {@code java.lang.String} field
 	 */
-	public void setStrictMode(Boolean strictMode) {
-		this.strictMode = strictMode;
+	public void setRejectUnencrypted(String rejectUnencrypted) {
+		this.rejectUnencrypted = rejectUnencrypted;
 	}
 
 	/**
-	 * Retrieves {@code {@link #passphrase}}
+	 * Retrieves {@code {@link #fec}}
 	 *
-	 * @return value of {@link #passphrase}
+	 * @return value of {@link #fec}
 	 */
-	public String getPassphrase() {
-		return passphrase;
+	public String getFec() {
+		return fec;
 	}
 
 	/**
-	 * Sets {@code passphrase}
+	 * Sets {@code fec}
 	 *
-	 * @param passphrase the {@code java.lang.String} field
+	 * @param fec the {@code java.lang.String} field
 	 */
-	public void setPassphrase(String passphrase) {
-		this.passphrase = passphrase;
-	}
-
-	/**
-	 * Retrieves {@code {@link #passphraseSet}}
-	 *
-	 * @return value of {@link #passphraseSet}
-	 */
-	public Boolean getPassphraseSet() {
-		return passphraseSet;
-	}
-
-	/**
-	 * Sets {@code passphraseSet}
-	 *
-	 * @param passphraseSet the {@code java.lang.Boolean} field
-	 */
-	public void setPassphraseSet(Boolean passphraseSet) {
-		this.passphraseSet = passphraseSet;
-	}
-
-	/**
-	 * Retrieves {@code {@link #srtToUdp}}
-	 *
-	 * @return value of {@link #srtToUdp}
-	 */
-	public Boolean getSrtToUdp() {
-		return srtToUdp;
-	}
-
-	/**
-	 * Sets {@code srtToUdp}
-	 *
-	 * @param srtToUdp the {@code java.lang.Boolean} field
-	 */
-	public void setSrtToUdp(Boolean srtToUdp) {
-		this.srtToUdp = srtToUdp;
-	}
-
-	/**
-	 * Retrieves {@code {@link #srtToUdpAddress}}
-	 *
-	 * @return value of {@link #srtToUdpAddress}
-	 */
-	public String getSrtToUdpAddress() {
-		return srtToUdpAddress;
-	}
-
-	/**
-	 * Sets {@code srtToUdpAddress}
-	 *
-	 * @param srtToUdpAddress the {@code java.lang.String} field
-	 */
-	public void setSrtToUdpAddress(String srtToUdpAddress) {
-		this.srtToUdpAddress = srtToUdpAddress;
-	}
-
-	/**
-	 * Retrieves {@code {@link #srtToUdpPort}}
-	 *
-	 * @return value of {@link #srtToUdpPort}
-	 */
-	public String getSrtToUdpPort() {
-		return srtToUdpPort;
-	}
-
-	/**
-	 * Sets {@code srtToUdpPort}
-	 *
-	 * @param srtToUdpPort the {@code java.lang.String} field
-	 */
-	public void setSrtToUdpPort(String srtToUdpPort) {
-		this.srtToUdpPort = srtToUdpPort;
-	}
-
-	/**
-	 * Retrieves {@code {@link #srtToUdpTos}}
-	 *
-	 * @return value of {@link #srtToUdpTos}
-	 */
-	public String getSrtToUdpTos() {
-		return srtToUdpTos;
-	}
-
-	/**
-	 * Sets {@code srtToUdpTos}
-	 *
-	 * @param srtToUdpTos the {@code java.lang.String} field
-	 */
-	public void setSrtToUdpTos(String srtToUdpTos) {
-		this.srtToUdpTos = srtToUdpTos;
-	}
-
-	/**
-	 * Retrieves {@code {@link #srtToUdpTtl}}
-	 *
-	 * @return value of {@link #srtToUdpTtl}
-	 */
-	public String getSrtToUdpTtl() {
-		return srtToUdpTtl;
-	}
-
-	/**
-	 * Sets {@code srtToUdpTtl}
-	 *
-	 * @param srtToUdpTtl the {@code java.lang.String} field
-	 */
-	public void setSrtToUdpTtl(String srtToUdpTtl) {
-		this.srtToUdpTtl = srtToUdpTtl;
-	}
-
-	/**
-	 * Retrieves {@code {@link #fecRtp}}
-	 *
-	 * @return value of {@link #fecRtp}
-	 */
-	public Integer getFecRtp() {
-		return fecRtp;
-	}
-
-	/**
-	 * Sets {@code fecRtp}
-	 *
-	 * @param fecRtp the {@code java.lang.Integer} field
-	 */
-	public void setFecRtp(Integer fecRtp) {
-		this.fecRtp = fecRtp;
+	public void setFec(String fec) {
+		this.fec = fec;
 	}
 
 	/**

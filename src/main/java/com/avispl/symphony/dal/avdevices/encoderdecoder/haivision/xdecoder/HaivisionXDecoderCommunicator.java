@@ -85,8 +85,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private Set<String> streamsNameFiltered;
 	private Set<String> streamsStatusFiltered;
 	private Set<String> portNumbersFiltered;
-	private boolean isUpdateLocalDecoderControl = false;
-	private boolean isUpdateLocalStreamControl = false;
+	private boolean isUpdateCachedDecoderControl = false;
+	private boolean isUpdateCachedStreamControl = false;
 	private boolean isEmergencyDelivery = false;
 	private ExtendedStatistics localExtendedStatistics;
 
@@ -95,7 +95,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private List<DecoderConfig> cachedDecoderConfigs;
 	private List<StreamConfig> realtimeStreamConfigs;
 	private List<StreamConfig> cachedStreamConfigs;
-	private List<String> stillImages;
+	private List<String> customStillImages;
 
 	//Adapter Properties
 	private String streamNameFilter;
@@ -222,15 +222,15 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			}
 			if (!isEmergencyDelivery) {
 				populateDecoderMonitoringMetrics(stats);
-				if (isUpdateLocalDecoderControl || cachedDecoderConfigs.isEmpty()) {
+				if (isUpdateCachedDecoderControl || cachedDecoderConfigs.isEmpty()) {
 					cachedDecoderConfigs = realtimeDecoderConfigs.stream().map(decoderConfig -> new DecoderConfig(decoderConfig)).collect(Collectors.toList());
-					isUpdateLocalDecoderControl = false;
+					isUpdateCachedDecoderControl = false;
 				}
-				if (isUpdateLocalStreamControl || cachedStreamConfigs.size() != filteredStreamIDSet.size()) {
+				if (isUpdateCachedStreamControl || cachedStreamConfigs.size() != filteredStreamIDSet.size()) {
 					cachedStreamConfigs.clear();
 					cachedStreamConfigs = realtimeStreamConfigs.stream().map(streamInfo -> new StreamConfig(streamInfo))
 							.filter(streamInfo -> filteredStreamIDSet.contains(Integer.parseInt(streamInfo.getId()))).collect(Collectors.toList());
-					isUpdateLocalStreamControl = false;
+					isUpdateCachedStreamControl = false;
 				}
 				// check Role is Admin or Operator
 				String role = retrieveUserRole();
@@ -461,15 +461,13 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				String[] splitResponses = response.split(DecoderConstant.COLON + "\r\n");
 				int stillImageDataIndex = 1;
 				if (stillImageDataIndex <= splitResponses.length || !StringUtils.isNullOrEmpty(splitResponses[1])) {
-					stillImages = new ArrayList<>();
-					stillImages.addAll(DropdownList.getListOfEnumNames(StillImage.class));
-
+					customStillImages = new ArrayList<>();
 					String[] deviceStillImage = splitResponses[stillImageDataIndex].split("\r\n");
 					for (int i = 0; i < deviceStillImage.length; i++) {
 						if (StringUtils.isNullOrEmpty(deviceStillImage[i])) {
 							break;
 						}
-						stillImages.add(deviceStillImage[i].trim());
+						customStillImages.add(deviceStillImage[i].trim());
 					}
 				} else {
 					updateFailedMonitor(MonitoringMetricGroup.STILL_IMAGE.getName(), DecoderConstant.GETTING_DEVICE_STILL_IMAGE_ERR);
@@ -596,12 +594,12 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 		Optional<DecoderConfig> realtimeDecoderConfig = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
 		Optional<DecoderConfig> cachedDecoderConfig = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-		if (cachedDecoderConfig.isPresent() && realtimeDecoderConfig.isPresent() && cachedDecoderConfig.get().equals(realtimeDecoderConfig.get()) && realtimeDecoderConfig.get().equals(decoderConfig)) {
+		if (cachedDecoderConfig.isPresent() && realtimeDecoderConfig.isPresent() && cachedDecoderConfig.get().equals(realtimeDecoderConfig.get()) && !realtimeDecoderConfig.get().equals(decoderConfig)) {
 			this.realtimeDecoderConfigs.remove(realtimeDecoderConfig.get());
 			this.realtimeDecoderConfigs.add(decoderConfig);
-			this.isUpdateLocalDecoderControl = true;
+			this.isUpdateCachedDecoderControl = true;
 		}
-		if (!isUpdateLocalDecoderControl) {
+		if (!isUpdateCachedDecoderControl) {
 			realtimeDecoderConfig.ifPresent(config -> this.realtimeDecoderConfigs.remove(config));
 			this.realtimeDecoderConfigs.add(decoderConfig);
 		}
@@ -649,6 +647,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				String[] responsesSplit = response.split("\r\n\r");
 
 				for (String responseSplit : responsesSplit) {
+					responseSplit = responseSplit.replaceFirst(DecoderConstant.STREAM_CONVERSION_OBJECT_RESPONSE, DecoderConstant.STREAM_CONVERSION_ALT_OBJECT_RESPONSE);
 					responseSplit = request.concat("\r\n").concat(responseSplit);
 					Map<String, Object> responseMap = Deserializer.convertDataToObject(responseSplit, request);
 					StreamStatsWrapper streamInfoWrapper = objectMapper.convertValue(responseMap, StreamStatsWrapper.class);
@@ -750,10 +749,10 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		if (cachedStreamConfig.isPresent() && realtimeStreamConfig.isPresent() && cachedStreamConfig.get().equals(realtimeStreamConfig.get()) && !realtimeStreamConfig.get().equals(streamConfigInfo)) {
 			this.realtimeStreamConfigs.remove(realtimeStreamConfig.get());
 			this.realtimeStreamConfigs.add(streamConfigInfo);
-			this.isUpdateLocalStreamControl = true;
+			this.isUpdateCachedStreamControl = true;
 		}
 
-		if (!isUpdateLocalStreamControl) {
+		if (!isUpdateCachedStreamControl) {
 			realtimeStreamConfig.ifPresent(config -> this.realtimeStreamConfigs.remove(config));
 			this.realtimeStreamConfigs.add(streamConfigInfo);
 		}
@@ -825,31 +824,16 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 	/**
 	 * This method is used for populate all Decoder control properties:
-	 * Buffering Mode: Auto
-	 * <li>Stream ID</li>
+	 * <li>Primary Stream</li>
+	 * <li>Secondary Stream</li>
 	 * <li>Still Image</li>
 	 * <li>Still Image Delay</li>
-	 * <li>Buffering Mode</li>
-	 * <li>Output Frame Rate</li>
-	 * <li>Output Resolution</li>
-	 *
-	 * Buffering Mode: Fixed
-	 * <li>Stream ID</li>
-	 * <li>Still Image</li>
-	 * <li>Still Image Delay</li>
+	 * <li>Enable Buffering</li>
 	 * <li>Buffering Mode</li>
 	 * <li>Buffering Delay</li>
-	 * <li>Output Frame Rate</li>
-	 * <li>Output Resolution</li>
-	 *
-	 * Buffering Mode: MultiSync
-	 * <li>Stream ID</li>
-	 * <li>Still Image</li>
-	 * <li>Still Image Delay</li>
-	 * <li>Buffering Mode</li>
 	 * <li>Multi Sync Buffering Delay</li>
 	 * <li>Output Frame Rate</li>
-	 * <li>Output Resolution</li>
+	 * <li>Output Resolution/li>
 	 *
 	 * @param stats is the map that store all statistics
 	 * @param advancedControllableProperties is the list that store all controllable properties
@@ -888,23 +872,16 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 			}
 
-			String stillImage ;
-			Optional<String> stillImageOptional = stillImages.stream().filter(st -> st.equals(cachedDecoderConfig.getStillImage())).findFirst();
-			if (!stillImageOptional.isPresent()) {
-				StillImage stillImageEnum = StillImage.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getStillImage(), DecoderConstant.EMPTY));
-				stillImage = stillImageEnum.getUiName();
-			}else {
-				stillImage = stillImageOptional.get();
-			}
-
-
+			Optional<String> customStillImageOptional = customStillImages.stream().filter(st -> st.equals(cachedDecoderConfig.getStillFile())).findFirst();
+			StillImage stillImageEnum = StillImage.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getStillImage(), DecoderConstant.EMPTY));
 			String stillImageDelay = getDefaultValueForNullData(NormalizeData.getDataNumberValue(cachedDecoderConfig.getStillImageDelay()), DecoderConstant.EMPTY);
 			SyncMode enableBuffering = SyncMode.getByName(getDefaultValueForNullData(cachedDecoderConfig.getEnableBuffering(), DecoderConstant.EMPTY));
-			OutputResolution outputResolution = OutputResolution.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getOutputResolution(), DecoderConstant.EMPTY));
+			OutputResolution outputResolution = OutputResolution.getByAPIStatsName(getDefaultValueForNullData(cachedDecoderConfig.getOutputResolution(), DecoderConstant.EMPTY));
 			OutputFrameRate outputFrameRate = OutputFrameRate.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getOutputFrameRate(), DecoderConstant.EMPTY));
 			State decoderSDIState = State.getByName(getDefaultValueForNullData(cachedDecoderConfig.getState(), DecoderConstant.EMPTY));
 
 			// Get list values of controllable property (dropdown list)
+			List<String> stillImages = DropdownList.getListOfEnumNames(StillImage.class);
 			List<String> resolutionModes = DropdownList.getListOfEnumNames(OutputResolution.class);
 			List<String> frameRateModes = new ArrayList<>();
 			List<String> streamNames = new ArrayList<>();
@@ -986,15 +963,28 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 			}
 
+			// Populate control
 			String decoderControllingGroup = ControllingMetricGroup.DECODER.getName() + decoderID + DecoderConstant.HASH;
 
-			// Populate control
 			addAdvanceControlProperties(advancedControllableProperties, createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.PRIMARY_STREAM.getName(), streamNames, primaryStreamName));
 
 			addAdvanceControlProperties(advancedControllableProperties,
 					createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.SECONDARY_STREAM.getName(), streamNames, secondaryStreamName));
 
-			addAdvanceControlProperties(advancedControllableProperties, createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE.getName(), stillImages, stillImage));
+			addAdvanceControlProperties(advancedControllableProperties,
+					createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE.getName(), stillImages, stillImageEnum.getUiName()));
+
+			if (stillImageEnum.equals(StillImage.CUSTOM) && !customStillImages.isEmpty()) {
+				if(customStillImageOptional.isPresent()){
+					addAdvanceControlProperties(advancedControllableProperties,
+							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.SELECT_STILL_IMAGE.getName(), customStillImages, customStillImageOptional.get()));
+				}else {
+					addAdvanceControlProperties(advancedControllableProperties,
+							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.SELECT_STILL_IMAGE.getName(), customStillImages, customStillImages.get(0)));
+				}
+			} else {
+				stats.remove(decoderControllingGroup + DecoderControllingMetric.SELECT_STILL_IMAGE.getName());
+			}
 
 			addAdvanceControlProperties(advancedControllableProperties, createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE_DELAY.getName(), stillImageDelay));
 
@@ -1006,8 +996,12 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			advancedControllableProperties.add(
 					createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_RESOLUTION.getName(), resolutionModes, outputResolution.getUiName()));
 
-			advancedControllableProperties.add(
-					createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_FRAME_RATE.getName(), frameRateModes, outputFrameRate.getUiName()));
+			if (!frameRateModes.isEmpty()) {
+				advancedControllableProperties.add(
+						createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_FRAME_RATE.getName(), frameRateModes, outputFrameRate.getUiName()));
+			} else {
+				stats.remove(decoderControllingGroup + DecoderControllingMetric.OUTPUT_FRAME_RATE.getName());
+			}
 
 			advancedControllableProperties.add(createSwitch(stats, decoderControllingGroup + DecoderControllingMetric.STATE.getName(), decoderSDIState.getCode(),
 					DecoderConstant.OFF, DecoderConstant.ON));
@@ -1027,7 +1021,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private void populateDecoderControlBufferingMode(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, DecoderConfig cachedDecoderConfig, Integer decoderID) {
 		// Get controllable property current value
 		BufferingMode bufferingMode = BufferingMode.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getBufferingMode(), DecoderConstant.EMPTY));
-		String bufferingDelay = getDefaultValueForNullData(cachedDecoderConfig.getBufferingDelay(), DecoderConstant.EMPTY);
+		String bufferingDelay = getDefaultValueForNullData(NormalizeData.getDataNumberValue(cachedDecoderConfig.getBufferingDelay()), DecoderConstant.EMPTY);
 		SyncMode enableBuffering = SyncMode.getByName(getDefaultValueForNullData(cachedDecoderConfig.getEnableBuffering(), DecoderConstant.EMPTY));
 
 		// Get list values of controllable property (dropdown)
@@ -1120,19 +1114,16 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 	/**
 	 * This method is used for calling control all Decoder control properties in case:
-	 * <li>Stream ID</li>
+	 * <li>Primary Stream</li>
+	 * <li>Secondary Stream</li>
 	 * <li>Still Image</li>
 	 * <li>Still Image Delay</li>
+	 * <li>Enable Buffering</li>
 	 * <li>Buffering Mode</li>
 	 * <li>Buffering Delay</li>
 	 * <li>Multi Sync Buffering Delay</li>
-	 * <li>Hdr Dynamic Range</li>
-	 * <li>Output 1</li>
-	 * <li>Output 2</li>
-	 * <li>Output 3</li>
-	 * <li>Output 4</li>
 	 * <li>Output Frame Rate</li>
-	 * <li>Quad Mode</li>
+	 * <li>Output Resolution/li>
 	 *
 	 * @param stats is the map that store all statistics
 	 * @param advancedControllableProperties is the list that store all controllable properties
@@ -1147,79 +1138,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		Optional<DecoderConfig> cachedDecoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
 		if (cachedDecoderConfigOptional.isPresent()) {
 			DecoderConfig cachedDecoderConfig = cachedDecoderConfigOptional.get();
-			OutputResolution outputResolution = OutputResolution.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getOutputResolution(), DecoderConstant.EMPTY));
-
-			// Get list values of controllable property (dropdown)
-			List<String> resolutionModes = DropdownList.getListOfEnumNames(OutputResolution.class);
-			List<String> frameRateModes = new ArrayList<>();
 			List<String> streamNames = new ArrayList<>();
-
-			switch (outputResolution.getResolutionCategory()) {
-				case DecoderConstant.AUTOMATIC_RESOLUTION:
-					frameRateModes = DropdownList.getListOfEnumNames(OutputFrameRate.class);
-					break;
-				case DecoderConstant.TV_RESOLUTION:
-					switch (outputResolution) {
-						case TV_RESOLUTIONS_1080P:
-							frameRateModes = DropdownList.getListOfEnumNames(OutputFrameRate.class);
-							frameRateModes.remove(OutputFrameRate.OUTPUT_FRAME_RATE_75.getUiName());
-							break;
-						case TV_RESOLUTIONS_1080I:
-							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-							break;
-						case TV_RESOLUTIONS_720P:
-							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_59.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_50.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-							break;
-						case TV_RESOLUTIONS_576P:
-							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_50.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-							break;
-						case TV_RESOLUTIONS_576I:
-							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_25.getUiName());
-							break;
-						case TV_RESOLUTIONS_480P:
-							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_59.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-							break;
-						case TV_RESOLUTIONS_480I:
-							frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_30.getUiName());
-							frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_29.getUiName());
-							break;
-						default:
-							if (logger.isWarnEnabled()) {
-								logger.warn(String.format("Output resolution %s is not supported.", outputResolution.getUiName()));
-							}
-							break;
-					}
-					break;
-				case DecoderConstant.COMPUTER_RESOLUTION:
-					frameRateModes.add(OutputFrameRate.AUTO.getUiName());
-					frameRateModes.add(OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName());
-					break;
-				case DecoderConstant.NATIVE_RESOLUTION:
-					break;
-				default:
-					if (logger.isWarnEnabled()) {
-						logger.warn(String.format("Output resolution %s is not supported.", outputResolution.getUiName()));
-					}
-					break;
-			}
-
 			streamNames.add(DecoderConstant.DEFAULT_STREAM_NAME);
 			if (this.cachedStreamConfigs != null) {
 				for (StreamConfig streamConfig : cachedStreamConfigs) {
@@ -1235,6 +1154,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 			switch (decoderControllingMetric) {
 				case PRIMARY_STREAM:
+					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
+
 					String primaryStreamID = DecoderConstant.DEFAULT_STREAM_ID;
 					String primaryStreamName = DecoderConstant.NONE;
 					for (StreamConfig cachedStreamConfig : cachedStreamConfigs) {
@@ -1244,10 +1165,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 							break;
 						}
 					}
-					cachedDecoderConfig.setPrimaryStream(primaryStreamID);
 
-					Optional<DecoderConfig> decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					cachedDecoderConfig.setPrimaryStream(primaryStreamID);
 					this.cachedDecoderConfigs.add(cachedDecoderConfig);
 
 					addAdvanceControlProperties(advancedControllableProperties,
@@ -1256,6 +1175,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
 				case SECONDARY_STREAM:
+					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
+
 					String secondaryStreamID = DecoderConstant.DEFAULT_STREAM_ID;
 					String secondaryStreamName = DecoderConstant.NONE;
 					for (StreamConfig cachedStreamConfig : cachedStreamConfigs) {
@@ -1265,10 +1186,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 							break;
 						}
 					}
-					cachedDecoderConfig.setSecondaryStream(secondaryStreamID);
 
-					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					cachedDecoderConfig.setSecondaryStream(secondaryStreamID);
 					this.cachedDecoderConfigs.add(cachedDecoderConfig);
 
 					addAdvanceControlProperties(advancedControllableProperties,
@@ -1277,24 +1196,30 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
 				case STILL_IMAGE:
-					Optional<String> stillImageOptional = stillImages.stream().filter(st -> st.equals(value)).findFirst();
-					if (stillImageOptional.isPresent()) {
-						cachedDecoderConfig.setStillImage(stillImageOptional.get());
-					}else {
-						StillImage stillImageEnum = StillImage.getByUIName(value);
-						cachedDecoderConfig.setStillImage(stillImageEnum.getApiName());
-					}
+					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
 
-					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					StillImage stillImageEnum = StillImage.getByUIName(value);
+
+					cachedDecoderConfig.setStillImage(stillImageEnum.getApiName());
 					this.cachedDecoderConfigs.add(cachedDecoderConfig);
 
-					addAdvanceControlProperties(advancedControllableProperties,
-							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE.getName(), stillImages, value));
-					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
+					populateDecoderControl(stats, advancedControllableProperties, decoderID);
+					populateLocalExtendedStats(stats, advancedControllableProperties);
+					break;
+				case SELECT_STILL_IMAGE:
+					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
+
+					Optional<String> customStillImageOptional = customStillImages.stream().filter(st -> st.equals(value)).findFirst();
+
+					customStillImageOptional.ifPresent(config -> cachedDecoderConfig.setStillFile(config));
+					this.cachedDecoderConfigs.add(cachedDecoderConfig);
+
+					populateDecoderControl(stats, advancedControllableProperties, decoderID);
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
 				case STILL_IMAGE_DELAY:
+					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
+
 					Integer stillImageDelay = DecoderConstant.DEFAULT_STILL_IMAGE_DELAY;
 					try {
 						stillImageDelay = Integer.parseInt(value);
@@ -1309,10 +1234,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 							logger.warn("Invalid still image delay value", e);
 						}
 					}
-					cachedDecoderConfig.setStillImageDelay(value);
 
-					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					cachedDecoderConfig.setStillImageDelay(stillImageDelay.toString());
 					this.cachedDecoderConfigs.add(cachedDecoderConfig);
 
 					addAdvanceControlProperties(advancedControllableProperties,
@@ -1321,15 +1244,15 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
 				case SYNC_MODE:
+					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
+
 					boolean isEnableSyncMode = mapSwitchControlValue(value);
 					String enableSyncMode = SyncMode.ENABLE_SYNC_MODE.getName();
 					if (!isEnableSyncMode) {
 						enableSyncMode = SyncMode.DISABLE_SYNC_MODE.getName();
 					}
-					cachedDecoderConfig.setEnableBuffering(enableSyncMode);
 
-					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					cachedDecoderConfig.setEnableBuffering(enableSyncMode);
 					this.cachedDecoderConfigs.add(cachedDecoderConfig);
 
 					addAdvanceControlProperties(advancedControllableProperties, createSwitch(stats, decoderControllingGroup + DecoderControllingMetric.SYNC_MODE.getName(), Integer.parseInt(value),
@@ -1339,11 +1262,11 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
 				case BUFFERING_MODE:
-					BufferingMode bufferingMode = BufferingMode.getByUiName(value);
-					cachedDecoderConfig.setBufferingMode(bufferingMode.getApiName());
+					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
 
-					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					BufferingMode bufferingMode = BufferingMode.getByUiName(value);
+
+					cachedDecoderConfig.setBufferingMode(bufferingMode.getApiName());
 					this.cachedDecoderConfigs.add(cachedDecoderConfig);
 
 					populateDecoderControlBufferingMode(stats, advancedControllableProperties, cachedDecoderConfig, decoderID);
@@ -1351,6 +1274,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
 				case BUFFERING_DELAY:
+					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
+
 					Integer bufferingDelay = DecoderConstant.MIN_BUFFERING_DELAY;
 					try {
 						bufferingDelay = Integer.parseInt(value);
@@ -1365,10 +1290,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 							logger.warn("Invalid buffering delay value", e);
 						}
 					}
-					cachedDecoderConfig.setBufferingDelay(value);
 
-					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					cachedDecoderConfig.setBufferingDelay(bufferingDelay.toString());
 					this.cachedDecoderConfigs.add(cachedDecoderConfig);
 
 					advancedControllableProperties.add(createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.BUFFERING_DELAY.getName(), bufferingDelay.toString()));
@@ -1376,6 +1299,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
 				case MULTI_SYNC_BUFFERING_DELAY:
+					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
+
 					Integer multiSyncBufferingDelay = DecoderConstant.DEFAULT_MULTI_SYNC_BUFFERING_DELAY;
 					try {
 						multiSyncBufferingDelay = Integer.parseInt(value);
@@ -1390,10 +1315,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 							logger.warn("Invalid buffering delay value", e);
 						}
 					}
-					cachedDecoderConfig.setBufferingDelay(value);
 
-					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					cachedDecoderConfig.setBufferingDelay(multiSyncBufferingDelay.toString());
 					this.cachedDecoderConfigs.add(cachedDecoderConfig);
 
 					advancedControllableProperties.add(
@@ -1402,73 +1325,64 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
 				case OUTPUT_FRAME_RATE:
-					OutputFrameRate outputFrameRate = OutputFrameRate.getByUIName(value);
-					cachedDecoderConfig.setOutputFrameRate(outputFrameRate.getApiName());
+					cachedDecoderConfigs.remove(cachedDecoderConfig);
 
-					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					OutputFrameRate outputFrameRate = OutputFrameRate.getByUIName(value);
+
+					cachedDecoderConfig.setOutputFrameRate(outputFrameRate.getApiName());
 					this.cachedDecoderConfigs.add(cachedDecoderConfig);
 
-					addAdvanceControlProperties(advancedControllableProperties,
-							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_FRAME_RATE.getName(), frameRateModes, outputFrameRate.getUiName()));
-					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
+					populateDecoderControl(stats, advancedControllableProperties, decoderID);
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
 				case OUTPUT_RESOLUTION:
-					OutputResolution outputResolutionControl = OutputResolution.getByUIName(value);
-					cachedDecoderConfig.setOutputResolution(outputResolutionControl.getApiName());
+					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
 
-					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
+					OutputResolution outputResolutionControl = OutputResolution.getByUIName(value);
+
+					cachedDecoderConfig.setOutputResolution(outputResolutionControl.getApiStatsName());
 					this.cachedDecoderConfigs.add(cachedDecoderConfig);
 
-					addAdvanceControlProperties(advancedControllableProperties,
-							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_RESOLUTION.getName(), resolutionModes, outputResolution.getUiName()));
 					populateDecoderControl(stats, advancedControllableProperties, decoderID);
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
 				case STATE:
-					DecoderConfig realtimeDecoderConfig = this.realtimeDecoderConfigs.get(decoderID);
+					Optional<DecoderConfig> realtimeDecoderConfigOptional = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
 					State state = State.getByCode(Integer.parseInt(value));
-					cachedDecoderConfig.setState(state.getName());
-
-					decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-					decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
-					this.cachedDecoderConfigs.add(cachedDecoderConfig);
-
 					switch (state) {
 						case STOPPED:
 							boolean isStopSuccessfully = performActiveDecoderSDIControl(cachedDecoderConfig, decoderID, CommandOperation.STOP.getName());
 
-							if (!cachedDecoderConfig.deepEquals(realtimeDecoderConfig)) {
-								decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-								decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
-								this.cachedDecoderConfigs.add(realtimeDecoderConfig);
-							}
-							if (!isStopSuccessfully) {
-								reverseActiveControlAfterControlFailed(cachedDecoderConfig, decoderID);
-								throw new ResourceNotReachableException("failed to stop decoder SDI " + decoderID + DecoderConstant.NEXT_LINE);
+							if (isStopSuccessfully && realtimeDecoderConfigOptional.isPresent()) {
+								this.realtimeDecoderConfigs.remove(realtimeDecoderConfigOptional.get());
+								realtimeDecoderConfigOptional.get().setState(state.getName());
+								this.realtimeDecoderConfigs.add(realtimeDecoderConfigOptional.get());
+								this.cachedDecoderConfigs.remove(cachedDecoderConfig);
+								this.cachedDecoderConfigs.add(realtimeDecoderConfigOptional.get());
+							} else {
+								throw new ResourceNotReachableException("failed to stop decoder SDI " + decoderID);
 							}
 							populateDecoderControl(stats, advancedControllableProperties, decoderID);
 							break;
 						case START:
 							// update decoder SDI if properties of decoder SDI is changed
-							if (!cachedDecoderConfig.deepEquals(realtimeDecoderConfig)) {
-								String response = performDecoderSDIUpdateControl(cachedDecoderConfig, decoderID);
+							boolean isStartSuccessfully = performActiveDecoderSDIControl(cachedDecoderConfig, decoderID, CommandOperation.SET.getName());
 
-								if (response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
-									decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-									decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
-									this.realtimeDecoderConfigs.add(cachedDecoderConfig);
-								} else {
-									throw new ResourceNotReachableException("failed to start decoder SDI " + decoderID + DecoderConstant.NEXT_LINE + response);
-								}
+							if (!isStartSuccessfully) {
+								throw new ResourceNotReachableException("failed to start decoder SDI " + decoderID);
 							}
 
 							// start decoder SDI
-							boolean isStartSuccessfully = performActiveDecoderSDIControl(cachedDecoderConfig, decoderID, CommandOperation.START.getName());
-							if (!isStartSuccessfully) {
-								reverseActiveControlAfterControlFailed(cachedDecoderConfig, decoderID);
+							isStartSuccessfully = performActiveDecoderSDIControl(cachedDecoderConfig, decoderID, CommandOperation.START.getName());
+
+							if (isStartSuccessfully && realtimeDecoderConfigOptional.isPresent()) {
+								this.realtimeDecoderConfigs.remove(realtimeDecoderConfigOptional.get());
+								this.cachedDecoderConfigs.remove(cachedDecoderConfig);
+								cachedDecoderConfig.setState(state.getName());
+								this.realtimeDecoderConfigs.add(cachedDecoderConfig);
+								this.cachedDecoderConfigs.add(cachedDecoderConfig);
+							} else {
+								throw new ResourceNotReachableException("failed to start decoder SDI " + decoderID);
 							}
 
 							populateDecoderControl(stats, advancedControllableProperties, decoderID);
@@ -1481,20 +1395,26 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					}
 					break;
 				case APPLY_CHANGE:
-					String response = performDecoderSDIUpdateControl(cachedDecoderConfig, decoderID);
+					boolean isUpdateSuccessfully = performActiveDecoderSDIControl(cachedDecoderConfig, decoderID, CommandOperation.SET.getName());
 
-					if (response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
-						Optional<DecoderConfig> realtimeDecoderConfigOptional = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-						realtimeDecoderConfigOptional.ifPresent(config -> this.realtimeDecoderConfigs.remove(config));
-						this.realtimeDecoderConfigs.add(cachedDecoderConfig);
+					if (isUpdateSuccessfully) {
+						realtimeDecoderConfigOptional = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+						realtimeDecoderConfigOptional.ifPresent(config -> {
+							this.realtimeDecoderConfigs.remove(config);
+							this.realtimeDecoderConfigs.add(cachedDecoderConfig);
+						});
 						populateDecoderControl(stats, advancedControllableProperties, decoderID);
 					} else {
-						throw new ResourceNotReachableException("failed to update decoder SDI " + decoderID + DecoderConstant.NEXT_LINE + response);
+						throw new ResourceNotReachableException("failed to update decoder SDI " + decoderID);
 					}
 					break;
 				case CANCEL:
-					this.cachedDecoderConfigs.clear();
-					this.cachedDecoderConfigs.addAll(this.realtimeDecoderConfigs);
+					realtimeDecoderConfigOptional = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
+
+					realtimeDecoderConfigOptional.ifPresent(config -> {
+						this.cachedDecoderConfigs.remove(cachedDecoderConfig);
+						this.cachedDecoderConfigs.add(config);
+					});
 					populateDecoderControl(stats, advancedControllableProperties, decoderID);
 					break;
 				default:
@@ -1519,86 +1439,49 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	}
 
 	/**
-	 * This method is used to perform decoder SDI control: update
+	 * This method is used to perform decoder SDI control: start/ stop/ update
 	 *
-	 * @param decoderConfig set of decoder config info
+	 * @param decoderConfig is set of decoder config info
 	 * @param decoderID is ID of decoder
-	 *
-	 * @return String response
-	 *
+	 * @param active start/ stop/ update activation
+	 * @return Boolean control result
 	 * @throws ResourceNotReachableException when fail to send CLI command
 	 */
-	private String performDecoderSDIUpdateControl(DecoderConfig decoderConfig, Integer decoderID) {
+	private boolean performActiveDecoderSDIControl(DecoderConfig decoderConfig, Integer decoderID, String active) {
+
 		try {
-			String request = decoderConfig.contributeCommand(CommandOperation.OPERATION_VIDDEC.getName(), decoderID, CommandOperation.SET.getName());
+			String request;
+			switch (active) {
+				case "set":
+					request = decoderConfig.contributeCommand(CommandOperation.OPERATION_VIDDEC.getName(), decoderID, CommandOperation.SET.getName());
+					break;
+				case "start":
+				case "stop":
+					request = CommandOperation.OPERATION_VIDDEC.getName()
+							.concat(DecoderConstant.SPACE)
+							.concat(decoderID.toString())
+							.concat(DecoderConstant.SPACE)
+							.concat(active);
+					break;
+				default:
+					throw new IllegalStateException("Unexpected decoder activation: " + active);
+			}
 			String response = send(request);
-			if (!StringUtils.isNullOrEmpty(response)) {
-				return response;
+			if (!StringUtils.isNullOrEmpty(response) && response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
+				return true;
+			} else {
+				throw new ResourceNotReachableException(String.format("failed to %s decoder SDI %s", active, decoderID) + DecoderConstant.NEXT_LINE + response);
 			}
 		} catch (Exception e) {
 			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.NEXT_LINE + e.getMessage(), e);
 		}
-		return DecoderConstant.EMPTY;
 	}
 
-	/**
-	 * This method is used to perform decoder SDI control: start/ stop
-	 *
-	 * @param decoderConfig is set of decoder config info
-	 * @param decoderID is ID of decoder
-	 * @param active start/ stop activation
-	 *
-	 * @return Boolean control result
-	 *
-	 * @throws ResourceNotReachableException when fail to send CLI command
-	 */
-	private boolean performActiveDecoderSDIControl(DecoderConfig decoderConfig, Integer decoderID, String active) {
-		try {
-			String request = CommandOperation.OPERATION_VIDDEC.getName()
-					.concat(DecoderConstant.SPACE)
-					.concat(decoderID.toString())
-					.concat(DecoderConstant.SPACE)
-					.concat(active);
-			String response = send(request);
-			return !StringUtils.isNullOrEmpty(response) && response.contains(DecoderConstant.SUCCESSFUL_RESPONSE);
-		} catch (Exception e) {
-			reverseActiveControlAfterControlFailed(decoderConfig, decoderID);
-			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + active + DecoderConstant.NEXT_LINE + e.getMessage(), e);
-		}
-	}
+	//--------------------------------------------------------------------------------------------------------------------------------
+	//endregion
 
-	/**
-	 * This method is used to reverse active control value after control failed
-	 *
-	 * @param decoderConfig list of decoder data
-	 * @param decoderID id of decoder SDI
-	 */
-	private void reverseActiveControlAfterControlFailed(DecoderConfig decoderConfig, Integer decoderID) {
-		State state = State.getByName(getDefaultValueForNullData(decoderConfig.getState(), DecoderConstant.EMPTY));
-		switch (state) {
-			case STOPPED:
-				state = State.START;
-				decoderConfig.setState(state.getName());
-
-				Optional<DecoderConfig> decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-				decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
-				this.cachedDecoderConfigs.add(decoderConfig);
-				break;
-			case START:
-				state = State.STOPPED;
-				decoderConfig.setState(state.getName());
-
-			  decoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
-				decoderConfigOptional.ifPresent(config -> this.cachedDecoderConfigs.remove(config));
-				this.cachedDecoderConfigs.add(decoderConfig);
-				break;
-			default:
-				if (logger.isWarnEnabled()) {
-					logger.warn(String.format("Decoder state %s is not supported.", state.getName()));
-				}
-				break;
-		}
-	}
+	//region populate stream control
+	//--------------------------------------------------------------------------------------------------------------------------------
 
 	//--------------------------------------------------------------------------------------------------------------------------------
 	//endregion

@@ -51,7 +51,7 @@ public class NormalizeData {
 		if(data == null){
 			return DecoderConstant.EMPTY;
 		}
-		return data.replaceAll(DecoderConstant.REGEX, DecoderConstant.EMPTY);
+		return data.replaceAll(DecoderConstant.REGEX_ONLY_GET_DOUBLE, DecoderConstant.EMPTY);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class NormalizeData {
 		if (StringUtils.isNullOrEmpty(spiltDataList[dataNumberIndex])) {
 			return DecoderConstant.EMPTY;
 		}
-		return spiltDataList[dataNumberIndex].replaceAll(DecoderConstant.REGEX, DecoderConstant.EMPTY);
+		return spiltDataList[dataNumberIndex].replaceAll(DecoderConstant.REGEX_ONLY_GET_DOUBLE, DecoderConstant.EMPTY);
 	}
 
 	/**
@@ -104,6 +104,6 @@ public class NormalizeData {
 		if (dataPercentValueIndex >= spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[dataPercentValueIndex])) {
 			return DecoderConstant.EMPTY;
 		}
-		return spiltDataList[dataPercentValueIndex].replaceAll(DecoderConstant.REGEX, DecoderConstant.EMPTY);
+		return spiltDataList[dataPercentValueIndex].replaceAll(DecoderConstant.REGEX_ONLY_GET_DOUBLE, DecoderConstant.EMPTY);
 	}
 }

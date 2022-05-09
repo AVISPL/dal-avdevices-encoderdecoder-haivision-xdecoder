@@ -27,7 +27,7 @@ public class DecoderConstant {
 	public static final String SPACE =  " ";
 	public static final String EMPTY = "";
 	public static final String AT = "at";
-	public static final String REGEX = "[^0-9?!\\\\.]";
+	public static final String REGEX_ONLY_GET_DOUBLE = "[^0-9?!\\\\.]";
 	public static final String ADDRESS_ANY = "Any";
 	public static final String NONE = "None";
 	public static final String DEFAULT_STREAM_NAME = "(None)";
@@ -59,6 +59,8 @@ public class DecoderConstant {
 	public static final String SUCCESSFUL_RESPONSE = "successfully";
 	public static final String OPERATOR_ROLE = "Operator";
 	public static final String ADMIN_ROLE = "Administrator";
+	public static final String STREAM_CONVERSION_OBJECT_RESPONSE = "Stream Flipping";
+	public static final String STREAM_CONVERSION_ALT_OBJECT_RESPONSE = "StreamConversion:\r\nStream Flipping\t";
 	public static final int MIN_DECODER_ID = 1;
 	public static final int MAX_DECODER_ID = 3;
 	public static final int MIN_NUMBER_OF_FAILED_MONITOR_METRIC = 3;
@@ -66,7 +68,7 @@ public class DecoderConstant {
 	public static final Integer DEFAULT_STILL_IMAGE_DELAY = 1;
 	public static final Integer MAX_STILL_IMAGE_DELAY = 1000;
 	public static final Integer MIN_BUFFERING_DELAY = 0;
-	public static final Integer MAX_BUFFERING_DELAY = 3000;
+	public static final Integer MAX_BUFFERING_DELAY = 2000;
 	public static final Integer MIN_MULTI_SYNC_BUFFERING_DELAY = 0;
 	public static final Integer DEFAULT_MULTI_SYNC_BUFFERING_DELAY = 1000;
 	public static final Integer MAX_MULTI_SYNC_BUFFERING_DELAY = 10000;
