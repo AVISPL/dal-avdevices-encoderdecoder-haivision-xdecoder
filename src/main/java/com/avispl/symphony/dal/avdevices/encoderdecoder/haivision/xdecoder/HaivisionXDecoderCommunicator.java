@@ -286,6 +286,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					Integer decoderID = Integer.parseInt(name);
 					decoderControl(stats, advancedControllableProperties, decoderID, splitProperty[1], value);
 					break;
+				case CREATE_STREAM:
+					createStreamControl(stats, advancedControllableProperties, DecoderConstant.EMPTY, splitProperty[1], value);
+					break;
 				default:
 					if (logger.isWarnEnabled()) {
 						logger.warn(String.format("Controlling group %s is not supported.", controllingGroup.getName()));
@@ -341,9 +344,13 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param advancedControllableProperties is the list that store all controllable properties
 	 */
 	private void populateControllingMetrics(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties) {
+		// Decoder control
 		for (Integer decoderID = DecoderConstant.MIN_DECODER_ID; decoderID < DecoderConstant.MAX_DECODER_ID; decoderID++) {
 			populateDecoderControl(stats, advancedControllableProperties, decoderID);
 		}
+
+		// Create stream control
+		populateCreateStreamControl(stats, advancedControllableProperties, createStream, ControllingMetricGroup.CREATE_STREAM.getName() + DecoderConstant.HASH);
 	}
 
 	/**
@@ -1910,7 +1917,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param controllableProperty name of controllable property
 	 * @param value value of controllable property
 	 */
-	public void createStreamControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String streamControllingGroup,
+	private void createStreamControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String streamControllingGroup,
 			String controllableProperty, String value) {
 		StreamControllingMetric streamControllingMetric = StreamControllingMetric.getByName(controllableProperty);
 
@@ -1952,9 +1959,25 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
 			case PORT:
-				createStream.setPort(value);
+				String port = DecoderConstant.EMPTY;
+				try {
+				Integer portIntValue = Integer.parseInt(value);
+				if (portIntValue < DecoderConstant.MIN_PORT) {
+					portIntValue = DecoderConstant.MIN_PORT;
+				}
+				if (portIntValue > DecoderConstant.MAX_PORT) {
+					portIntValue = DecoderConstant.MAX_PORT;
+				}
+				port = portIntValue.toString();
+			} catch (Exception e) {
+				if (logger.isWarnEnabled()) {
+					logger.warn("Invalid port value", e);
+				}
+			}
+				createStream.setPort(port);
+				createStream.setDestinationPort(port);
 				addAdvanceControlProperties(advancedControllableProperties,
-						createNumeric(stats, streamControllingGroup + StreamControllingMetric.PORT.getName(), createStream.getPort()));
+						createNumeric(stats, streamControllingGroup + StreamControllingMetric.PORT.getName(), port));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
@@ -1980,24 +2003,24 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
 			case SOURCE_PORT:
-				String port = DecoderConstant.EMPTY;
+				String sourcePort = DecoderConstant.EMPTY;
 				try {
-					Integer portIntValue = Integer.parseInt(value);
-					if (portIntValue < DecoderConstant.MIN_PORT) {
-						portIntValue = DecoderConstant.MIN_PORT;
+					Integer sourcePortIntValue = Integer.parseInt(value);
+					if (sourcePortIntValue < DecoderConstant.MIN_PORT) {
+						sourcePortIntValue = DecoderConstant.MIN_PORT;
 					}
-					if (portIntValue > DecoderConstant.MAX_PORT) {
-						portIntValue = DecoderConstant.MAX_PORT;
+					if (sourcePortIntValue > DecoderConstant.MAX_PORT) {
+						sourcePortIntValue = DecoderConstant.MAX_PORT;
 					}
-					port = portIntValue.toString();
+					sourcePort = sourcePortIntValue.toString();
 				} catch (Exception e) {
 					if (logger.isWarnEnabled()) {
 						logger.warn("Invalid port value", e);
 					}
 				}
-				createStream.setSourcePort(port);
+				createStream.setSourcePort(sourcePort);
 				addAdvanceControlProperties(advancedControllableProperties,
-						createNumeric(stats, streamControllingGroup + StreamControllingMetric.SOURCE_PORT.getName(), port));
+						createNumeric(stats, streamControllingGroup + StreamControllingMetric.SOURCE_PORT.getName(), sourcePort));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
@@ -2076,8 +2099,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				break;
 			case SRT_TO_UDP_ADDRESS:
 				streamConversion = createStream.getStreamConversion();
+				streamConversion.setAddress(value);
 				addAdvanceControlProperties(advancedControllableProperties,
-						createText(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_ADDRESS.getName(), streamConversion.getAddress()));
+						createText(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_ADDRESS.getName(), value));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
@@ -2108,23 +2132,23 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			case SRT_TO_UDP_TOS:
 				streamConversion = createStream.getStreamConversion();
 				try {
-					Integer copyValue;
+					Integer tosIntValue;
 					if (value.startsWith(DecoderConstant.HEX_PREFIX)) {
-						copyValue = Integer.parseInt(value.replace(DecoderConstant.HEX_PREFIX, ""), 16);
+						tosIntValue = Integer.parseInt(value.replace(DecoderConstant.HEX_PREFIX, ""), 16);
 					} else {
-						copyValue = (int) Float.parseFloat(value);
+						tosIntValue = (int) Float.parseFloat(value);
 					}
-					String copyHexValue = DecoderConstant.HEX_PREFIX + String.format("%02X", 0xFF & copyValue);
-					if (copyValue < Integer.parseInt(DecoderConstant.MIN_OF_TOS, 16)) {
-						copyHexValue = DecoderConstant.HEX_PREFIX + DecoderConstant.MIN_OF_TOS;
+					String tosHexValue = DecoderConstant.HEX_PREFIX + String.format("%02X", 0xFF & tosIntValue);
+					if (tosIntValue < Integer.parseInt(DecoderConstant.MIN_OF_TOS, 16)) {
+						tosHexValue = DecoderConstant.HEX_PREFIX + DecoderConstant.MIN_OF_TOS;
 					}
-					if (copyValue > Integer.parseInt(DecoderConstant.MAX_OF_TOS, 16)) {
-						copyHexValue = DecoderConstant.HEX_PREFIX + DecoderConstant.MAX_OF_TOS;
+					if (tosIntValue > Integer.parseInt(DecoderConstant.MAX_OF_TOS, 16)) {
+						tosHexValue = DecoderConstant.HEX_PREFIX + DecoderConstant.MAX_OF_TOS;
 					}
-					streamConversion.setTos(copyHexValue);
+					streamConversion.setTos(tosHexValue);
 					createStream.setStreamConversion(streamConversion);
 					addAdvanceControlProperties(advancedControllableProperties,
-							createText(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_TOS.getName(), copyHexValue));
+							createText(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_TOS.getName(), tosHexValue));
 					populateCancelButtonForCreateStream(stats, advancedControllableProperties);
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
@@ -2164,7 +2188,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			case PASSPHRASE:
 				createStream.setPassphrase(value);
 				addAdvanceControlProperties(advancedControllableProperties,
-						createText(stats, streamControllingGroup + StreamControllingMetric.PASSPHRASE.getName(), createStream.getPassphrase()));
+						createText(stats, streamControllingGroup + StreamControllingMetric.PASSPHRASE.getName(), value));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;

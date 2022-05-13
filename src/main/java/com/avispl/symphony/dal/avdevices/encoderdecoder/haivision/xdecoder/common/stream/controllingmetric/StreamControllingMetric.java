@@ -41,6 +41,7 @@ public enum StreamControllingMetric {
 	UPDATE("Update"),
 	APPLY_CHANGE("ApplyChanges"),
 	CANCEL("CancelChanges"),
+	IS_NOT_CONTROLLING_METRIC("IsNotStreamControllingMetric"),
 	EDITED("Edited");
 
 	private final String name;
@@ -71,7 +72,10 @@ public enum StreamControllingMetric {
 	 */
 	public static StreamControllingMetric getByName(String name) {
 		Optional<StreamControllingMetric> streamControllingMetric = Arrays.stream(StreamControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();
-		return streamControllingMetric.orElse(null);
+		if (streamControllingMetric.isPresent()) {
+			return streamControllingMetric.get();
+		}
+		throw new IllegalArgumentException("Can not find the enum with name: " + name);
 	}
 }
 
