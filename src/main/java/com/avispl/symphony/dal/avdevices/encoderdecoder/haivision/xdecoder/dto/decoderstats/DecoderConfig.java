@@ -13,6 +13,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.SyncMode;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.BufferingMode;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
 import com.avispl.symphony.dal.util.StringUtils;
 
 /**
@@ -30,11 +31,14 @@ public class DecoderConfig {
 	@JsonAlias("StreamID")
 	private String primaryStream;
 
-	@JsonAlias(" AlternativeStreamID")
+	@JsonAlias("AlternativeStreamID")
 	private String secondaryStream;
 
 	@JsonAlias("StillImage")
 	private String stillImage;
+
+	@JsonAlias("StillFile")
+	private String  stillFile;
 
 	@JsonAlias("StillDelay")
 	private String stillImageDelay;
@@ -70,6 +74,7 @@ public class DecoderConfig {
 		this.primaryStream = decoderConfig.getPrimaryStream();
 		this.secondaryStream = decoderConfig.getSecondaryStream();
 		this.stillImage = decoderConfig.getStillImage();
+		this.stillFile = decoderConfig.getStillFile();
 		this.stillImageDelay = decoderConfig.getStillImageDelay();
 		this.enableBuffering = decoderConfig.getEnableBuffering();
 		this.bufferingMode = decoderConfig.getBufferingMode();
@@ -149,6 +154,24 @@ public class DecoderConfig {
 	 */
 	public void setStillImage(String stillImage) {
 		this.stillImage = stillImage;
+	}
+
+	/**
+	 * Retrieves {@code {@link #stillFile}}
+	 *
+	 * @return value of {@link #stillFile}
+	 */
+	public String getStillFile() {
+		return stillFile;
+	}
+
+	/**
+	 * Sets {@code stillFile}
+	 *
+	 * @param stillFile the {@code java.lang.String} field
+	 */
+	public void setStillFile(String stillFile) {
+		this.stillFile = stillFile;
 	}
 
 	/**
@@ -291,11 +314,12 @@ public class DecoderConfig {
 		return Objects.equals(primaryStream, that.primaryStream)
 				&& Objects.equals(secondaryStream, that.secondaryStream)
 				&& Objects.equals(stillImage, that.stillImage)
-				&& Objects.equals(stillImageDelay, that.stillImageDelay)
+				&& Objects.equals(NormalizeData.getDataNumberValue(stillImageDelay), NormalizeData.getDataNumberValue(that.stillImageDelay))
 				&& Objects.equals(enableBuffering, that.enableBuffering)
 				&& Objects.equals(outputResolution, that.outputResolution)
 				&& equalsByOutputResolution(o)
-				&& equalsByBufferingMode(o);
+				&& equalsByBufferingMode(o)
+				&& equalsByStillImage(o);
 	}
 
 	/**
@@ -321,9 +345,9 @@ public class DecoderConfig {
 			case FIXED:
 			case MULTI_SYNC:
 				return Objects.equals(bufferingMode, that.bufferingMode)
-						&& Objects.equals(bufferingDelay, that.bufferingDelay);
+						&& Objects.equals(NormalizeData.getDataNumberValue(bufferingDelay), NormalizeData.getDataNumberValue(that.bufferingDelay));
 			default:
-				return false;
+				return true;
 		}
 	}
 
@@ -331,7 +355,7 @@ public class DecoderConfig {
 	 * This method is used to compare object in specify OutputResolution
 	 */
 	public boolean equalsByOutputResolution(Object o) {
-		OutputResolution outputResolutionEnum = OutputResolution.getByAPIName(getDefaultValueForNullData(getOutputResolution(), DecoderConstant.EMPTY));
+		OutputResolution outputResolutionEnum = OutputResolution.getByAPIStatsName(getDefaultValueForNullData(getOutputResolution(), DecoderConstant.EMPTY));
 		if (this == o) {
 			return true;
 		}
@@ -345,10 +369,26 @@ public class DecoderConfig {
 			case DecoderConstant.COMPUTER_RESOLUTION:
 				return Objects.equals(outputFrameRate, that.outputFrameRate);
 			case DecoderConstant.NATIVE_RESOLUTION:
-				return true;
 			default:
-				return false;
+				return true;
 		}
+	}
+
+	/**
+	 * This method is used to compare object in specify BufferingMode
+	 */
+	public boolean equalsByStillImage(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		DecoderConfig that = (DecoderConfig) o;
+		if (this.stillImage.equals(StillImage.CUSTOM.getApiName())) {
+			return stillFile.equals(that.getStillFile());
+		}
+		return true;
 	}
 
 	/**
@@ -363,28 +403,50 @@ public class DecoderConfig {
 				.concat(DecoderConstant.SPACE)
 				.concat(action));
 		if (!StringUtils.isNullOrEmpty(primaryStream)) {
-			request.append(" streamId=" + primaryStream);
+			String tempStream = primaryStream;
+			if (primaryStream.equals(DecoderConstant.DEFAULT_STREAM_NAME)) {
+				tempStream = DecoderConstant.NONE;
+			}
+			request.append(" streamId=" + tempStream);
 		}
 		if (!StringUtils.isNullOrEmpty(secondaryStream)) {
-			request.append(" altStreamId=" + secondaryStream);
+			String tempStream = secondaryStream;
+			if (secondaryStream.equals(DecoderConstant.DEFAULT_STREAM_NAME)) {
+				tempStream = DecoderConstant.NONE;
+			}
+			request.append(" altStreamId=" + tempStream);
 		}
 		if (!StringUtils.isNullOrEmpty(stillImage)) {
-			request.append(" stillImage=" + stillImage);
+			if (stillImage.equals(StillImage.SELECT_IMAGE.getApiName())) {
+				stillImage = StillImage.CUSTOM.getApiName();
+			}
+			request.append(" stillImage=" + StillImage.getByAPIName(stillImage).getApiName());
+		}
+		if (!StringUtils.isNullOrEmpty(stillFile) && stillImage.equals(StillImage.CUSTOM.getApiName())) {
+			request.append(" stillFile=" + stillFile);
 		}
 		if (!StringUtils.isNullOrEmpty(stillImageDelay)) {
 			request.append(" stillDelay=" + NormalizeData.getDataNumberValue(stillImageDelay));
+		}
+		if (!StringUtils.isNullOrEmpty(enableBuffering)) {
+			request.append(" syncMode=" + enableBuffering);
+		}
+		if (!StringUtils.isNullOrEmpty(outputResolution)) {
+			request.append(" resolution=" + OutputResolution.getByAPIStatsName(outputResolution).getApiConfigName());
+		}
+		if (!StringUtils.isNullOrEmpty(outputFrameRate)) {
+			request.append(" frameRate=" + outputFrameRate);
 		}
 		if (!StringUtils.isNullOrEmpty(bufferingMode)) {
 			request.append(" buffering=" + bufferingMode);
 		}
 		if (!StringUtils.isNullOrEmpty(bufferingDelay)) {
-			request.append(" delay=" + NormalizeData.getDataNumberValue(bufferingDelay));
-		}
-		if (!StringUtils.isNullOrEmpty(outputResolution)) {
-			request.append(" resolution=" + outputResolution);
-		}
-		if (!StringUtils.isNullOrEmpty(outputFrameRate)) {
-			request.append(" frameRate=" + outputFrameRate);
+			if (bufferingMode.equals(BufferingMode.FIXED.getApiName())) {
+				request.append(" delay=" + NormalizeData.getDataNumberValue(bufferingDelay));
+			}
+			if (bufferingMode.equals(BufferingMode.MULTI_SYNC.getApiName())) {
+				request.append(" multiSyncDelay=" + NormalizeData.getDataNumberValue(bufferingDelay));
+			}
 		}
 		return request.toString();
 	}
@@ -411,10 +473,10 @@ public class DecoderConfig {
 		return Objects.equals(primaryStream, that.primaryStream)
 				&& Objects.equals(secondaryStream, that.secondaryStream)
 				&& Objects.equals(stillImage, that.stillImage)
-				&& Objects.equals(stillImageDelay, that.stillImageDelay)
+				&& Objects.equals(NormalizeData.getDataNumberValue(stillImageDelay), NormalizeData.getDataNumberValue(that.stillImageDelay))
 				&& Objects.equals(enableBuffering, that.enableBuffering)
 				&& Objects.equals(bufferingMode, that.bufferingMode)
-				&& Objects.equals(bufferingDelay, that.bufferingDelay)
+				&& Objects.equals(NormalizeData.getDataNumberValue(bufferingDelay), NormalizeData.getDataNumberValue(that.bufferingDelay))
 				&& Objects.equals(outputResolution, that.outputResolution)
 				&& Objects.equals(outputFrameRate, that.outputFrameRate)
 				&& Objects.equals(state, that.state);

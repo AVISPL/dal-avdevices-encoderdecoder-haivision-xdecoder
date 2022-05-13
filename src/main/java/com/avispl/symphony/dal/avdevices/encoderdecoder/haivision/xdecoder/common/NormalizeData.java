@@ -51,7 +51,7 @@ public class NormalizeData {
 		if(data == null){
 			return DecoderConstant.EMPTY;
 		}
-		return data.replaceAll(DecoderConstant.REGEX, DecoderConstant.EMPTY);
+		return data.replaceAll(DecoderConstant.REGEX_ONLY_GET_DOUBLE, DecoderConstant.EMPTY);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class NormalizeData {
 		if (StringUtils.isNullOrEmpty(spiltDataList[dataNumberIndex])) {
 			return DecoderConstant.EMPTY;
 		}
-		return spiltDataList[dataNumberIndex].replaceAll(DecoderConstant.REGEX, DecoderConstant.EMPTY);
+		return spiltDataList[dataNumberIndex].replaceAll(DecoderConstant.REGEX_ONLY_GET_DOUBLE, DecoderConstant.EMPTY);
 	}
 
 	/**
@@ -90,20 +90,19 @@ public class NormalizeData {
 	}
 
 	/**
-	 * get data percent value in string, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 => 0.00
+	 * get data value from specify space index in string, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 / spaceIndex = 1  => 0.00
 	 *
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getDataPercentValue(String data) {
+	public static String getDataValueBySpaceIndex(String data, int spaceIndex) {
 		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
-		String[] spiltDataList = data.split(DecoderConstant.SPACE, 3);
-		int dataPercentValueIndex = 1;
-		if (dataPercentValueIndex >= spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[dataPercentValueIndex])) {
+		String[] spiltDataList = data.split(DecoderConstant.SPACE, 4);
+		if (spaceIndex >= spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[spaceIndex])) {
 			return DecoderConstant.EMPTY;
 		}
-		return spiltDataList[dataPercentValueIndex].replaceAll(DecoderConstant.REGEX, DecoderConstant.EMPTY);
+		return spiltDataList[spaceIndex].replaceAll(DecoderConstant.REGEX_ONLY_GET_DOUBLE, DecoderConstant.EMPTY);
 	}
 }
