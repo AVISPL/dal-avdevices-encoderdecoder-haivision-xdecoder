@@ -72,7 +72,6 @@ public class DecoderConstant {
 	public static final String MAX_OF_TOS = "FF";
 	public static final String MIN_OF_TOS = "00";
 	public static final String HEX_PREFIX = "0x";
-	public static final int NUMBER_VALUE_DATA_INDEX = 0;
 	public static final int PERCENT_VALUE_DATA_INDEX = 1;
 	public static final int SOURCE_ADDRESS_DATA_INDEX = 2;
 	public static final int ADDRESS_DATA_INDEX = 0;
@@ -95,9 +94,4 @@ public class DecoderConstant {
 	public static final Integer MIN_TTL = 1;
 	public static final Integer MAX_TTL = 255;
 	public static final Integer DEFAULT_TTL = 64;
-
-	//Decoder SDI error message:
-
-
-
 }

@@ -1748,7 +1748,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				DecoderConstant.DISABLE, DecoderConstant.ENABLE));
 
 		// Populate relevant control when srt to udp is enabled
-		if (streamFlipping.isEnable()) {
+		if (streamConversion != null && streamFlipping.isEnable()) {
 			String srtToUdpAddress = getDefaultValueForNullData(streamConversion.getAddress(), DecoderConstant.EMPTY);
 			String srtToUdpPort = getDefaultValueForNullData(streamConversion.getUdpPort(), DecoderConstant.EMPTY);
 			String srtToUdpTos = getDefaultValueForNullData(streamConversion.getTos(), DecoderConstant.DEFAULT_TOS);
@@ -1893,8 +1893,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	//endregion
 
 	//region perform stream control
-	//--------------------------------------------------------------------------------------------------------------------------------
-// region Perform create stream control
 	//--------------------------------------------------------------------------------------------------------------------------------
 
 	/**
@@ -2089,20 +2087,38 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
 			case SRT_TO_UDP_ADDRESS:
-				createStream.setSrtToUdpAddress(value);
+				streamConversion = createStream.getStreamConversion();
 				addAdvanceControlProperties(advancedControllableProperties,
-						createText(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_ADDRESS.getName(), createStream.getSrtToUdpAddress()));
+						createText(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_ADDRESS.getName(), streamConversion.getAddress()));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
 			case SRT_TO_UDP_PORT:
-				createStream.setSrtToUdpPort(value);
+				streamConversion = createStream.getStreamConversion();
+				String srtToUDPPort = DecoderConstant.EMPTY;
+				try {
+					Integer portIntValue = Integer.parseInt(value);
+					if (portIntValue < DecoderConstant.MIN_PORT) {
+						portIntValue = DecoderConstant.MIN_PORT;
+					}
+					if (portIntValue > DecoderConstant.MAX_PORT) {
+						portIntValue = DecoderConstant.MAX_PORT;
+					}
+					srtToUDPPort = portIntValue.toString();
+				} catch (Exception e) {
+					if (logger.isWarnEnabled()) {
+						logger.warn("Invalid port value", e);
+					}
+				}
+				streamConversion.setUdpPort(srtToUDPPort);
+				createStream.setStreamConversion(streamConversion);
 				addAdvanceControlProperties(advancedControllableProperties,
-						createNumeric(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_PORT.getName(), createStream.getSrtToUdpPort()));
+						createNumeric(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_PORT.getName(), srtToUDPPort));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
 			case SRT_TO_UDP_TOS:
+				streamConversion = createStream.getStreamConversion();
 				try {
 					Integer copyValue;
 					if (value.startsWith(DecoderConstant.HEX_PREFIX)) {
@@ -2117,9 +2133,10 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					if (copyValue > Integer.parseInt(DecoderConstant.MAX_OF_TOS, 16)) {
 						copyHexValue = DecoderConstant.HEX_PREFIX + DecoderConstant.MAX_OF_TOS;
 					}
-					createStream.setSrtToUdpTos(copyHexValue);
+					streamConversion.setTos(copyHexValue);
+					createStream.setStreamConversion(streamConversion);
 					addAdvanceControlProperties(advancedControllableProperties,
-							createText(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_TOS.getName(), createStream.getSrtToUdpTos()));
+							createText(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_TOS.getName(), copyHexValue));
 					populateCancelButtonForCreateStream(stats, advancedControllableProperties);
 					populateLocalExtendedStats(stats, advancedControllableProperties);
 					break;
@@ -2127,16 +2144,32 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					throw new NumberFormatException("Value of ParameterToS is invalid. TOS must be hex value range to 00-FF");
 				}
 			case SRT_TO_UDP_TTL:
-				createStream.setSrtToUdpTtl(value);
+				streamConversion = createStream.getStreamConversion();
+				String ttl = DecoderConstant.DEFAULT_TTL.toString();
+				try {
+					int ttlIntValue = Integer.parseInt(value);
+					if (ttlIntValue < DecoderConstant.MIN_TTL) {
+						ttl = DecoderConstant.MIN_TTL.toString();
+					}
+					if (ttlIntValue > DecoderConstant.MAX_TTL) {
+						ttl = DecoderConstant.MAX_TTL.toString();
+					}
+				} catch (Exception e) {
+					if (logger.isWarnEnabled()) {
+						logger.warn("Invalid ttl value", e);
+					}
+				}
+				streamConversion.setTtl(ttl);
+				createStream.setStreamConversion(streamConversion);
 				addAdvanceControlProperties(advancedControllableProperties,
-						createNumeric(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_TTL.getName(), createStream.getSrtToUdpTtl()));
+						createNumeric(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_TTL.getName(), ttl));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
 			case ENCRYPTED:
-				Boolean encrypted = mapSwitchControlValue(value);
+				SwitchOnOffControl aeEncrypted = SwitchOnOffControl.getByCode(Integer.parseInt(value));
 				removeUnusedStatsAndControlByEncrypted(stats, advancedControllableProperties, createStream, streamControllingGroup);
-				createStream.setPassphraseSet(encrypted);
+				createStream.setSrtSettings(aeEncrypted.getName());
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, streamControllingGroup);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
@@ -2148,15 +2181,14 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
 			case REJECT_UNENCRYPTED_CALLERS:
-				Boolean rejectUnencryptedCallers = mapSwitchControlValue(value);
-				createStream.setStrictMode(rejectUnencryptedCallers);
+				SwitchOnOffControl rejectUnencryptedCallers = SwitchOnOffControl.getByCode(Integer.parseInt(value));
+				createStream.setRejectUnencrypted(rejectUnencryptedCallers.getCode().toString());
 				addAdvanceControlProperties(advancedControllableProperties, createSwitch(
-						stats, streamControllingGroup + StreamControllingMetric.REJECT_UNENCRYPTED_CALLERS.getName(), rejectUnencryptedCallers, DecoderConstant.DISABLE, DecoderConstant.ENABLE));
+						stats, streamControllingGroup + StreamControllingMetric.REJECT_UNENCRYPTED_CALLERS.getName(), rejectUnencryptedCallers.getCode(), DecoderConstant.DISABLE, DecoderConstant.ENABLE));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
 			case CREATE:
-				performCreateStreamControl(createStream);
 				break;
 			case CANCEL:
 				createStream = defaultStream();
@@ -2182,7 +2214,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param groupName group name
 	 */
 	private void removeUnusedStatsAndControlByProtocol(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig preStreamInfo, String groupName) {
-		Encapsulation preEncapsulation = preStreamInfo.getEncapsulation();
+		Encapsulation preEncapsulation = Encapsulation.getByApiName(getDefaultValueForNullData(preStreamInfo.getEncapsulation(), DecoderConstant.EMPTY));
 		List<String> listKeyToBeRemove = new ArrayList<>();
 		switch (preEncapsulation) {
 			case TS_OVER_UDP:
@@ -2237,7 +2269,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				break;
 			default:
 				if (logger.isWarnEnabled()) {
-					logger.warn(String.format("Encapsulation mode %s is not supported.", preEncapsulation.getName()));
+					logger.warn(String.format("Encapsulation mode %s is not supported.", preEncapsulation.getUiName()));
 				}
 				break;
 		}
@@ -2277,7 +2309,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 */
 	private void removeUnusedStatsAndControlBySRTMode(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig preStreamInfo, String groupName) {
 		List<String> listKeyToBeRemove = new ArrayList<>();
-		SRTMode preSRTMode = preStreamInfo.getSrtMode();
+		SRTMode preSRTMode = SRTMode.getByName(getDefaultValueForNullData(preStreamInfo.getSrtMode(), DecoderConstant.EMPTY));
 		switch (preSRTMode) {
 			case LISTENER:
 				listKeyToBeRemove.add(String.format("%s%s", groupName, StreamControllingMetric.PORT.getName()));
@@ -2330,9 +2362,10 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param preStreamInfo previous stream info
 	 * @param groupName group name
 	 */
-	private void removeUnusedStatsAndControlByEncrypted(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamInfo preStreamInfo, String groupName) {
+	private void removeUnusedStatsAndControlByEncrypted(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig preStreamInfo, String groupName) {
 		List<String> listKeyToBeRemove = new ArrayList<>();
-		if (preStreamInfo.getPassphraseSet()) {
+		SwitchOnOffControl aeEncrypted = SwitchOnOffControl.getByName(getDefaultValueForNullData(preStreamInfo.getSrtSettings(), DecoderConstant.EMPTY));
+		if (aeEncrypted.isEnable()) {
 			listKeyToBeRemove.add(String.format("%s%s", groupName, StreamControllingMetric.PASSPHRASE.getName()));
 			listKeyToBeRemove.add(String.format("%s%s", groupName, StreamControllingMetric.REJECT_UNENCRYPTED_CALLERS.getName()));
 			removeUnusedStatsAndControls(stats, controls, listKeyToBeRemove);

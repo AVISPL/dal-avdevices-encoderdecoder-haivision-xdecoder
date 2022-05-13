@@ -7,10 +7,10 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Set of fec RTP option
+ * Set of fec option
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 5/8/2022
  * @since 1.0.0
  */
 public enum Fec {

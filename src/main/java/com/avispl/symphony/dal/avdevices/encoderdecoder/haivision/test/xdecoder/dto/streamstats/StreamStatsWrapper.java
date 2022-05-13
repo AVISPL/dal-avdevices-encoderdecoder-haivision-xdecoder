@@ -29,10 +29,10 @@ public class StreamStatsWrapper {
 	private StreamStats streamStats;
 
 	@JsonAlias("streamallgetall")
-	private Stream streamConversion;
+	private Stream stream;
 
 	@JsonAlias("StreamConversion")
-	private Stream stream;
+	private Stream streamConversion;
 
 	/**
 	 * Retrieves {@code {@link #srt}}
@@ -104,6 +104,24 @@ public class StreamStatsWrapper {
 	 */
 	public void setStream(Stream stream) {
 		this.stream = stream;
+	}
+
+	/**
+	 * Retrieves {@code {@link #streamConversion}}
+	 *
+	 * @return value of {@link #streamConversion}
+	 */
+	public Stream getStreamConversion() {
+		return streamConversion;
+	}
+
+	/**
+	 * Sets {@code streamConversion}
+	 *
+	 * @param streamConversion the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.test.xdecoder.dto.streamstats.Stream} field
+	 */
+	public void setStreamConversion(Stream streamConversion) {
+		this.streamConversion = streamConversion;
 	}
 
 	/**
