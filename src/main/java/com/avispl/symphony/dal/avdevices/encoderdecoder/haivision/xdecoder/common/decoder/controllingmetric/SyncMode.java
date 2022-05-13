@@ -15,8 +15,8 @@ import java.util.Optional;
  */
 public enum SyncMode {
 
-	ENABLE_SYNC_MODE("stc", true, 1),
-	DISABLE_SYNC_MODE("pass through", false, 0);
+	ENABLE_SYNC_MODE("Stc", true, 1),
+	DISABLE_SYNC_MODE("pass", false, 0);
 
 	private final String name;
 	private final boolean isEnable;
