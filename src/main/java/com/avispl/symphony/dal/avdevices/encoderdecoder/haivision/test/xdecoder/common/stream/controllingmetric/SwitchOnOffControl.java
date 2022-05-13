@@ -7,10 +7,10 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Set of ae encrypted modes
+ * Set of switch on/off modes
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 5/12/2022
+ * Created on 5/8/2022
  * @since 1.0.0
  */
 public enum SwitchOnOffControl {
@@ -24,9 +24,10 @@ public enum SwitchOnOffControl {
 
 	/**
 	 * Parameterized constructor
-	 * @param name Name of ae encrypted modes
-	 * @param isEnable status of ae encrypted modes
-	 * @param code code of ae encrypted modes
+	 *
+	 * @param name Name of switch on/off mode
+	 * @param isEnable status of switch on/off mode
+	 * @param code code of switch on/off mode
 	 */
 	SwitchOnOffControl(String name, boolean isEnable, int code) {
 		this.name = name;
@@ -57,19 +58,30 @@ public enum SwitchOnOffControl {
 	 *
 	 * @return value of {@link #code}
 	 */
-	public int getCode() {
+	public Integer getCode() {
 		return code;
 	}
 
 	/**
-	 * This method is used to get sync mode by name
+	 * This method is used to get switch on/off mode by name
 	 *
-	 * @param name is the name of sync mode that want to get
-	 * @return SyncMode is the sync mode that want to get
+	 * @param name is the name of switch on/off mode that want to get
+	 * @return SyncMode is the switch on/off mode that want to get
 	 */
 	public static SwitchOnOffControl getByName(String name) {
 		Optional<SwitchOnOffControl> state = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getName().equals(name)).findFirst();
 		return state.orElse(SwitchOnOffControl.OFF);
+	}
+
+	/**
+	 * This method is used to get switch on/off code
+	 *
+	 * @param code is the code of switch on/off mode that want to get
+	 * @return State is the switch on/off mode that want to get
+	 */
+	public static SwitchOnOffControl getByCode(Integer code) {
+		Optional<SwitchOnOffControl> rejectUnencrypted = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getCode().equals(code)).findFirst();
+		return rejectUnencrypted.orElse(SwitchOnOffControl.OFF);
 	}
 }
 

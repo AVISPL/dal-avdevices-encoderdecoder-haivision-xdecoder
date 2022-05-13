@@ -10,7 +10,7 @@ import java.util.Optional;
  * Set of reject unencrypted modes
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 5/12/2022
+ * Created on 5/8/2022
  * @since 1.0.0
  */
 public enum RejectUnencrypted {
@@ -20,7 +20,7 @@ public enum RejectUnencrypted {
 
 	private final String name;
 	private final boolean isEnable;
-	private final int code;
+	private final Integer code;
 
 	/**
 	 * Parameterized constructor
@@ -57,19 +57,30 @@ public enum RejectUnencrypted {
 	 *
 	 * @return value of {@link #code}
 	 */
-	public int getCode() {
+	public Integer getCode() {
 		return code;
 	}
 
 	/**
-	 * This method is used to get sync mode by name
+	 * This method is used to get reject unencrypted mode by name
 	 *
-	 * @param name is the name of sync mode that want to get
-	 * @return SyncMode is the sync mode that want to get
+	 * @param name is the name of reject unencrypted mode that want to get
+	 * @return SyncMode is the reject unencrypted mode that want to get
 	 */
 	public static RejectUnencrypted getByName(String name) {
 		Optional<RejectUnencrypted> state = Arrays.stream(RejectUnencrypted.values()).filter(com -> com.getName().equals(name)).findFirst();
 		return state.orElse(RejectUnencrypted.DISABLE_REJECT_UNENCRYPTED);
+	}
+
+	/**
+	 * This method is used to get reject unencrypted mode by code
+	 *
+	 * @param code is the code of reject unencrypted mode that want to get
+	 * @return State is the reject unencrypted mode that want to get
+	 */
+	public static RejectUnencrypted getByCode(Integer code) {
+		Optional<RejectUnencrypted> rejectUnencrypted = Arrays.stream(RejectUnencrypted.values()).filter(com -> com.getCode().equals(code)).findFirst();
+		return rejectUnencrypted.orElse(RejectUnencrypted.DISABLE_REJECT_UNENCRYPTED);
 	}
 }
 

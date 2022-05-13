@@ -13,7 +13,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import com.avispl.symphony.api.dal.dto.control.ControllableProperty;
 import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.test.xdecoder.common.DeviceInfoMetric;
 
@@ -68,61 +67,62 @@ class HaivisionXDecoderCommunicatorTest {
 		Assertions.assertEquals("B-292D-HD2", stats.get(DeviceInfoMetric.PART_NUMBER.getName()));
 	}
 
-	/**
-	 * Test HaivisionX4Decoder.controlProperty decoder control: output control (switch control)
-	 */
-	@Tag("RealDevice")
-	@Test
-	void testSetOutputControl() {
-		ControllableProperty controllableProperty = new ControllableProperty();
-		controllableProperty.setProperty("DecoderSDI1" + "#BufferingDelay");
-		controllableProperty.setValue("1000");
-
-		haivisionXDecoderCommunicator.getMultipleStatistics();
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		controllableProperty.setProperty("DecoderSDI1" + "#ApplyChanges");
-		controllableProperty.setValue("1");
-
-		haivisionXDecoderCommunicator.getMultipleStatistics();
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		controllableProperty.setProperty("DecoderSDI1" + "#OutputFrameRate");
-		controllableProperty.setValue("60");
-
-		haivisionXDecoderCommunicator.getMultipleStatistics();
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		controllableProperty.setProperty("DecoderSDI1" + "#StillImage");
-		controllableProperty.setValue("Select Image");
-
-		haivisionXDecoderCommunicator.getMultipleStatistics();
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-
-		controllableProperty.setProperty("DecoderSDI1" + "#SelectStillImage");
-		controllableProperty.setValue("&.jpg");
-
-		haivisionXDecoderCommunicator.getMultipleStatistics();
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		controllableProperty.setProperty("DecoderSDI1" + "#ApplyChanges");
-		controllableProperty.setValue("1");
-
-		haivisionXDecoderCommunicator.getMultipleStatistics();
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-		haivisionXDecoderCommunicator.getMultipleStatistics();
-
-
-		controllableProperty.setProperty("DecoderSDI1" + "#StillImage");
-		controllableProperty.setValue("Mute");
-
-		haivisionXDecoderCommunicator.getMultipleStatistics();
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-
-		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
-		Map<String, String> stats = extendedStatistics.getStatistics();
-
-	}
+	//ToDo:
+//	/**
+//	 * Test HaivisionX4Decoder.controlProperty decoder control: output control (switch control)
+//	 */
+//	@Tag("RealDevice")
+//	@Test
+//	void testSetOutputControl() {
+//		ControllableProperty controllableProperty = new ControllableProperty();
+//		controllableProperty.setProperty("DecoderSDI1" + "#BufferingDelay");
+//		controllableProperty.setValue("1000");
+//
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+//
+//		controllableProperty.setProperty("DecoderSDI1" + "#ApplyChanges");
+//		controllableProperty.setValue("1");
+//
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+//
+//		controllableProperty.setProperty("DecoderSDI1" + "#OutputFrameRate");
+//		controllableProperty.setValue("60");
+//
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+//
+//		controllableProperty.setProperty("DecoderSDI1" + "#StillImage");
+//		controllableProperty.setValue("Select Image");
+//
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+//
+//
+//		controllableProperty.setProperty("DecoderSDI1" + "#SelectStillImage");
+//		controllableProperty.setValue("&.jpg");
+//
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+//
+//		controllableProperty.setProperty("DecoderSDI1" + "#ApplyChanges");
+//		controllableProperty.setValue("1");
+//
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//
+//
+//		controllableProperty.setProperty("DecoderSDI1" + "#StillImage");
+//		controllableProperty.setValue("Mute");
+//
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+//
+//
+//		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+//		Map<String, String> stats = extendedStatistics.getStatistics();
+//
+//	}
 }
