@@ -17,6 +17,7 @@ public enum StreamControllingMetric {
 
 	STREAM_NAME("StreamName"),
 	ENCAPSULATION("Protocol"),
+	RTSP_URL("RTSP URL"),
 	MULTICAST_ADDRESS("MulticastAddress"),
 	SOURCE_ADDRESS("SourceAddress"),
 	REJECT_UNENCRYPTED_CALLERS("RejectUnencryptedCallers"),
@@ -41,7 +42,6 @@ public enum StreamControllingMetric {
 	UPDATE("Update"),
 	APPLY_CHANGE("ApplyChanges"),
 	CANCEL("CancelChanges"),
-	IS_NOT_CONTROLLING_METRIC("IsNotStreamControllingMetric"),
 	EDITED("Edited");
 
 	private final String name;
