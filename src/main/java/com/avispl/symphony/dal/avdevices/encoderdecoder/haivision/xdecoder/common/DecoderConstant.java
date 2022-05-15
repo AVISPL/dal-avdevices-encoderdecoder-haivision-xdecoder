@@ -16,9 +16,9 @@ public class DecoderConstant {
 	}
 
 	public static final char HASH = '#';
-	public static final char SLASH = '/';
 	public static final char AT_SIGN = '@';
 	public static final String COMMA = ",";
+	public static final String DOUBLE_QUOTATION = "/";
 	public static final String COLON = ":";
 	public static final String DASH = "-";
 	public static final String RIGHT_PARENTHESES = ")";
@@ -33,6 +33,8 @@ public class DecoderConstant {
 	public static final String ADDRESS_ANY = "Any";
 	public static final String NONE = "None";
 	public static final String DEFAULT_STREAM_NAME = "(None)";
+	public static final String DEFAULT_PASSPHRASE = "**********";
+	public static final String DEFAULT_SOURCE_PORT = "Auto-Assign";
 	public static final String DAY = " day(s) ";
 	public static final String HOUR = " hour(s) ";
 	public static final String MINUTE = " minute(s) ";
@@ -45,6 +47,7 @@ public class DecoderConstant {
 	public static final String DECODER_CONTROL_ERR = "Failed to control decoder: ";
 	public static final String PORT_NUMBER_ERROR = "Invalid port number";
 	public static final String DEFAULT_SKIPPED_FRAMES_VALUE = "0";
+	public static final String DEFAULT_RTSP_URL = "rtsp://";
 	public static final String AUTOMATIC_RESOLUTION = "Automatic";
 	public static final String NATIVE_RESOLUTION = "Native";
 	public static final String COMPUTER_RESOLUTION = "Computer";

@@ -18,7 +18,7 @@ public enum NetworkType {
 	UNI_CAST("Unicast"),
 	MULTI_CAST("Multicast");
 
-	private final String name;
+	private final String uiName;
 
 	/**
 	 * Parameterized constructor
@@ -26,16 +26,16 @@ public enum NetworkType {
 	 * @param name Name of decoder monitoring metric
 	 */
 	NetworkType(String name) {
-		this.name = name;
+		this.uiName = name;
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * retrieve {@code {@link #uiName }}
 	 *
-	 * @return value of {@link #name}
+	 * @return value of {@link #uiName}
 	 */
-	public String getName() {
-		return this.name;
+	public String getUiName() {
+		return this.uiName;
 	}
 
 	/**
@@ -44,8 +44,8 @@ public enum NetworkType {
 	 * @param name is the name of network type that want to get
 	 * @return Type is the network type that want to get
 	 */
-	public static NetworkType getByName(String name) {
-		Optional<NetworkType> type = Arrays.stream(NetworkType.values()).filter(com -> com.getName().equals(name)).findFirst();
+	public static NetworkType getByUiName(String name) {
+		Optional<NetworkType> type = Arrays.stream(NetworkType.values()).filter(com -> com.getUiName().equals(name)).findFirst();
 		return type.orElse(NetworkType.UNI_CAST);
 	}
 }

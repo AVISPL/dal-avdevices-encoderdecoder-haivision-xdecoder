@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public enum Fec {
 
-	DISABLE("None", "", "no"),
+	DISABLE("(None)", "", "no"),
 	MPEG_PRO_FEC("MPEG PRO FEC", "Pro-MPEG", "yes" ),
 	VF("VF","Furnace", "yes" );
 

@@ -3,6 +3,9 @@
  */
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 /**
  * Set of controlling metric group keys
  *
@@ -12,42 +15,54 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
  */
 public enum ControllingMetricGroup {
 
-	DECODER("DecoderSDI"),
-	CREATE_STREAM("CreateStream");
+	DECODER_SDI("DecoderSDI", "Decoder"),
+	CREATE_STREAM("CreateStream", "Create"),
+	STREAM("Stream", "Stream");
 
-	private final String name;
+	private final String uiName;
+	private final String apiName;
 
 	/**
 	 * Parameterized constructor
 	 *
-	 * @param name Name of decoder controlling metric group
+	 * @param uiName ui name of decoder controlling metric group
+	 * @param apiName api name of decoder controlling metric group
 	 */
-	ControllingMetricGroup(String name) {
-		this.name = name;
-
+	ControllingMetricGroup(String uiName, String apiName) {
+		this.uiName = uiName;
+		this.apiName = apiName;
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * retrieve {@code {@link #uiName }}
 	 *
-	 * @return value of {@link #name}
+	 * @return value of {@link #uiName}
 	 */
-	public String getName() {
-		return this.name;
+	public String getUiName() {
+		return this.uiName;
+	}
+
+	/**
+	 * Retrieves {@code {@link #apiName}}
+	 *
+	 * @return value of {@link #apiName}
+	 */
+	public String getApiName() {
+		return apiName;
 	}
 
 	/**
 	 * This method is used to get controlling metric group by name
 	 *
-	 * @param name is the name of controlling metric that want to get
+	 * @param apiName is the api name of controlling metric that want to get
 	 * @return ControllingMetric is the controlling metric group that want to get
 	 */
-	public static ControllingMetricGroup getByName(String name) {
-		if (name.contains(ControllingMetricGroup.DECODER.getName())) {
-			return ControllingMetricGroup.DECODER;
-		} else {
-			return null;
+	public static ControllingMetricGroup getByApiName(String apiName) {
+		Optional<ControllingMetricGroup> controllingMetricGroup = Arrays.stream(ControllingMetricGroup.values()).filter(c -> apiName.contains(c.getApiName())).findFirst();
+		if (controllingMetricGroup.isPresent()) {
+			return controllingMetricGroup.get();
 		}
+		throw new IllegalArgumentException("Can not find the enum with name: " + apiName);
 	}
 
 }
