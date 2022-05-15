@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SRTMode;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SwitchOnOffControl;
 import com.avispl.symphony.dal.util.StringUtils;
@@ -443,20 +444,26 @@ public class StreamConfig {
 		if (!StringUtils.isNullOrEmpty(port) || !StringUtils.isNullOrEmpty(destinationPort)) {
 			request.append(" port=\"" + port + DecoderConstant.DOUBLE_QUOTATION);
 		}
-		if (!StringUtils.isNullOrEmpty(address) && !address.equals(DecoderConstant.ADDRESS_ANY)) {
-			request.append(" addr=\"" + address + DecoderConstant.DOUBLE_QUOTATION);
+		if (!StringUtils.isNullOrEmpty(destinationAddress) && !destinationAddress.equals(DecoderConstant.ADDRESS_ANY)) {
+			request.append(" addr=\"" + destinationAddress + DecoderConstant.DOUBLE_QUOTATION);
 		}
 		if (!StringUtils.isNullOrEmpty(encapsulation)) {
 			request.append(" encapsulation=" + encapsulation);
 		}
 		switch (encapsulationEnum) {
+			case RTSP:
+				if (!StringUtils.isNullOrEmpty(address)) {
+					request.append(" addr=" + address);
+				}
+				break;
 			case TS_OVER_UDP:
 			case TS_OVER_RTP:
 				if (!StringUtils.isNullOrEmpty(sourceAddress) && !sourceAddress.equals(DecoderConstant.ADDRESS_ANY)) {
 					request.append(" sourceaddr=\"" + sourceAddress + DecoderConstant.DOUBLE_QUOTATION);
 				}
 				if (!StringUtils.isNullOrEmpty(fec)) {
-					request.append(" fec=" + fec);
+					Fec fecEnum = Fec.getByAPIStatsName(fec);
+					request.append(" fec=" + fecEnum.getApiConfigName());
 				}
 				break;
 			case TS_OVER_SRT:
@@ -469,6 +476,7 @@ public class StreamConfig {
 					}
 				}
 				if (streamFlippingEnum.isEnable() && streamConversion != null) {
+					request.append(" flip=" + streamFlippingEnum.getName());
 					String flipAddress = getDefaultValueForNullData(streamConversion.getAddress(), DecoderConstant.EMPTY);
 					String flipPort = getDefaultValueForNullData(streamConversion.getUdpPort(), DecoderConstant.EMPTY);
 					String flipTtl = getDefaultValueForNullData(streamConversion.getTtl(), DecoderConstant.DEFAULT_TTL.toString());
@@ -481,17 +489,23 @@ public class StreamConfig {
 					}
 					if (!StringUtils.isNullOrEmpty(flipTtl)) {
 						request.append(" flipttl=" + flipTtl);
+					}else {
+						request.append(" flipttl=" + DecoderConstant.DEFAULT_TTL);
 					}
 					if (!StringUtils.isNullOrEmpty(flipTos)) {
 						request.append(" fliptos=" + flipTos);
+					}else {
+						request.append(" fliptos=" + DecoderConstant.DEFAULT_TOS);
 					}
 				}
 
 				if (!StringUtils.isNullOrEmpty(srtMode)) {
 					request.append(" mode=" + srtMode);
 				}
-				if (!StringUtils.isNullOrEmpty(srtMode)) {
+				if (!StringUtils.isNullOrEmpty(latency)) {
 					request.append(" latency=" + latency);
+				}else {
+					request.append(" latency=" + DecoderConstant.DEFAULT_LATENCY);
 				}
 				switch (srtModeEnum) {
 					case LISTENER:

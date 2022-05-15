@@ -18,7 +18,7 @@ public class DecoderConstant {
 	public static final char HASH = '#';
 	public static final char AT_SIGN = '@';
 	public static final String COMMA = ",";
-	public static final String DOUBLE_QUOTATION = "/";
+	public static final String DOUBLE_QUOTATION = "\"";
 	public static final String COLON = ":";
 	public static final String DASH = "-";
 	public static final String RIGHT_PARENTHESES = ")";

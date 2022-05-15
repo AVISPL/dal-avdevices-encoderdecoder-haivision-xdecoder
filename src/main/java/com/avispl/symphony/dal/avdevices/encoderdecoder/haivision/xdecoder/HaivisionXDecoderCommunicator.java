@@ -33,6 +33,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DropdownList;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.ErrorMessage;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.MonitoringMetricGroup;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.BufferingMode;
@@ -780,10 +781,19 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private void updateLocalStreamConfigInfo(StreamStatsWrapper streamInfoWrapper, Integer streamID) {
 		StreamConfig streamConfigInfo = streamInfoWrapper.getStreamConfig();
 		Stream stream = streamInfoWrapper.getStream();
+		StreamConversion streamConversion = streamInfoWrapper.getStreamConversion();
+		if (streamConversion != null){
+			streamConfigInfo.setStreamConversion(streamConversion);
+			streamConfigInfo.setStreamFlipping(SwitchOnOffControl.ON.getName());
+		}
 
 		// map value to DTO
 		streamConfigInfo.setId(stream.getStreamId());
 		streamConfigInfo.setName(stream.getStreamName());
+		String port = getDefaultValueForNullData(streamConfigInfo.getPort(), DecoderConstant.EMPTY);
+		if(port.isEmpty()) {
+			streamConfigInfo.setPort(getDefaultValueForNullData(streamConfigInfo.getDestinationPort(), DecoderConstant.EMPTY));
+		}
 		String tempAddress = getDefaultValueForNullData(streamConfigInfo.getAddress(), DecoderConstant.EMPTY);
 		streamConfigInfo.setDestinationAddress(NormalizeData.getDataValueBySpaceIndex(tempAddress, DecoderConstant.ADDRESS_DATA_INDEX));
 		streamConfigInfo.setSourceAddress(NormalizeData.getDataValueBySpaceIndex(tempAddress, DecoderConstant.SOURCE_ADDRESS_DATA_INDEX));
@@ -1542,7 +1552,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			}
 			String response = send(request);
 			if (StringUtils.isNullOrEmpty(response) || !response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
-				throw new ResourceNotReachableException(DecoderConstant.SPACE + Deserializer.getErrorMessage(response));
+				throw new ResourceNotReachableException(DecoderConstant.SPACE + ErrorMessage.getErrorMessage(Deserializer.getErrorMessage(response)));
 			}
 		} catch (Exception e) {
 			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
@@ -1616,16 +1626,25 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			String streamGroup) {
 		// Get controllable property current value
 		String port = getDefaultValueForNullData(cachedStreamConfig.getPort(), DecoderConstant.EMPTY);
-		Fec fec = Fec.getByAPIStatsName(getDefaultValueForNullData(cachedStreamConfig.getFec(), DecoderConstant.EMPTY));
+		Fec fecEnum = Fec.getByAPIStatsName(getDefaultValueForNullData(cachedStreamConfig.getFec(), DecoderConstant.EMPTY));
+		Fec fecEnumCopy = Fec.DISABLE;
 
 		// Get list values of controllable property (dropdown list)
 		List<String> fecModes = DropdownList.getListOfEnumNames(Fec.class, Fec.MPEG_PRO_FEC);
+
+		for (String fecElement : fecModes) {
+			if (fecElement.equals(fecEnum.getUiName())) {
+				fecEnumCopy = fecEnum;
+				break;
+			}
+		}
+		createStream.setFec(fecEnum.getApiStatsName());
 
 		// Populate control
 		addAdvanceControlProperties(advancedControllableProperties,
 				createNumeric(stats, streamGroup + StreamControllingMetric.PORT.getName(), port));
 		addAdvanceControlProperties(advancedControllableProperties,
-				createDropdown(stats, streamGroup + StreamControllingMetric.FEC.getName(), fecModes, fec.getUiName()));
+				createDropdown(stats, streamGroup + StreamControllingMetric.FEC.getName(), fecModes, fecEnumCopy.getUiName()));
 
 		populateNetWorkTypeStreamControl(stats, advancedControllableProperties, cachedStreamConfig, streamGroup);
 	}
@@ -1642,16 +1661,24 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			String streamGroup) {
 		// Get controllable property current value
 		String port = getDefaultValueForNullData(cachedStreamConfig.getPort(), DecoderConstant.EMPTY);
-		Fec fec = Fec.getByAPIStatsName(getDefaultValueForNullData(cachedStreamConfig.getFec(), DecoderConstant.EMPTY));
+		Fec fecEnum = Fec.getByAPIStatsName(getDefaultValueForNullData(cachedStreamConfig.getFec(), DecoderConstant.EMPTY));
+		Fec fecEnumCopy = Fec.DISABLE;
 
 		// Get list values of controllable property (dropdown list)
 		List<String> fecModes = DropdownList.getListOfEnumNames(Fec.class, Fec.VF);
+
+		for (String fecElement : fecModes) {
+			if (fecElement.equals(fecEnum.getUiName())) {
+				fecEnumCopy = fecEnum;
+			}
+		}
+		createStream.setFec(fecEnum.getApiStatsName());
 
 		// Populate control
 		addAdvanceControlProperties(advancedControllableProperties,
 				createNumeric(stats, streamGroup + StreamControllingMetric.PORT.getName(), port));
 		addAdvanceControlProperties(advancedControllableProperties,
-				createDropdown(stats, streamGroup + StreamControllingMetric.FEC.getName(), fecModes, fec.getUiName()));
+				createDropdown(stats, streamGroup + StreamControllingMetric.FEC.getName(), fecModes, fecEnumCopy.getUiName()));
 
 		populateNetWorkTypeStreamControl(stats, advancedControllableProperties, cachedStreamConfig, streamGroup);
 	}
@@ -1914,6 +1941,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		StreamConfig streamConfig = new StreamConfig();
 		streamConfig.setName(DecoderConstant.EMPTY);
 		streamConfig.setPort(DecoderConstant.EMPTY);
+		streamConfig.setFec(DecoderConstant.EMPTY);
 		streamConfig.setEncapsulation(Encapsulation.TS_OVER_UDP.getApiName());
 		streamConfig.setDestinationAddress(DecoderConstant.ADDRESS_ANY);
 		streamConfig.setSourceAddress(DecoderConstant.ADDRESS_ANY);
@@ -1968,9 +1996,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
 			case ENCAPSULATION:
-				Encapsulation encapsulation = Encapsulation.getByUiName(value);
+				Encapsulation encapsulationEnum = Encapsulation.getByUiName(value);
 				removeUnusedStatsAndControlByProtocol(stats, advancedControllableProperties, createStream, streamControllingGroup);
-				createStream.setEncapsulation(encapsulation.getApiName());
+				createStream.setEncapsulation(encapsulationEnum.getApiName());
 
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, streamControllingGroup);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
@@ -2269,6 +2297,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				break;
 			case CREATE:
 				performCreateStreamControl();
+				createStream = defaultStream();
+				populateCreateStreamControl(stats, advancedControllableProperties, defaultStream(), streamControllingGroup);
 				break;
 			case CANCEL:
 				createStream = defaultStream();
@@ -2292,7 +2322,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			if (StringUtils.isNullOrEmpty(response) || !response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
 				throw new ResourceNotReachableException(DecoderConstant.SPACE + Deserializer.getErrorMessage(response));
 			}
-			createStream = defaultStream();
 		} catch (Exception e) {
 			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
 		}
@@ -2676,6 +2705,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private void performDeleteStreamControl(String streamId) {
 		try {
 			String request = CommandOperation.OPERATION_STREAM.getName().
+					concat(DecoderConstant.SPACE).
 					concat(streamId).
 					concat(DecoderConstant.SPACE).
 					concat(CommandOperation.OPERATION_DELETE.getName());
@@ -2683,7 +2713,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			if (StringUtils.isNullOrEmpty(response) || !response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
 				throw new ResourceNotReachableException(DecoderConstant.SPACE + Deserializer.getErrorMessage(response));
 			}
-			createStream = defaultStream();
 		} catch (Exception e) {
 			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
 		}

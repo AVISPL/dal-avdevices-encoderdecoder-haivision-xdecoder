@@ -67,4 +67,95 @@ class HaivisionXDecoderCommunicatorTest {
 		Assertions.assertEquals("--", stats.get(DeviceInfoMetric.HARDWARE_VERSION.getName()));
 		Assertions.assertEquals("B-292D-HD2", stats.get(DeviceInfoMetric.PART_NUMBER.getName()));
 	}
+
+	/**
+	 * Test HaivisionX4Decoder.controlProperty decoder control: output control (switch control)
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testSetOutputControl() {
+
+
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		controllableProperty.setProperty("CreateStream" + "#Protocol");
+		controllableProperty.setValue("RTSP");
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		controllableProperty.setProperty("CreateStream" + "#RTSP URL");
+		controllableProperty.setValue("rtsp://192.36.2.3");
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+//
+//		controllableProperty.setProperty("CreateStream" + "#ConnectionPort");
+//		controllableProperty.setValue("15528");
+//
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+//
+//
+//		controllableProperty.setProperty("CreateStream" + "#Type");
+//		controllableProperty.setValue("Multicast");
+//
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+//
+//		controllableProperty.setProperty("CreateStream" + "#MulticastAddress");
+//		controllableProperty.setValue("254.0.0.1");
+//
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		controllableProperty.setProperty("CreateStream" + "#Create");
+		controllableProperty.setValue("1");
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+
+		controllableProperty.setProperty("DecoderSDI1" + "#OutputFrameRate");
+		controllableProperty.setValue("60");
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		controllableProperty.setProperty("DecoderSDI1" + "#StillImage");
+		controllableProperty.setValue("Select Image");
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+//
+//		controllableProperty.setProperty("DecoderSDI1" + "#SelectStillImage");
+//		controllableProperty.setValue("&.jpg");
+//
+//		haivisionXDecoderCommunicator.getMultipleStatistics();
+//		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		controllableProperty.setProperty("DecoderSDI1" + "#ApplyChanges");
+		controllableProperty.setValue("1");
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+
+
+		controllableProperty.setProperty("DecoderSDI1" + "#StillImage");
+		controllableProperty.setValue("Mute");
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+
+	}
 }

@@ -20,20 +20,20 @@ public enum Fec {
 	VF("VF","Furnace", "yes" );
 
 	private final String uiName;
-	private final String apiConfigName;
 	private final String apiStatsName;
+	private final String apiConfigName;
 
 	/**
 	 * Parameterized constructor
 	 *
 	 * @param uiName ui name of fec
-	 * @param apiConfigName api config name of fec
-	 * @param apiStatsName api stats name of fec
+	 * @param apiStatsName api config name of fec
+	 * @param apiConfigName api stats name of fec
 	 */
-	Fec(String uiName, String apiConfigName, String apiStatsName) {
+	Fec(String uiName, String apiStatsName, String apiConfigName) {
 		this.uiName = uiName;
-		this.apiConfigName = apiConfigName;
 		this.apiStatsName = apiStatsName;
+		this.apiConfigName = apiConfigName;
 	}
 
 	/**
