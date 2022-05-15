@@ -2,6 +2,7 @@ com\avispl\symphony\dal\avdevices\encoderdecoder\haivision\xdecoder\common\strea
 com\avispl\symphony\dal\avdevices\encoderdecoder\haivision\xdecoder\common\decoder\controllingmetric\OutputFrameRate.class
 com\avispl\symphony\dal\avdevices\encoderdecoder\haivision\xdecoder\dto\streamstats\StreamStats.class
 com\avispl\symphony\dal\avdevices\encoderdecoder\haivision\xdecoder\dto\decoderstats\DecoderConfig.class
+com\avispl\symphony\dal\avdevices\encoderdecoder\haivision\xdecoder\common\ErrorMessage.class
 com\avispl\symphony\dal\avdevices\encoderdecoder\haivision\xdecoder\common\stream\controllingmetric\StreamControllingMetric.class
 com\avispl\symphony\dal\avdevices\encoderdecoder\haivision\xdecoder\common\stream\monitoringmetric\StreamStatsMonitoringMetric.class
 com\avispl\symphony\dal\avdevices\encoderdecoder\haivision\xdecoder\dto\streamstats\SRT$1.class
