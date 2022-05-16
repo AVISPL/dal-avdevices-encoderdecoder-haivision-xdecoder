@@ -43,7 +43,7 @@ public enum DecoderControllingMetric {
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * Retrieves {@code {@link #name}}
 	 *
 	 * @return value of {@link #name}
 	 */

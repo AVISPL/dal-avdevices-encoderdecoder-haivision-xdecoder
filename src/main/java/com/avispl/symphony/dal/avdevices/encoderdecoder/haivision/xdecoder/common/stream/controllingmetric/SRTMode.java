@@ -31,7 +31,7 @@ public enum SRTMode {
 	}
 
 	/**
-	 * retrieve {@code {@link #uiName }}
+	 * Retrieves {@code {@link #uiName }}
 	 *
 	 * @return value of {@link #uiName}
 	 */
