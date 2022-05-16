@@ -24,8 +24,8 @@ public class ErrorMessage {
 	public static String convertErrorMessage(String errorMessage) {
 		if (errorMessages == null) {
 			errorMessages = new HashMap<>();
-			errorMessages.put("Decoder 1 configuration failed: \\\"Stream still in use\\\"\"}", "Decoder 1 configuration failed: Please choose a different secondary stream");
-			errorMessages.put("Decoder 2 configuration failed: \\\"Stream still in use\\\"\"}", "Decoder 2 configuration failed: Please choose a different secondary stream");
+			errorMessages.put("Decoder 1 configuration failed: \"Stream still in use\"", "Decoder 1 configuration failed: Please choose a different secondary stream");
+			errorMessages.put("Decoder 2 configuration failed: \"Stream still in use\"", "Decoder 2 configuration failed: Please choose a different secondary stream");
 		}
 		Optional<String> result = Optional.ofNullable(errorMessages.get(errorMessage));
 		return result.orElse(errorMessage);
