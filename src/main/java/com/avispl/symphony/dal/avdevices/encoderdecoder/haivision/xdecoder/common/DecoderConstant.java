@@ -44,6 +44,7 @@ public class DecoderConstant {
 	public static final String GETTING_DEVICE_STILL_IMAGE_ERR = "Failed to get device still image";
 	public static final String GETTING_DECODER_STATS_ERR = "Failed to get decoder statistic";
 	public static final String GETTING_STREAM_STATS_ERR = "Failed to get stream statistic";
+	public static final String GETTING_AUDIO_CONFIG_ERR = "Failed to get Audio config info";
 	public static final String DECODER_CONTROL_ERR = "Failed to control decoder: ";
 	public static final String PORT_NUMBER_ERROR = "Invalid port number";
 	public static final String DEFAULT_SKIPPED_FRAMES_VALUE = "0";

@@ -60,6 +60,8 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamStatsMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.Deserializer;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.audioconfig.AudioConfig;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.audioconfig.AudioConfigWrapper;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.authentication.AuthenticationRole;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderConfig;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderStatsWrapper;
@@ -106,8 +108,11 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private List<DecoderConfig> cachedDecoderConfigs;
 	private List<StreamConfig> realtimeStreamConfigs;
 	private List<StreamConfig> cachedStreamConfigs;
-	private List<String> customStillImages;
 	private StreamConfig createStream;
+	private AudioConfig realtimeAudioConfig;
+	private AudioConfig cachedAudioConfig;
+	private List<String> customStillImages;
+
 
 	//Adapter Properties
 	private String streamNameFilter;
@@ -337,6 +342,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		retrieveDeviceTemperature(stats);
 		retrieveDeviceStillImage();
 		retrieveStreamStats(stats);
+		retrieveAudioConfig();
 
 		for (int decoderID = DecoderConstant.MIN_DECODER_ID; decoderID < DecoderConstant.MAX_DECODER_ID; decoderID++) {
 			retrieveDecoderStats(stats, decoderID);
@@ -643,6 +649,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	//--------------------------------------------------------------------------------------------------------------------------------
 	//endregion
 
+
 	//region retrieve stream statistics
 	//--------------------------------------------------------------------------------------------------------------------------------
 
@@ -867,6 +874,43 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			throw new ResourceNotReachableException(DecoderConstant.PORT_NUMBER_ERROR, f);
 		}
 		return false;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------------
+	//endregion
+
+	//region audio config
+	//--------------------------------------------------------------------------------------------------------------------------------
+
+
+	/**
+	 * This method is used to retrieve audio by send command "auddec get all"
+	 *
+	 *
+	 * When there is no response data, the failedMonitor is going to update
+	 * When there is an exception, the failedMonitor is going to update and exception is not populated
+	 */
+	private void retrieveAudioConfig() {
+		try {
+			String request = CommandOperation.OPERATION_AUDDEC.getName()
+					.concat(DecoderConstant.SPACE)
+					.concat(CommandOperation.GET.getName())
+					.concat(DecoderConstant.SPACE)
+					.concat(CommandOperation.ALL.getName());
+
+			String response = send(request);
+			if (response != null) {
+				Map<String, Object> responseMap = Deserializer.convertDataToObject(response, request);
+				AudioConfigWrapper audioConfigWrapper = objectMapper.convertValue(responseMap, AudioConfigWrapper.class);
+
+				if (audioConfigWrapper == null) {
+					updateFailedMonitor(CommandOperation.OPERATION_AUDDEC.getName(), DecoderConstant.GETTING_AUDIO_CONFIG_ERR);
+				}else{
+					realtimeAudioConfig = audioConfigWrapper.getAudioConfig();
+				}
+			}
+		} catch (Exception e) {
+			logger.error("Error while retrieve decoder statistics: ", e);
+		}
 	}
 
 	//--------------------------------------------------------------------------------------------------------------------------------
