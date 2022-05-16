@@ -1552,7 +1552,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			}
 			String response = send(request);
 			if (StringUtils.isNullOrEmpty(response) || !response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
-				throw new ResourceNotReachableException(DecoderConstant.SPACE + ErrorMessage.getErrorMessage(Deserializer.getErrorMessage(response)));
+				throw new ResourceNotReachableException(DecoderConstant.SPACE + ErrorMessage.convertErrorMessage(Deserializer.getErrorMessage(response)));
 			}
 		} catch (Exception e) {
 			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
