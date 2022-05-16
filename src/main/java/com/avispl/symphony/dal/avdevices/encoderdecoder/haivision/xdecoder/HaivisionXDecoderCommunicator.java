@@ -785,7 +785,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		StreamConversion streamConversion = streamInfoWrapper.getStreamConversion();
 		if (streamConversion != null){
 			streamConfigInfo.setStreamConversion(streamConversion);
-			streamConfigInfo.setStreamFlipping(SwitchOnOffControl.ON.getName());
+			streamConfigInfo.setStreamFlipping(streamConversion.getStreamFlipping());
 		}
 
 		// map value to DTO
@@ -1656,7 +1656,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				break;
 			}
 		}
-		createStream.setFec(fecEnum.getApiStatsName());
+		createStream.setFec(fecEnumCopy.getApiStatsName());
 
 		// Populate control
 		addAdvanceControlProperties(advancedControllableProperties,
@@ -1691,7 +1691,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				break;
 			}
 		}
-		createStream.setFec(fecEnum.getApiStatsName());
+		createStream.setFec(fecEnumCopy.getApiStatsName());
 
 		// Populate control
 		addAdvanceControlProperties(advancedControllableProperties,
@@ -2143,11 +2143,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				break;
 			case FEC:
 				Fec fec = Fec.getByUiName(value);
-				List<String> fecModes = DropdownList.getListOfEnumNames(Fec.class);
 				createStream.setFec(fec.getApiStatsName());
 
-				addAdvanceControlProperties(advancedControllableProperties, createDropdown(stats, streamControllingGroup + StreamControllingMetric.FEC.getName(), fecModes, fec.getUiName()));
-				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
+				populateCreateStreamControl(stats, advancedControllableProperties, createStream, streamControllingGroup);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
 				break;
 			case SRT_MODE:
@@ -2184,22 +2182,20 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			case SRT_TO_UDP_STREAM_CONVERSION:
 				StreamConversion streamConversion = createStream.getStreamConversion();
 				SwitchOnOffControl streamFlipping = SwitchOnOffControl.getByCode(Integer.parseInt(value));
-				if (streamConversion != null) {
-					streamFlipping = SwitchOnOffControl.getByName(getDefaultValueForNullData(streamConversion.getStreamFlipping(), DecoderConstant.EMPTY));
-					streamConversion.setStreamFlipping(streamFlipping.getName());
-					createStream.setStreamConversion(streamConversion);
-				} else if (streamFlipping.isEnable()) {
+				if (streamConversion == null) {
 					streamConversion = new StreamConversion();
-					streamConversion.setStreamFlipping(SwitchOnOffControl.ON.getName());
-					streamConversion.setAddress(DecoderConstant.EMPTY);
-					streamConversion.setTos(DecoderConstant.DEFAULT_TOS);
-					streamConversion.setAddress(DecoderConstant.EMPTY);
-					streamConversion.setTtl(DecoderConstant.DEFAULT_TTL.toString());
-					streamConversion.setUdpPort(DecoderConstant.EMPTY);
+					if(streamFlipping.isEnable()) {
+						streamConversion.setAddress(DecoderConstant.EMPTY);
+						streamConversion.setTos(DecoderConstant.DEFAULT_TOS);
+						streamConversion.setAddress(DecoderConstant.EMPTY);
+						streamConversion.setTtl(DecoderConstant.DEFAULT_TTL.toString());
+						streamConversion.setUdpPort(DecoderConstant.EMPTY);
+					}
 				}
 				removeUnusedStatsAndControlByStreamConversion(stats, advancedControllableProperties, createStream, streamControllingGroup);
-				createStream.setStreamFlipping(streamFlipping.getName());
+				streamConversion.setStreamFlipping(streamFlipping.getName());
 				createStream.setStreamConversion(streamConversion);
+				createStream.setStreamFlipping(streamFlipping.getName());
 
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, streamControllingGroup);
 				populateLocalExtendedStats(stats, advancedControllableProperties);
@@ -2455,6 +2451,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		switch (preSRTMode) {
 			case LISTENER:
 				listKeyToBeRemove.add(String.format("%s%s", groupName, StreamControllingMetric.PORT.getName()));
+				listKeyToBeRemove.add(String.format("%s%s", groupName, StreamControllingMetric.REJECT_UNENCRYPTED_CALLERS.getName()));
 				removeUnusedStatsAndControls(stats, controls, listKeyToBeRemove);
 				break;
 			case CALLER:
@@ -2744,6 +2741,21 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
 		}
 	}
+	//--------------------------------------------------------------------------------------------------------------------------------
+	//endregion
+
+
+	//region populate audio control
+	//--------------------------------------------------------------------------------------------------------------------------------
+
+
+	//--------------------------------------------------------------------------------------------------------------------------------
+	//endregion
+
+
+	//region perform audio control
+	//--------------------------------------------------------------------------------------------------------------------------------
+
 
 	//--------------------------------------------------------------------------------------------------------------------------------
 	//endregion
