@@ -4,6 +4,7 @@
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
@@ -495,7 +496,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			if (response != null) {
 				String[] splitResponses = response.split(DecoderConstant.COLON + "\r\n");
 				int stillImageDataIndex = 1;
-				if (stillImageDataIndex <= splitResponses.length || !StringUtils.isNullOrEmpty(splitResponses[1])) {
+				if (stillImageDataIndex <= splitResponses.length) {
 					customStillImages = new ArrayList<>();
 					String[] deviceStillImage = splitResponses[stillImageDataIndex].split("\r\n");
 					for (int i = 0; i < deviceStillImage.length; i++) {
@@ -1537,7 +1538,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			switch (active) {
 				case SET:
 					request = decoderConfig.contributeCommand(CommandOperation.OPERATION_VIDDEC.getName(), decoderID, CommandOperation.SET.getName());
-					request = request.replace(DecoderConstant.REGEX_SPECIAL_CHARACTER, DecoderConstant.REGEX_SPECIAL_CHARACTER_REPLACEMENT);
+					request = escapeSpecialCharacters(request);
 					break;
 				case START:
 				case STOP:
@@ -1557,6 +1558,23 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		} catch (Exception e) {
 			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
 		}
+	}
+
+	/**
+	 * This method is used to add escape in front of special character
+	 *
+	 * @param input string input
+	 * @return String converted
+	 */
+	private String escapeSpecialCharacters(String input) {
+		List<String> specialCharacters = new ArrayList<>(Arrays.asList("(", ")", "&"));
+		return Arrays.stream(input.split("")).map(c -> {
+			if (specialCharacters.contains(c)) {
+				return "\\" + c;
+			} else {
+				return c;
+			}
+		}).collect(Collectors.joining());
 	}
 
 	//--------------------------------------------------------------------------------------------------------------------------------
@@ -1670,6 +1688,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		for (String fecElement : fecModes) {
 			if (fecElement.equals(fecEnum.getUiName())) {
 				fecEnumCopy = fecEnum;
+				break;
 			}
 		}
 		createStream.setFec(fecEnum.getApiStatsName());
@@ -1981,6 +2000,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param advancedControllableProperties is the list that store all controllable properties
 	 * @param controllableProperty name of controllable property
 	 * @param value value of controllable property
+	 *
+	 * @throws ResourceNotReachableException when fail to create stream
 	 */
 	private void createStreamControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String streamControllingGroup,
 			String controllableProperty, String value) {
@@ -2314,6 +2335,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 	/**
 	 * This method is used to perform create stream control
+	 *
+	 * @throws ResourceNotReachableException when fail to send CLI command
 	 */
 	private void performCreateStreamControl() {
 		try {
@@ -2669,6 +2692,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param advancedControllableProperties is the list that store all controllable properties
 	 * @param streamName name of stream
 	 * @param controllableProperty name of controllable property
+	 *
+	 * @throws ResourceNotReachableException when fail to control stream
 	 */
 	private void streamControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String streamName,
 			String controllableProperty) {
@@ -2701,6 +2726,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 	/**
 	 * This method is used to perform delete stream control
+	 *
+	 * @throws ResourceNotReachableException when fail to send CLI command
 	 */
 	private void performDeleteStreamControl(String streamId) {
 		try {
@@ -2721,7 +2748,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	//--------------------------------------------------------------------------------------------------------------------------------
 	//endregion
 
-	//region Populate advanced controllable properties
+	//region populate advanced controllable properties
 	//--------------------------------------------------------------------------------------------------------------------------------
 
 	/**

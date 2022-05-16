@@ -430,8 +430,9 @@ public class StreamConfig {
 	 */
 	public String contributeCommand(String command, String action) {
 		StringBuilder request = new StringBuilder();
-		request.append(command.concat(DecoderConstant.SPACE)
-				.concat(action));
+		request.append(command)
+				.append(DecoderConstant.SPACE)
+				.append(action);
 
 		Encapsulation encapsulationEnum = Encapsulation.getByApiName(getDefaultValueForNullData(this.encapsulation, DecoderConstant.EMPTY));
 		SRTMode srtModeEnum = SRTMode.getByName(getDefaultValueForNullData(this.srtMode, DecoderConstant.EMPTY));
@@ -439,40 +440,40 @@ public class StreamConfig {
 		SwitchOnOffControl streamFlippingEnum = SwitchOnOffControl.getByName(getDefaultValueForNullData(this.streamFlipping, DecoderConstant.EMPTY));
 
 		if (!StringUtils.isNullOrEmpty(name)) {
-			request.append(" name=\"" + name + DecoderConstant.DOUBLE_QUOTATION);
+			request.append(" name=\"").append(name).append(DecoderConstant.DOUBLE_QUOTATION);
 		}
 		if (!StringUtils.isNullOrEmpty(port) || !StringUtils.isNullOrEmpty(destinationPort)) {
-			request.append(" port=\"" + port + DecoderConstant.DOUBLE_QUOTATION);
+			request.append(" port=\"").append(port).append(DecoderConstant.DOUBLE_QUOTATION);
 		}
 		if (!StringUtils.isNullOrEmpty(destinationAddress) && !destinationAddress.equals(DecoderConstant.ADDRESS_ANY)) {
-			request.append(" addr=\"" + destinationAddress + DecoderConstant.DOUBLE_QUOTATION);
+			request.append(" addr=\"").append(destinationAddress).append(DecoderConstant.DOUBLE_QUOTATION);
 		}
 		if (!StringUtils.isNullOrEmpty(encapsulation)) {
-			request.append(" encapsulation=" + encapsulation);
+			request.append(" encapsulation=").append(encapsulation);
 		}
 		switch (encapsulationEnum) {
 			case RTSP:
 				if (!StringUtils.isNullOrEmpty(address)) {
-					request.append(" addr=" + address);
+					request.append(" addr=").append(address);
 				}
 				break;
 			case TS_OVER_UDP:
 			case TS_OVER_RTP:
 				if (!StringUtils.isNullOrEmpty(sourceAddress) && !sourceAddress.equals(DecoderConstant.ADDRESS_ANY)) {
-					request.append(" sourceaddr=\"" + sourceAddress + DecoderConstant.DOUBLE_QUOTATION);
+					request.append(" sourceaddr=\"").append(sourceAddress).append(DecoderConstant.DOUBLE_QUOTATION);
 				}
 				if (!StringUtils.isNullOrEmpty(fec)) {
 					Fec fecEnum = Fec.getByAPIStatsName(fec);
-					request.append(" fec=" + fecEnum.getApiConfigName());
+					request.append(" fec=").append(fecEnum.getApiConfigName());
 				}
 				break;
 			case TS_OVER_SRT:
 				if (aeEncryptedEnum.isEnable()) {
 					if (!StringUtils.isNullOrEmpty(passphrase)) {
-						request.append(" passphrase=\"" + passphrase + DecoderConstant.DOUBLE_QUOTATION);
+						request.append(" passphrase=\"").append(passphrase).append(DecoderConstant.DOUBLE_QUOTATION);
 					}
 					if (!StringUtils.isNullOrEmpty(rejectUnencrypted)) {
-						request.append(" rejectunencrypted=" + rejectUnencrypted);
+						request.append(" rejectunencrypted=").append(rejectUnencrypted);
 					}
 				}
 				if (streamFlippingEnum.isEnable() && streamConversion != null) {
@@ -482,30 +483,30 @@ public class StreamConfig {
 					String flipTtl = getDefaultValueForNullData(streamConversion.getTtl(), DecoderConstant.DEFAULT_TTL.toString());
 					String flipTos = getDefaultValueForNullData(streamConversion.getTos(), DecoderConstant.DEFAULT_TOS);
 					if (!StringUtils.isNullOrEmpty(flipAddress)) {
-						request.append(" flipaddr=\"" + flipAddress + DecoderConstant.DOUBLE_QUOTATION);
+						request.append(" flipaddr=\"").append(flipAddress).append(DecoderConstant.DOUBLE_QUOTATION);
 					}
 					if (!StringUtils.isNullOrEmpty(flipPort)) {
-						request.append(" flipport=\"" + flipPort + DecoderConstant.DOUBLE_QUOTATION);
+						request.append(" flipport=\"").append(flipPort).append(DecoderConstant.DOUBLE_QUOTATION);
 					}
 					if (!StringUtils.isNullOrEmpty(flipTtl)) {
-						request.append(" flipttl=" + flipTtl);
+						request.append(" flipttl=").append(flipTtl);
 					}else {
-						request.append(" flipttl=" + DecoderConstant.DEFAULT_TTL);
+						request.append(" flipttl=").append(DecoderConstant.DEFAULT_TTL);
 					}
 					if (!StringUtils.isNullOrEmpty(flipTos)) {
-						request.append(" fliptos=" + flipTos);
+						request.append(" fliptos=").append(flipTos);
 					}else {
-						request.append(" fliptos=" + DecoderConstant.DEFAULT_TOS);
+						request.append(" fliptos=").append(DecoderConstant.DEFAULT_TOS);
 					}
 				}
 
 				if (!StringUtils.isNullOrEmpty(srtMode)) {
-					request.append(" mode=" + srtMode);
+					request.append(" mode=").append(srtMode);
 				}
 				if (!StringUtils.isNullOrEmpty(latency)) {
-					request.append(" latency=" + latency);
+					request.append(" latency=").append(latency);
 				}else {
-					request.append(" latency=" + DecoderConstant.DEFAULT_LATENCY);
+					request.append(" latency=").append(DecoderConstant.DEFAULT_LATENCY);
 				}
 				switch (srtModeEnum) {
 					case LISTENER:
@@ -513,7 +514,7 @@ public class StreamConfig {
 						break;
 					case CALLER:
 						if (!StringUtils.isNullOrEmpty(sourcePort)) {
-							request.append(" sourceport=" + sourcePort);
+							request.append(" sourceport=").append(sourcePort);
 						}
 						break;
 					default:

@@ -57,8 +57,10 @@ public enum OutputResolution {
 		this.apiConfigName = apiConfigName;
 		this.apiStatsName = apiStatsName;
 		this.resolutionCategory = resolutionCategory;
-	}	/**
-	 * retrieve {@code {@link #uiName }}
+	}
+
+	/**
+	 * Retrieves {@code {@link #uiName }}
 	 *
 	 * @return value of {@link #uiName}
 	 */
