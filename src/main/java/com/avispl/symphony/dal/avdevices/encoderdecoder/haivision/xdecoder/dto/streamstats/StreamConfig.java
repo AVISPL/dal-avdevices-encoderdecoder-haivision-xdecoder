@@ -7,10 +7,15 @@ import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SRTMode;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SwitchOnOffControl;
 import com.avispl.symphony.dal.util.StringUtils;
 
 /**
@@ -22,6 +27,7 @@ import com.avispl.symphony.dal.util.StringUtils;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StreamConfig {
+	private static final Log logger = LogFactory.getLog(StreamConfig.class);
 
 	private String id;
 	private String name;
@@ -415,6 +421,126 @@ public class StreamConfig {
 			return encapsulationShortName + DecoderConstant.AT_SIGN + NormalizeData.convertToNumberValue(getDestinationAddress()) +
 					DecoderConstant.COLON + getPort();
 		}
+	}
+
+	/**
+	 * This method is used to create command for stream control: create
+	 *
+	 * @return String CLI command
+	 */
+	public String contributeCommand(String command, String action) {
+		StringBuilder request = new StringBuilder();
+		request.append(command)
+				.append(DecoderConstant.SPACE)
+				.append(action);
+
+		Encapsulation encapsulationEnum = Encapsulation.getByApiName(getDefaultValueForNullData(this.encapsulation, DecoderConstant.EMPTY));
+		SRTMode srtModeEnum = SRTMode.getByName(getDefaultValueForNullData(this.srtMode, DecoderConstant.EMPTY));
+		SwitchOnOffControl aeEncryptedEnum = SwitchOnOffControl.getByName(getDefaultValueForNullData(this.srtSettings, DecoderConstant.EMPTY));
+		SwitchOnOffControl streamFlippingEnum = SwitchOnOffControl.getByName(getDefaultValueForNullData(this.streamFlipping, DecoderConstant.EMPTY));
+
+		if (!StringUtils.isNullOrEmpty(name)) {
+			request.append(" name=\"").append(name).append(DecoderConstant.DOUBLE_QUOTATION);
+		}
+		if (!StringUtils.isNullOrEmpty(port) || !StringUtils.isNullOrEmpty(destinationPort)) {
+			request.append(" port=\"").append(port).append(DecoderConstant.DOUBLE_QUOTATION);
+		}
+		if (!StringUtils.isNullOrEmpty(destinationAddress) && !destinationAddress.equals(DecoderConstant.ADDRESS_ANY)) {
+			request.append(" addr=\"").append(destinationAddress).append(DecoderConstant.DOUBLE_QUOTATION);
+		}
+		if (!StringUtils.isNullOrEmpty(encapsulation)) {
+			request.append(" encapsulation=").append(encapsulation);
+		}
+		switch (encapsulationEnum) {
+			case RTSP:
+				if (!StringUtils.isNullOrEmpty(address)) {
+					request.append(" addr=").append(address);
+				}
+				break;
+			case TS_OVER_UDP:
+			case TS_OVER_RTP:
+				if (!StringUtils.isNullOrEmpty(sourceAddress) && !sourceAddress.equals(DecoderConstant.ADDRESS_ANY)) {
+					request.append(" sourceaddr=\"").append(sourceAddress).append(DecoderConstant.DOUBLE_QUOTATION);
+				}
+				if (!StringUtils.isNullOrEmpty(fec)) {
+					Fec fecEnum = Fec.getByAPIStatsName(fec);
+					request.append(" fec=").append(fecEnum.getApiConfigName());
+				}
+				break;
+			case TS_OVER_SRT:
+				if (aeEncryptedEnum.isEnable()) {
+					if (!StringUtils.isNullOrEmpty(passphrase)) {
+						request.append(" passphrase=\"").append(passphrase).append(DecoderConstant.DOUBLE_QUOTATION);
+					}
+					if (!StringUtils.isNullOrEmpty(rejectUnencrypted)) {
+						request.append(" rejectunencrypted=").append(rejectUnencrypted);
+					}
+				}
+				if (streamFlippingEnum.isEnable() && streamConversion != null) {
+					request.append(" flip=" + streamFlippingEnum.getName());
+					String flipAddress = getDefaultValueForNullData(streamConversion.getAddress(), DecoderConstant.EMPTY);
+					String flipPort = getDefaultValueForNullData(streamConversion.getUdpPort(), DecoderConstant.EMPTY);
+					String flipTtl = getDefaultValueForNullData(streamConversion.getTtl(), DecoderConstant.DEFAULT_TTL.toString());
+					String flipTos = getDefaultValueForNullData(streamConversion.getTos(), DecoderConstant.DEFAULT_TOS);
+					if (!StringUtils.isNullOrEmpty(flipAddress)) {
+						request.append(" flipaddr=\"").append(flipAddress).append(DecoderConstant.DOUBLE_QUOTATION);
+					}
+					if (!StringUtils.isNullOrEmpty(flipPort)) {
+						request.append(" flipport=\"").append(flipPort).append(DecoderConstant.DOUBLE_QUOTATION);
+					}
+					if (!StringUtils.isNullOrEmpty(flipTtl)) {
+						request.append(" flipttl=").append(flipTtl);
+					}else {
+						request.append(" flipttl=").append(DecoderConstant.DEFAULT_TTL);
+					}
+					if (!StringUtils.isNullOrEmpty(flipTos)) {
+						request.append(" fliptos=").append(flipTos);
+					}else {
+						request.append(" fliptos=").append(DecoderConstant.DEFAULT_TOS);
+					}
+				}
+
+				if (!StringUtils.isNullOrEmpty(srtMode)) {
+					request.append(" mode=").append(srtMode);
+				}
+				if (!StringUtils.isNullOrEmpty(latency)) {
+					request.append(" latency=").append(latency);
+				}else {
+					request.append(" latency=").append(DecoderConstant.DEFAULT_LATENCY);
+				}
+				switch (srtModeEnum) {
+					case LISTENER:
+					case RENDEZVOUS:
+						break;
+					case CALLER:
+						if (!StringUtils.isNullOrEmpty(sourcePort)) {
+							request.append(" sourceport=").append(sourcePort);
+						}
+						break;
+					default:
+						if (logger.isWarnEnabled()) {
+							logger.warn(String.format("SRT mode %s is not supported.", srtModeEnum.getUiName()));
+						}
+						break;
+				}
+				break;
+			default:
+				if (logger.isWarnEnabled()) {
+					logger.warn(String.format("Encapsulation mode %s is not supported.", encapsulationEnum.getUiName()));
+				}
+				break;
+		}
+		return request.toString();
+	}
+
+	/**
+	 * get default value for null data
+	 *
+	 * @param value value of monitoring properties
+	 * @return String (none/value)
+	 */
+	private String getDefaultValueForNullData(String value, String defaultValue) {
+		return StringUtils.isNullOrEmpty(value) ? defaultValue : value;
 	}
 
 	@Override

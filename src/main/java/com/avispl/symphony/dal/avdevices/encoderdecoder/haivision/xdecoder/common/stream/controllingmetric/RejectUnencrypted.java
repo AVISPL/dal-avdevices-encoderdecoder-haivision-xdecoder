@@ -35,7 +35,7 @@ public enum RejectUnencrypted {
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * Retrieves {@code {@link #name}}
 	 *
 	 * @return value of {@link #name}
 	 */
@@ -68,7 +68,7 @@ public enum RejectUnencrypted {
 	 * @return SyncMode is the reject unencrypted mode that want to get
 	 */
 	public static RejectUnencrypted getByName(String name) {
-		Optional<RejectUnencrypted> state = Arrays.stream(RejectUnencrypted.values()).filter(com -> com.getName().equals(name)).findFirst();
+		Optional<RejectUnencrypted> state = Arrays.stream(RejectUnencrypted.values()).filter(ru -> ru.getName().equals(name)).findFirst();
 		return state.orElse(RejectUnencrypted.DISABLE_REJECT_UNENCRYPTED);
 	}
 
@@ -79,7 +79,7 @@ public enum RejectUnencrypted {
 	 * @return State is the reject unencrypted mode that want to get
 	 */
 	public static RejectUnencrypted getByCode(Integer code) {
-		Optional<RejectUnencrypted> rejectUnencrypted = Arrays.stream(RejectUnencrypted.values()).filter(com -> com.getCode().equals(code)).findFirst();
+		Optional<RejectUnencrypted> rejectUnencrypted = Arrays.stream(RejectUnencrypted.values()).filter(ru -> ru.getCode().equals(code)).findFirst();
 		return rejectUnencrypted.orElse(RejectUnencrypted.DISABLE_REJECT_UNENCRYPTED);
 	}
 }

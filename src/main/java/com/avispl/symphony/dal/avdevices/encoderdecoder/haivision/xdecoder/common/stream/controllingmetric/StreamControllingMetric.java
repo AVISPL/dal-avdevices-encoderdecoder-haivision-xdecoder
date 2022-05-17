@@ -17,6 +17,7 @@ public enum StreamControllingMetric {
 
 	STREAM_NAME("StreamName"),
 	ENCAPSULATION("Protocol"),
+	RTSP_URL("RTSP URL"),
 	MULTICAST_ADDRESS("MulticastAddress"),
 	SOURCE_ADDRESS("SourceAddress"),
 	REJECT_UNENCRYPTED_CALLERS("RejectUnencryptedCallers"),
@@ -55,7 +56,7 @@ public enum StreamControllingMetric {
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * Retrieves {@code {@link #name}}
 	 *
 	 * @return value of {@link #name}
 	 */
@@ -71,7 +72,10 @@ public enum StreamControllingMetric {
 	 */
 	public static StreamControllingMetric getByName(String name) {
 		Optional<StreamControllingMetric> streamControllingMetric = Arrays.stream(StreamControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();
-		return streamControllingMetric.orElse(null);
+		if (streamControllingMetric.isPresent()) {
+			return streamControllingMetric.get();
+		}
+		throw new IllegalArgumentException("Could not find the controlling metric group with name: " + name);
 	}
 }
 

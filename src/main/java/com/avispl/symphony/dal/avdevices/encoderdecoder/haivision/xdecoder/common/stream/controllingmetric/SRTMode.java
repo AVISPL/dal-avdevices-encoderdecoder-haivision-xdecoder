@@ -19,7 +19,7 @@ public enum SRTMode {
 	LISTENER("Listener"),
 	RENDEZVOUS("Rendezvous");
 
-	private final String name;
+	private final String uiName;
 
 	/**
 	 * Parameterized constructor
@@ -27,16 +27,16 @@ public enum SRTMode {
 	 * @param name Name of decoder monitoring metric
 	 */
 	SRTMode(String name) {
-		this.name = name;
+		this.uiName = name;
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * Retrieves {@code {@link #uiName }}
 	 *
-	 * @return value of {@link #name}
+	 * @return value of {@link #uiName}
 	 */
-	public String getName() {
-		return this.name;
+	public String getUiName() {
+		return this.uiName;
 	}
 
 	/**
@@ -46,7 +46,7 @@ public enum SRTMode {
 	 * @return SRTMode is the srt that want to get
 	 */
 	public static SRTMode getByName(String name) {
-		Optional<SRTMode> srtMode = Arrays.stream(SRTMode.values()).filter(com -> com.getName().equals(name)).findFirst();
+		Optional<SRTMode> srtMode = Arrays.stream(SRTMode.values()).filter(srt -> srt.getUiName().equals(name)).findFirst();
 		return srtMode.orElse(SRTMode.LISTENER);
 	}
 }
