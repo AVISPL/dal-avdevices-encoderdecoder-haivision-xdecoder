@@ -43,7 +43,7 @@ public enum DecoderControllingMetric {
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * Retrieves {@code {@link #name}}
 	 *
 	 * @return value of {@link #name}
 	 */
@@ -58,11 +58,11 @@ public enum DecoderControllingMetric {
 	 * @return DecoderControllingMetric is the decoder controlling metric that want to get
 	 */
 	public static DecoderControllingMetric getByName(String name) {
-		Optional<DecoderControllingMetric> decoderControllingMetric = Arrays.stream(DecoderControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();
+		Optional<DecoderControllingMetric> decoderControllingMetric = Arrays.stream(DecoderControllingMetric.values()).filter(controllingMetric -> controllingMetric.getName().equals(name)).findFirst();
 		if(decoderControllingMetric.isPresent()) {
 			return decoderControllingMetric.get();
 		}
-		throw new IllegalArgumentException("Can not find the enum with name: " + name);
+		throw new IllegalArgumentException("Could not find the controlling metric group with name: " + name);
 	}
 }
 

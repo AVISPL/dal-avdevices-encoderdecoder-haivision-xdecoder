@@ -57,8 +57,10 @@ public enum OutputResolution {
 		this.apiConfigName = apiConfigName;
 		this.apiStatsName = apiStatsName;
 		this.resolutionCategory = resolutionCategory;
-	}	/**
-	 * retrieve {@code {@link #uiName }}
+	}
+
+	/**
+	 * Retrieves {@code {@link #uiName }}
 	 *
 	 * @return value of {@link #uiName}
 	 */
@@ -100,7 +102,7 @@ public enum OutputResolution {
 	 * @return Resolutions is the Resolution that want to get
 	 */
 	public static OutputResolution getByUIName(String uiName) {
-		Optional<OutputResolution> resolutions = Arrays.stream(OutputResolution.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<OutputResolution> resolutions = Arrays.stream(OutputResolution.values()).filter(resolution -> resolution.getUiName().equals(uiName)).findFirst();
 		return resolutions.orElse(OutputResolution.AUTOMATIC);
 	}
 
@@ -111,7 +113,7 @@ public enum OutputResolution {
 	 * @return Resolutions is the Resolution that want to get
 	 */
 	public static OutputResolution getByAPIStatsName(String apiStatsName) {
-		Optional<OutputResolution> stillImage = Arrays.stream(OutputResolution.values()).filter(com -> com.getApiStatsName().equals(apiStatsName)).findFirst();
+		Optional<OutputResolution> stillImage = Arrays.stream(OutputResolution.values()).filter(resolution -> resolution.getApiStatsName().equals(apiStatsName)).findFirst();
 		return stillImage.orElse(OutputResolution.AUTOMATIC);
 	}
 
