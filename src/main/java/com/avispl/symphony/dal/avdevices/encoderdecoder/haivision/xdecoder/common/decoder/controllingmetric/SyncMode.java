@@ -68,8 +68,8 @@ public enum SyncMode {
 	 * @return SyncMode is the sync mode that want to get
 	 */
 	public static SyncMode getByName(String name) {
-		Optional<SyncMode> state = Arrays.stream(SyncMode.values()).filter(com -> com.getName().equals(name)).findFirst();
-		return state.orElse(SyncMode.DISABLE_SYNC_MODE);
+		Optional<SyncMode> syncMode = Arrays.stream(SyncMode.values()).filter(sync -> sync.getName().equals(name)).findFirst();
+		return syncMode.orElse(SyncMode.DISABLE_SYNC_MODE);
 	}
 }
 

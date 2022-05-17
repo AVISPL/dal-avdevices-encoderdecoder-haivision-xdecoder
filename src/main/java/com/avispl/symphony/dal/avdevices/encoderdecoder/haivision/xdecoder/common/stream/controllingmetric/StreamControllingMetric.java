@@ -75,7 +75,7 @@ public enum StreamControllingMetric {
 		if (streamControllingMetric.isPresent()) {
 			return streamControllingMetric.get();
 		}
-		throw new IllegalArgumentException("Can not find the enum with name: " + name);
+		throw new IllegalArgumentException("Could not find the controlling metric group with name: " + name);
 	}
 }
 

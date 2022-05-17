@@ -62,7 +62,7 @@ public enum ControllingMetricGroup {
 		if (controllingMetricGroup.isPresent()) {
 			return controllingMetricGroup.get();
 		}
-		throw new IllegalArgumentException("Can not find the enum with name: " + apiName);
+		throw new IllegalArgumentException("Could not find the controlling metric group with name: " + apiName);
 	}
 
 }

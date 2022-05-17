@@ -70,7 +70,7 @@ public enum Fec {
 	 * @return Fec is the fec mode that want to get
 	 */
 	public static Fec getByAPIStatsName(String apiStatsName) {
-		Optional<Fec> fecRTP = Arrays.stream(Fec.values()).filter(com -> com.getApiStatsName().equals(apiStatsName)).findFirst();
+		Optional<Fec> fecRTP = Arrays.stream(Fec.values()).filter(fec -> fec.getApiStatsName().equals(apiStatsName)).findFirst();
 		return fecRTP.orElse(Fec.DISABLE);
 	}
 
@@ -81,7 +81,7 @@ public enum Fec {
 	 * @return FecRTP is the fec mode that want to get
 	 */
 	public static Fec getByAPIConfigName(String apiConfigName) {
-		Optional<Fec> fecRTP = Arrays.stream(Fec.values()).filter(com -> com.getApiConfigName().equals(apiConfigName)).findFirst();
+		Optional<Fec> fecRTP = Arrays.stream(Fec.values()).filter(fec -> fec.getApiConfigName().equals(apiConfigName)).findFirst();
 		return fecRTP.orElse(Fec.DISABLE);
 	}
 
@@ -92,7 +92,7 @@ public enum Fec {
 	 * @return FecRTP is the fec mode that want to get
 	 */
 	public static Fec getByUiName(String uiName) {
-		Optional<Fec> fecRTP = Arrays.stream(Fec.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<Fec> fecRTP = Arrays.stream(Fec.values()).filter(fec -> fec.getUiName().equals(uiName)).findFirst();
 		return fecRTP.orElse(Fec.DISABLE);
 	}
 }
