@@ -109,8 +109,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private List<StreamConfig> realtimeStreamConfigs;
 	private List<StreamConfig> cachedStreamConfigs;
 	private StreamConfig createStream;
-	private AudioConfig realtimeAudioConfig;
-	private AudioConfig cachedAudioConfig;
 	private List<String> customStillImages;
 
 
@@ -881,7 +879,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	//region audio config
 	//--------------------------------------------------------------------------------------------------------------------------------
 
-
 	/**
 	 * This method is used to retrieve audio by send command "auddec get all"
 	 *
@@ -904,8 +901,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 				if (audioConfigWrapper == null) {
 					updateFailedMonitor(CommandOperation.OPERATION_AUDDEC.getName(), DecoderConstant.GETTING_AUDIO_CONFIG_ERR);
-				}else{
-					realtimeAudioConfig = audioConfigWrapper.getAudioConfig();
 				}
 			}
 		} catch (Exception e) {
