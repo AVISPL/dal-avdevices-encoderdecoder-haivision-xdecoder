@@ -56,7 +56,7 @@ public enum State {
 	 * @return State is the state that want to get
 	 */
 	public static State getByName(String name) {
-		Optional<State> state = Arrays.stream(State.values()).filter(com -> com.getName().equals(name)).findFirst();
+		Optional<State> state = Arrays.stream(State.values()).filter(st -> st.getName().equals(name)).findFirst();
 		return state.orElse(State.STOPPED);
 	}
 
@@ -67,7 +67,7 @@ public enum State {
 	 * @return State is the state that want to get
 	 */
 	public static State getByCode(Integer code) {
-		Optional<State> state = Arrays.stream(State.values()).filter(com -> com.getCode().equals(code)).findFirst();
+		Optional<State> state = Arrays.stream(State.values()).filter(st -> st.getCode().equals(code)).findFirst();
 		return state.orElse(State.STOPPED);
 	}
 }

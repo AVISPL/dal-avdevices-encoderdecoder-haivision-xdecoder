@@ -60,7 +60,6 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamStatsMonitoringMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.Deserializer;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.audioconfig.AudioConfigWrapper;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.authentication.AuthenticationRole;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderConfig;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderStatsWrapper;
@@ -291,7 +290,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 			switch (controllingGroup) {
 				case DECODER_SDI:
-					String name = splitProperty[0].substring(10);
+					String name = splitProperty[0].substring(DecoderConstant.INDEX_OF_DECODER_SDI_ID_IN_CONTROLLING_METRIC_GROUP);
 					Integer decoderID = Integer.parseInt(name);
 					decoderControl(stats, advancedControllableProperties, decoderID, splitProperty[1], value);
 					break;
@@ -299,7 +298,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					createStreamControl(stats, advancedControllableProperties, ControllingMetricGroup.CREATE_STREAM.getUiName() + DecoderConstant.HASH, splitProperty[1], value);
 					break;
 				case STREAM:
-					String streamName = splitProperty[0].substring(6);
+					String streamName = splitProperty[0].substring(DecoderConstant.INDEX_OF_STREAM_NAME_IN_CONTROLLING_METRIC_GROUP);
 					streamControl(stats, advancedControllableProperties, streamName, splitProperty[1]);
 					break;
 				default:
@@ -316,7 +315,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	@Override
 	public void controlProperties(List<ControllableProperty> list) {
 		if (CollectionUtils.isEmpty(list)) {
-			throw new IllegalArgumentException("NetGearCommunicator: Controllable properties cannot be null or empty");
+			throw new IllegalArgumentException("MakitoXDecoderCommunicator: Controllable properties cannot be null or empty");
 		}
 		for (ControllableProperty controllableProperty : list) {
 			controlProperty(controllableProperty);
@@ -339,7 +338,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		retrieveDeviceTemperature(stats);
 		retrieveDeviceStillImage();
 		retrieveStreamStats(stats);
-		retrieveAudioConfig();
 
 		for (int decoderID = DecoderConstant.MIN_DECODER_ID; decoderID < DecoderConstant.MAX_DECODER_ID; decoderID++) {
 			retrieveDecoderStats(stats, decoderID);
@@ -875,41 +873,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	//--------------------------------------------------------------------------------------------------------------------------------
 	//endregion
 
-	//region audio config
-	//--------------------------------------------------------------------------------------------------------------------------------
-
-	/**
-	 * This method is used to retrieve audio by send command "auddec get all"
-	 *
-	 *
-	 * When there is no response data, the failedMonitor is going to update
-	 * When there is an exception, the failedMonitor is going to update and exception is not populated
-	 */
-	private void retrieveAudioConfig() {
-		try {
-			String request = CommandOperation.OPERATION_AUDDEC.getName()
-					.concat(DecoderConstant.SPACE)
-					.concat(CommandOperation.GET.getName())
-					.concat(DecoderConstant.SPACE)
-					.concat(CommandOperation.ALL.getName());
-
-			String response = send(request);
-			if (response != null) {
-				Map<String, Object> responseMap = Deserializer.convertDataToObject(response, request);
-				AudioConfigWrapper audioConfigWrapper = objectMapper.convertValue(responseMap, AudioConfigWrapper.class);
-
-				if (audioConfigWrapper == null) {
-					updateFailedMonitor(CommandOperation.OPERATION_AUDDEC.getName(), DecoderConstant.GETTING_AUDIO_CONFIG_ERR);
-				}
-			}
-		} catch (Exception e) {
-			logger.error("Error while retrieve decoder statistics: ", e);
-		}
-	}
-
-	//--------------------------------------------------------------------------------------------------------------------------------
-	//endregion
-
 	//region populate decoder SDI control
 	//--------------------------------------------------------------------------------------------------------------------------------
 
@@ -1257,22 +1220,11 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties, createButton(applyChange, DecoderConstant.APPLY, DecoderConstant.APPLYING));
 				addAdvanceControlProperties(advancedControllableProperties, createButton(cancel, DecoderConstant.CANCEL, DecoderConstant.CANCELLING));
 			} else {
-				stats.remove(applyChange);
-				stats.remove(cancel);
 				stats.put(ControllingMetricGroup.DECODER_SDI.getUiName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.EDITED.getName(), DecoderConstant.FALSE_VALUE);
-
-				for (AdvancedControllableProperty controllableProperty : advancedControllableProperties) {
-					if (controllableProperty.getName().equals(applyChange)) {
-						advancedControllableProperties.remove(controllableProperty);
-						break;
-					}
-				}
-				for (AdvancedControllableProperty controllableProperty : advancedControllableProperties) {
-					if (controllableProperty.getName().equals(cancel)) {
-						advancedControllableProperties.remove(controllableProperty);
-						break;
-					}
-				}
+				List<String> listKeyToBeRemove = new ArrayList<>();
+				listKeyToBeRemove.add(applyChange);
+				listKeyToBeRemove.add(cancel);
+				removeUnusedStatsAndControls(stats, advancedControllableProperties, listKeyToBeRemove);
 			}
 		}
 	}
@@ -1605,7 +1557,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @return String converted
 	 */
 	private String escapeSpecialCharacters(String input) {
-		List<String> specialCharacters = new ArrayList<>(Arrays.asList("(", ")", "&"));
+		List<String> specialCharacters = new ArrayList<>(Arrays.asList(DecoderConstant.LEFT_PARENTHESES, DecoderConstant.RIGHT_PARENTHESES, DecoderConstant.AMPERSAND));
 		return Arrays.stream(input.split("")).map(c -> {
 			if (specialCharacters.contains(c)) {
 				return "\\" + c;
@@ -1682,25 +1634,25 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			String streamGroup) {
 		// Get controllable property current value
 		String port = getDefaultValueForNullData(cachedStreamConfig.getPort(), DecoderConstant.EMPTY);
-		Fec fecEnum = Fec.getByAPIStatsName(getDefaultValueForNullData(cachedStreamConfig.getFec(), DecoderConstant.EMPTY));
-		Fec fecEnumCopy = Fec.DISABLE;
+		Fec fecFromApi = Fec.getByAPIStatsName(getDefaultValueForNullData(cachedStreamConfig.getFec(), DecoderConstant.EMPTY));
+		Fec fecFromCurrentFecModes = Fec.DISABLE;
 
 		// Get list values of controllable property (dropdown list)
 		List<String> fecModes = DropdownList.getListOfEnumNames(Fec.class, Fec.MPEG_PRO_FEC);
 
 		for (String fecElement : fecModes) {
-			if (fecElement.equals(fecEnum.getUiName())) {
-				fecEnumCopy = fecEnum;
+			if (fecElement.equals(fecFromApi.getUiName())) {
+				fecFromCurrentFecModes = fecFromApi;
 				break;
 			}
 		}
-		createStream.setFec(fecEnumCopy.getApiStatsName());
+		createStream.setFec(fecFromCurrentFecModes.getApiStatsName());
 
 		// Populate control
 		addAdvanceControlProperties(advancedControllableProperties,
 				createNumeric(stats, streamGroup + StreamControllingMetric.PORT.getName(), port));
 		addAdvanceControlProperties(advancedControllableProperties,
-				createDropdown(stats, streamGroup + StreamControllingMetric.FEC.getName(), fecModes, fecEnumCopy.getUiName()));
+				createDropdown(stats, streamGroup + StreamControllingMetric.FEC.getName(), fecModes, fecFromCurrentFecModes.getUiName()));
 
 		populateNetWorkTypeStreamControl(stats, advancedControllableProperties, cachedStreamConfig, streamGroup);
 	}
@@ -2735,12 +2687,10 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		StreamControllingMetric streamControllingMetric = StreamControllingMetric.getByName(controllableProperty);
 
 		Optional<StreamConfig> cachedStreamConfig = cachedStreamConfigs.stream().filter(config -> config.getName().equals(streamName) || config.getDefaultStreamName().equals(streamName)).findFirst();
-		String streamId;
-		if (cachedStreamConfig.isPresent()) {
-			streamId = cachedStreamConfig.get().getId();
-		}else {
+		if (!cachedStreamConfig.isPresent()) {
 			throw new ResourceNotReachableException(String.format("Stream %s is not exist", streamName));
 		}
+		String streamId = cachedStreamConfig.get().getId();
 
 		switch (streamControllingMetric) {
 			case DELETE:
@@ -2781,25 +2731,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	}
 	//--------------------------------------------------------------------------------------------------------------------------------
 	//endregion
-
-
-	//region populate audio control
-	//--------------------------------------------------------------------------------------------------------------------------------
-
-
-	//--------------------------------------------------------------------------------------------------------------------------------
-	//endregion
-
-
-	//region perform audio control
-	//--------------------------------------------------------------------------------------------------------------------------------
-
-
-	//--------------------------------------------------------------------------------------------------------------------------------
-	//endregion
-
-	//region populate advanced controllable properties
-	//--------------------------------------------------------------------------------------------------------------------------------
 
 	/**
 	 * Add advancedControllableProperties if advancedControllableProperties different empty

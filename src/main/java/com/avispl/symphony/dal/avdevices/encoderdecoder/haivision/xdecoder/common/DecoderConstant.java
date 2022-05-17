@@ -21,6 +21,7 @@ public class DecoderConstant {
 	public static final String DOUBLE_QUOTATION = "\"";
 	public static final String COLON = ":";
 	public static final String DASH = "-";
+	public static final String AMPERSAND = "&";
 	public static final String RIGHT_PARENTHESES = ")";
 	public static final String LEFT_PARENTHESES = "(";
 	public static final String SPACE =  " ";
@@ -98,4 +99,10 @@ public class DecoderConstant {
 	public static final Integer MIN_TTL = 1;
 	public static final Integer MAX_TTL = 255;
 	public static final Integer DEFAULT_TTL = 64;
+
+	// index of stream name in controlling metric group, eg: DecoderSDI1 => id = 1
+	public static final Integer INDEX_OF_DECODER_SDI_ID_IN_CONTROLLING_METRIC_GROUP = 10;
+
+	// index of stream name in controlling metric group, eg: StreamTest => name = Test
+	public static final Integer INDEX_OF_STREAM_NAME_IN_CONTROLLING_METRIC_GROUP = 6;
 }
