@@ -398,54 +398,55 @@ public class DecoderConfig {
 	 */
 	public String contributeCommand(String command, Integer decoderID, String action) {
 		StringBuilder request = new StringBuilder();
-		request.append(command.concat(DecoderConstant.SPACE)
-				.concat(decoderID.toString())
-				.concat(DecoderConstant.SPACE)
-				.concat(action));
+		request.append(command)
+				.append(DecoderConstant.SPACE)
+				.append(decoderID.toString())
+				.append(DecoderConstant.SPACE)
+				.append(action);
 		if (!StringUtils.isNullOrEmpty(primaryStream)) {
 			String tempStream = primaryStream;
 			if (primaryStream.equals(DecoderConstant.DEFAULT_STREAM_NAME)) {
 				tempStream = DecoderConstant.NONE;
 			}
-			request.append(" streamId=" + tempStream);
+			request.append(" streamId=").append(tempStream);
 		}
 		if (!StringUtils.isNullOrEmpty(secondaryStream)) {
 			String tempStream = secondaryStream;
 			if (secondaryStream.equals(DecoderConstant.DEFAULT_STREAM_NAME)) {
 				tempStream = DecoderConstant.NONE;
 			}
-			request.append(" altStreamId=" + tempStream);
+			request.append(" altStreamId=").append(tempStream);
 		}
 		if (!StringUtils.isNullOrEmpty(stillImage)) {
 			if (stillImage.equals(StillImage.SELECT_IMAGE.getApiName())) {
 				stillImage = StillImage.CUSTOM.getApiName();
 			}
-			request.append(" stillImage=" + StillImage.getByAPIName(stillImage).getApiName());
+			request.append(" stillImage=").append(StillImage.getByAPIName(stillImage).getApiName());
 		}
 		if (!StringUtils.isNullOrEmpty(stillFile) && stillImage.equals(StillImage.CUSTOM.getApiName())) {
-			request.append(" stillFile=" + stillFile);
+			request.append(" stillFile=\"").append(stillFile).append(DecoderConstant.DOUBLE_QUOTATION);
 		}
 		if (!StringUtils.isNullOrEmpty(stillImageDelay)) {
-			request.append(" stillDelay=" + NormalizeData.getDataNumberValue(stillImageDelay));
+			request.append(" stillDelay=").append(NormalizeData.getDataNumberValue(stillImageDelay));
 		}
 		if (!StringUtils.isNullOrEmpty(enableBuffering)) {
-			request.append(" syncMode=" + enableBuffering);
+			request.append(" syncMode=").append(enableBuffering);
 		}
 		if (!StringUtils.isNullOrEmpty(outputResolution)) {
-			request.append(" resolution=" + OutputResolution.getByAPIStatsName(outputResolution).getApiConfigName());
+			request.append(" resolution=").append(OutputResolution.getByAPIStatsName(outputResolution).getApiConfigName());
 		}
 		if (!StringUtils.isNullOrEmpty(outputFrameRate)) {
-			request.append(" frameRate=" + outputFrameRate);
+			request.append(" frameRate=").append(outputFrameRate);
 		}
 		if (!StringUtils.isNullOrEmpty(bufferingMode)) {
-			request.append(" buffering=" + bufferingMode);
+			request.append(" buffering=").append(bufferingMode);
 		}
 		if (!StringUtils.isNullOrEmpty(bufferingDelay)) {
 			if (bufferingMode.equals(BufferingMode.FIXED.getApiName())) {
-				request.append(" delay=" + NormalizeData.getDataNumberValue(bufferingDelay));
+				request.append(" delay=").append(NormalizeData.getDataNumberValue(bufferingDelay));
 			}
 			if (bufferingMode.equals(BufferingMode.MULTI_SYNC.getApiName())) {
-				request.append(" multiSyncDelay=" + NormalizeData.getDataNumberValue(bufferingDelay));
+				request.append(" multiSyncDelay=").append(NormalizeData.getDataNumberValue(bufferingDelay));
 			}
 		}
 		return request.toString();

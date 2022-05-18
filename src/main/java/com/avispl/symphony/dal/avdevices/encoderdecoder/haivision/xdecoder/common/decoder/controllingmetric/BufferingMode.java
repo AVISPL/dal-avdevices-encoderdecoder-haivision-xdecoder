@@ -35,7 +35,7 @@ public enum BufferingMode {
 	}
 
 	/**
-	 * retrieve {@code {@link #uiName }}
+	 * Retrieves {@code {@link #uiName }}
 	 *
 	 * @return value of {@link #uiName}
 	 */
@@ -59,7 +59,7 @@ public enum BufferingMode {
 	 * @return BufferingMode is the buffering mode that want to get
 	 */
 	public static BufferingMode getByUiName(String uiName) {
-		Optional<BufferingMode> bufferingMode = Arrays.stream(BufferingMode.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<BufferingMode> bufferingMode = Arrays.stream(BufferingMode.values()).filter(buffer -> buffer.getUiName().equals(uiName)).findFirst();
 		return bufferingMode.orElse(BufferingMode.AUTO);
 	}
 
@@ -70,7 +70,7 @@ public enum BufferingMode {
 	 * @return BufferingMode is the buffering mode that want to get
 	 */
 	public static BufferingMode getByAPIName(String apiName) {
-		Optional<BufferingMode> bufferingMode = Arrays.stream(BufferingMode.values()).filter(com -> com.getApiName().equals(apiName)).findFirst();
+		Optional<BufferingMode> bufferingMode = Arrays.stream(BufferingMode.values()).filter(buffer -> buffer.getApiName().equals(apiName)).findFirst();
 		return bufferingMode.orElse(BufferingMode.AUTO);
 	}
 }
