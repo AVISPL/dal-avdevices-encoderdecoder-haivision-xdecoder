@@ -32,7 +32,7 @@ public class StreamStatsWrapper {
 	private Stream stream;
 
 	@JsonAlias("StreamConversion")
-	private Stream streamConversion;
+	private StreamConversion streamConversion;
 
 	/**
 	 * Retrieves {@code {@link #srt}}
@@ -53,7 +53,7 @@ public class StreamStatsWrapper {
 	}
 
 	/**
-	 * Retrieves {@code {@link #streamConfig }}
+	 * Retrieves {@code {@link #streamConfig}}
 	 *
 	 * @return value of {@link #streamConfig}
 	 */
@@ -62,9 +62,9 @@ public class StreamStatsWrapper {
 	}
 
 	/**
-	 * Sets {@code streamConfigInfo}
+	 * Sets {@code streamConfig}
 	 *
-	 * @param streamConfig the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.StreamConfigInfo} field
+	 * @param streamConfig the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.StreamConfig} field
 	 */
 	public void setStreamConfig(StreamConfig streamConfig) {
 		this.streamConfig = streamConfig;
@@ -111,16 +111,16 @@ public class StreamStatsWrapper {
 	 *
 	 * @return value of {@link #streamConversion}
 	 */
-	public Stream getStreamConversion() {
+	public StreamConversion getStreamConversion() {
 		return streamConversion;
 	}
 
 	/**
 	 * Sets {@code streamConversion}
 	 *
-	 * @param streamConversion the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.test.xdecoder.dto.streamstats.Stream} field
+	 * @param streamConversion the {@code com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats.StreamConversion} field
 	 */
-	public void setStreamConversion(Stream streamConversion) {
+	public void setStreamConversion(StreamConversion streamConversion) {
 		this.streamConversion = streamConversion;
 	}
 

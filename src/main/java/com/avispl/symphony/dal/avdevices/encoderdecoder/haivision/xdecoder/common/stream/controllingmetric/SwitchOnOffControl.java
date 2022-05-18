@@ -36,7 +36,7 @@ public enum SwitchOnOffControl {
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * Retrieves {@code {@link #name}}
 	 *
 	 * @return value of {@link #name}
 	 */
@@ -69,7 +69,7 @@ public enum SwitchOnOffControl {
 	 * @return SyncMode is the switch on/off mode that want to get
 	 */
 	public static SwitchOnOffControl getByName(String name) {
-		Optional<SwitchOnOffControl> state = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getName().equals(name)).findFirst();
+		Optional<SwitchOnOffControl> state = Arrays.stream(SwitchOnOffControl.values()).filter(control -> control.getName().equals(name)).findFirst();
 		return state.orElse(SwitchOnOffControl.OFF);
 	}
 
@@ -80,7 +80,7 @@ public enum SwitchOnOffControl {
 	 * @return State is the switch on/off mode that want to get
 	 */
 	public static SwitchOnOffControl getByCode(Integer code) {
-		Optional<SwitchOnOffControl> rejectUnencrypted = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getCode().equals(code)).findFirst();
+		Optional<SwitchOnOffControl> rejectUnencrypted = Arrays.stream(SwitchOnOffControl.values()).filter(control -> control.getCode().equals(code)).findFirst();
 		return rejectUnencrypted.orElse(SwitchOnOffControl.OFF);
 	}
 }

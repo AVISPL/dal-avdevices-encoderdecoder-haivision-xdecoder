@@ -37,7 +37,7 @@ public enum Encapsulation {
 	}
 
 	/**
-	 * retrieve {@code {@link #uiName }}
+	 * Retrieves {@code {@link #uiName }}
 	 *
 	 * @return value of {@link #uiName}
 	 */
@@ -70,7 +70,7 @@ public enum Encapsulation {
 	 * @return Encapsulation is the protocol that want to get
 	 */
 	public static Encapsulation getByUiName(String uiName) {
-		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(en -> en.getUiName().equals(uiName)).findFirst();
 		return encapsulation.orElse(Encapsulation.TS_OVER_UDP);
 	}
 
@@ -81,7 +81,7 @@ public enum Encapsulation {
 	 * @return Encapsulation is the protocol that want to get
 	 */
 	public static Encapsulation getByApiName(String apiName) {
-		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(com -> com.getApiName().equals(apiName)).findFirst();
+		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(en -> en.getApiName().equals(apiName)).findFirst();
 		return encapsulation.orElse(Encapsulation.TS_OVER_UDP);
 	}
 }

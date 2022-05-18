@@ -40,7 +40,7 @@ public enum StreamStatsMonitoringMetric {
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * Retrieves {@code {@link #name}}
 	 *
 	 * @return value of {@link #name}
 	 */
