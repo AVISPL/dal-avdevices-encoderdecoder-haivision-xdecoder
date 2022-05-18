@@ -1296,7 +1296,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					addAdvanceControlProperties(advancedControllableProperties,
 							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.PRIMARY_STREAM.getName(), streamNames, primaryStreamName));
 					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-					populateLocalExtendedStats(stats, advancedControllableProperties);
+					isEmergencyDelivery = true;
 					break;
 				case SECONDARY_STREAM:
 					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
@@ -1317,7 +1317,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					addAdvanceControlProperties(advancedControllableProperties,
 							createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.SECONDARY_STREAM.getName(), streamNames, secondaryStreamName));
 					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-					populateLocalExtendedStats(stats, advancedControllableProperties);
+					isEmergencyDelivery = true;
 					break;
 				case STILL_IMAGE:
 					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
@@ -1327,7 +1327,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					this.cachedDecoderConfigs.add(new DecoderConfig(cachedDecoderConfig));
 
 					populateDecoderControl(stats, advancedControllableProperties, decoderID);
-					populateLocalExtendedStats(stats, advancedControllableProperties);
+					isEmergencyDelivery = true;
 					break;
 				case SELECT_STILL_IMAGE:
 					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
@@ -1338,7 +1338,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					this.cachedDecoderConfigs.add(new DecoderConfig(cachedDecoderConfig));
 
 					populateDecoderControl(stats, advancedControllableProperties, decoderID);
-					populateLocalExtendedStats(stats, advancedControllableProperties);
+					isEmergencyDelivery = true;
 					break;
 				case STILL_IMAGE_DELAY:
 					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
@@ -1364,7 +1364,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					addAdvanceControlProperties(advancedControllableProperties,
 							createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE_DELAY.getName(), stillImageDelay.toString()));
 					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-					populateLocalExtendedStats(stats, advancedControllableProperties);
+					isEmergencyDelivery = true;
 					break;
 				case SYNC_MODE:
 					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
@@ -1382,7 +1382,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 							createSwitch(stats, decoderControllingGroup + DecoderControllingMetric.SYNC_MODE.getName(), Integer.parseInt(value), DecoderConstant.DISABLE, DecoderConstant.ENABLE));
 					populateDecoderControlBufferingMode(stats, advancedControllableProperties, cachedDecoderConfig, decoderID);
 					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-					populateLocalExtendedStats(stats, advancedControllableProperties);
+					isEmergencyDelivery = true;
 					break;
 				case BUFFERING_MODE:
 					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
@@ -1395,7 +1395,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 					populateDecoderControlBufferingMode(stats, advancedControllableProperties, cachedDecoderConfig, decoderID);
 					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-					populateLocalExtendedStats(stats, advancedControllableProperties);
+					isEmergencyDelivery = true;
 					break;
 				case BUFFERING_DELAY:
 					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
@@ -1405,7 +1405,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 					populateDecoderControlBufferingMode(stats, advancedControllableProperties, cachedDecoderConfig, decoderID);
 					populateApplyChangeAndCancelButtonForDecoder(stats, advancedControllableProperties, decoderID);
-					populateLocalExtendedStats(stats, advancedControllableProperties);
+					isEmergencyDelivery = true;
 					break;
 
 				case OUTPUT_FRAME_RATE:
@@ -1417,7 +1417,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					this.cachedDecoderConfigs.add(new DecoderConfig(cachedDecoderConfig));
 
 					populateDecoderControl(stats, advancedControllableProperties, decoderID);
-					populateLocalExtendedStats(stats, advancedControllableProperties);
+					isEmergencyDelivery = true;
 					break;
 				case OUTPUT_RESOLUTION:
 					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
@@ -1428,7 +1428,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					this.cachedDecoderConfigs.add(new DecoderConfig(cachedDecoderConfig));
 
 					populateDecoderControl(stats, advancedControllableProperties, decoderID);
-					populateLocalExtendedStats(stats, advancedControllableProperties);
+					isEmergencyDelivery = true;
 					break;
 				case STATE:
 					Optional<DecoderConfig> realtimeDecoderConfigOptional = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
@@ -1500,18 +1500,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					throw new IllegalStateException(String.format("Operation %s with value %s is not supported.", controllableProperty, value));
 			}
 		}
-	}
-
-	/**
-	 * This method is used for populate local extended stats when emergency delivery:
-	 *
-	 * @param stats is the map that store all statistics
-	 * @param advancedControllableProperties is the list that store all controllable properties
-	 */
-	private void populateLocalExtendedStats(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties) {
-		this.localExtendedStatistics.setStatistics(stats);
-		this.localExtendedStatistics.setControllableProperties(advancedControllableProperties);
-		isEmergencyDelivery = true;
 	}
 
 	/**
@@ -2004,7 +1992,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties,
 						createText(stats, streamControllingGroup + StreamControllingMetric.STREAM_NAME.getName(), createStream.getName()));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case ENCAPSULATION:
 				Encapsulation encapsulationEnum = Encapsulation.getByUiName(value);
@@ -2012,7 +2000,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				createStream.setEncapsulation(encapsulationEnum.getApiName());
 
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, streamControllingGroup);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case NETWORK_TYPE:
 				NetworkType networkType = NetworkType.getByUiName(value);
@@ -2034,7 +2022,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, streamControllingGroup);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case PORT:
 				String port = DecoderConstant.EMPTY;
@@ -2058,7 +2046,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties,
 						createNumeric(stats, streamControllingGroup + StreamControllingMetric.PORT.getName(), port));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case ADDRESS:
 				createStream.setDestinationAddress(value);
@@ -2066,7 +2054,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties,
 						createText(stats, streamControllingGroup + StreamControllingMetric.ADDRESS.getName(), value));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case MULTICAST_ADDRESS:
 				createStream.setDestinationAddress(value);
@@ -2074,7 +2062,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties,
 						createText(stats, streamControllingGroup + StreamControllingMetric.MULTICAST_ADDRESS.getName(), value));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case SOURCE_ADDRESS:
 				createStream.setSourceAddress(value);
@@ -2082,7 +2070,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties,
 						createText(stats, streamControllingGroup + StreamControllingMetric.SOURCE_ADDRESS.getName(), value));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case SOURCE_PORT:
 				String sourcePort = DecoderConstant.EMPTY;
@@ -2105,7 +2093,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties,
 						createNumeric(stats, streamControllingGroup + StreamControllingMetric.SOURCE_PORT.getName(), sourcePort));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case DESTINATION_PORT:
 				String destinationPort = DecoderConstant.EMPTY;
@@ -2129,14 +2117,14 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties,
 						createNumeric(stats, streamControllingGroup + StreamControllingMetric.DESTINATION_PORT.getName(), destinationPort));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case FEC:
 				Fec fec = Fec.getByUiName(value);
 				createStream.setFec(fec.getApiStatsName());
 
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, streamControllingGroup);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case SRT_MODE:
 				SRTMode srtMode = SRTMode.getByName(value);
@@ -2144,7 +2132,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 				createStream.setSrtMode(srtMode.getUiName());
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, streamControllingGroup);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case LATENCY:
 				String latency = DecoderConstant.DEFAULT_LATENCY.toString();
@@ -2167,7 +2155,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties,
 						createNumeric(stats, streamControllingGroup + StreamControllingMetric.LATENCY.getName(), createStream.getLatency()));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case SRT_TO_UDP_STREAM_CONVERSION:
 				StreamConversion streamConversion = createStream.getStreamConversion();
@@ -2188,7 +2176,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				createStream.setStreamFlipping(streamFlipping.getName());
 
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, streamControllingGroup);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case SRT_TO_UDP_ADDRESS:
 				streamConversion = createStream.getStreamConversion();
@@ -2196,7 +2184,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties,
 						createText(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_ADDRESS.getName(), value));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case SRT_TO_UDP_PORT:
 				streamConversion = createStream.getStreamConversion();
@@ -2221,7 +2209,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties,
 						createNumeric(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_PORT.getName(), srtToUDPPort));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case SRT_TO_UDP_TOS:
 				streamConversion = createStream.getStreamConversion();
@@ -2245,7 +2233,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					addAdvanceControlProperties(advancedControllableProperties,
 							createText(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_TOS.getName(), tosHexValue));
 					populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-					populateLocalExtendedStats(stats, advancedControllableProperties);
+					isEmergencyDelivery = true;
 					break;
 				} catch (Exception var60) {
 					throw new NumberFormatException("Value of ParameterToS is invalid. TOS must be hex value range to 00-FF");
@@ -2272,7 +2260,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties,
 						createNumeric(stats, streamControllingGroup + StreamControllingMetric.SRT_TO_UDP_TTL.getName(), ttl));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case ENCRYPTED:
 				SwitchOnOffControl srtSettingEnum = SwitchOnOffControl.getByCode(Integer.parseInt(value));
@@ -2280,14 +2268,14 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 				createStream.setSrtSettings(srtSettingEnum.getName());
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, streamControllingGroup);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case PASSPHRASE:
 				createStream.setPassphrase(value);
 				addAdvanceControlProperties(advancedControllableProperties,
 						createText(stats, streamControllingGroup + StreamControllingMetric.PASSPHRASE.getName(), value));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case REJECT_UNENCRYPTED_CALLERS:
 				RejectUnencrypted rejectUnencryptedCallers = RejectUnencrypted.getByCode(Integer.parseInt(value));
@@ -2296,7 +2284,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				addAdvanceControlProperties(advancedControllableProperties, createSwitch(
 						stats, streamControllingGroup + StreamControllingMetric.REJECT_UNENCRYPTED_CALLERS.getName(), rejectUnencryptedCallers.getCode(), DecoderConstant.DISABLE, DecoderConstant.ENABLE));
 				populateCancelButtonForCreateStream(stats, advancedControllableProperties);
-				populateLocalExtendedStats(stats, advancedControllableProperties);
+				isEmergencyDelivery = true;
 				break;
 			case RTSP_URL:
 				createStream.setAddress(value);
