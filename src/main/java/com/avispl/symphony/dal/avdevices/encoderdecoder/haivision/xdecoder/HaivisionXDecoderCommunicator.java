@@ -1977,6 +1977,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private void createStreamControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String streamControllingGroup,
 			String controllableProperty, String value) {
 		StreamControllingMetric streamControllingMetric = StreamControllingMetric.getByName(controllableProperty);
+
 		isEmergencyDelivery = true;
 		switch (streamControllingMetric) {
 			case STREAM_NAME:
