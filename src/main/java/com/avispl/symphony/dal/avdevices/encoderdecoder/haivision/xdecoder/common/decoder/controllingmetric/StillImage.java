@@ -62,7 +62,7 @@ public enum StillImage {
 	 * @return StillImage is the still image that want to get
 	 */
 	public static StillImage getByUIName(String uiName) {
-		Optional<StillImage> stillImage = Arrays.stream(StillImage.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<StillImage> stillImage = Arrays.stream(StillImage.values()).filter(still -> still.getUiName().equals(uiName)).findFirst();
 		return stillImage.orElse(StillImage.CUSTOM);
 	}
 
@@ -73,7 +73,7 @@ public enum StillImage {
 	 * @return StillImage is the still image that want to get
 	 */
 	public static StillImage getByAPIName(String apiName) {
-		Optional<StillImage> stillImage = Arrays.stream(StillImage.values()).filter(com -> com.getApiName().equals(apiName)).findFirst();
+		Optional<StillImage> stillImage = Arrays.stream(StillImage.values()).filter(still -> still.getApiName().equals(apiName)).findFirst();
 		return stillImage.orElse(StillImage.CUSTOM);
 	}
 }

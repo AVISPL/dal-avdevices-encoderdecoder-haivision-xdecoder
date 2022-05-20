@@ -45,7 +45,7 @@ public enum NetworkType {
 	 * @return Type is the network type that want to get
 	 */
 	public static NetworkType getByUiName(String name) {
-		Optional<NetworkType> type = Arrays.stream(NetworkType.values()).filter(com -> com.getUiName().equals(name)).findFirst();
+		Optional<NetworkType> type = Arrays.stream(NetworkType.values()).filter(networkType -> networkType.getUiName().equals(name)).findFirst();
 		return type.orElse(NetworkType.UNI_CAST);
 	}
 }

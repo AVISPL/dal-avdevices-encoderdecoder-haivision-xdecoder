@@ -21,6 +21,7 @@ public class DecoderConstant {
 	public static final String DOUBLE_QUOTATION = "\"";
 	public static final String COLON = ":";
 	public static final String DASH = "-";
+	public static final String AMPERSAND = "&";
 	public static final String RIGHT_PARENTHESES = ")";
 	public static final String LEFT_PARENTHESES = "(";
 	public static final String TARGET_CH = "Ch";
