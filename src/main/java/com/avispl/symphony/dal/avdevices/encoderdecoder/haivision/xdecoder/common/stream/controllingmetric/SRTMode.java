@@ -46,7 +46,7 @@ public enum SRTMode {
 	 * @return SRTMode is the srt that want to get
 	 */
 	public static SRTMode getByName(String name) {
-		Optional<SRTMode> srtMode = Arrays.stream(SRTMode.values()).filter(com -> com.getUiName().equals(name)).findFirst();
+		Optional<SRTMode> srtMode = Arrays.stream(SRTMode.values()).filter(srt -> srt.getUiName().equals(name)).findFirst();
 		return srtMode.orElse(SRTMode.LISTENER);
 	}
 }

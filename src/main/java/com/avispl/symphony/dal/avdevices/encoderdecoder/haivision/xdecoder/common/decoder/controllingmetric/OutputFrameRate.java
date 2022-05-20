@@ -64,7 +64,7 @@ public enum OutputFrameRate {
 	 * @return OutputFrameRate is the output frame rate that want to get
 	 */
 	public static OutputFrameRate getByUIName(String uiName) {
-		Optional<OutputFrameRate> outputFrameRate = Arrays.stream(OutputFrameRate.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<OutputFrameRate> outputFrameRate = Arrays.stream(OutputFrameRate.values()).filter(frameRate -> frameRate.getUiName().equals(uiName)).findFirst();
 		return outputFrameRate.orElse(OutputFrameRate.AUTO);
 	}
 
@@ -75,7 +75,7 @@ public enum OutputFrameRate {
 	 * @return OutputFrameRate is the output frame rate that want to get
 	 */
 	public static OutputFrameRate getByAPIName(String apiName) {
-		Optional<OutputFrameRate> outputFrameRate = Arrays.stream(OutputFrameRate.values()).filter(com -> com.getApiName().equals(apiName)).findFirst();
+		Optional<OutputFrameRate> outputFrameRate = Arrays.stream(OutputFrameRate.values()).filter(frameRate -> frameRate.getApiName().equals(apiName)).findFirst();
 		return outputFrameRate.orElse(OutputFrameRate.AUTO);
 	}
 }
