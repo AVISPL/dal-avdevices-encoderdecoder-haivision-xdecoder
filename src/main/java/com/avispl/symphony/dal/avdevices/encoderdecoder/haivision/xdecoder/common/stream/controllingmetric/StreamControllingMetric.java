@@ -25,7 +25,7 @@ public enum StreamControllingMetric {
 	ADDRESS("Address"),
 	FEC("Fec"),
 	ID("Id"),
-	LATENCY("Latency"),
+	LATENCY("Latency(ms)"),
 	PASSPHRASE("Passphrase"),
 	PORT("ConnectionPort"),
 	SOURCE_PORT("ConnectionSourcePort"),

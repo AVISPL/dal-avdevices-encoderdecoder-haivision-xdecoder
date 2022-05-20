@@ -23,6 +23,9 @@ public class DecoderConstant {
 	public static final String DASH = "-";
 	public static final String RIGHT_PARENTHESES = ")";
 	public static final String LEFT_PARENTHESES = "(";
+	public static final String TARGET_CH = "Ch";
+	public static final String PLUS_SIGN = "+";
+	public static final String AND_SIGN = "&";
 	public static final String SPACE =  " ";
 	public static final String EMPTY = "";
 	public static final String AT = "at";
@@ -45,6 +48,7 @@ public class DecoderConstant {
 	public static final String GETTING_DECODER_STATS_ERR = "Failed to get decoder statistic";
 	public static final String GETTING_STREAM_STATS_ERR = "Failed to get stream statistic";
 	public static final String GETTING_AUDIO_CONFIG_ERR = "Failed to get Audio config info";
+	public static final String GETTING_HDMI_CONFIG_ERR = "Failed to get Hdmi config info";
 	public static final String DECODER_CONTROL_ERR = "Failed to control decoder: ";
 	public static final String PORT_NUMBER_ERROR = "Invalid port number";
 	public static final String DEFAULT_SKIPPED_FRAMES_VALUE = "0";
@@ -98,4 +102,10 @@ public class DecoderConstant {
 	public static final Integer MIN_TTL = 1;
 	public static final Integer MAX_TTL = 255;
 	public static final Integer DEFAULT_TTL = 64;
+
+	// index of stream name in controlling metric group, eg: DecoderSDI1 => id = 1
+	public static final Integer INDEX_OF_DECODER_SDI_ID_IN_CONTROLLING_METRIC_GROUP = 10;
+
+	// index of stream name in controlling metric group, eg: StreamTest => name = Test
+	public static final Integer INDEX_OF_STREAM_NAME_IN_CONTROLLING_METRIC_GROUP = 6;
 }

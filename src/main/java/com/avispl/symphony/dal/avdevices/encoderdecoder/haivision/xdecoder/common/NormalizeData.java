@@ -90,12 +90,12 @@ public class NormalizeData {
 	}
 
 	/**
-	 * get data value from specify space index in string, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 / spaceIndex = 1  => 0.00
+	 * get data number value from specify space index in string, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 / spaceIndex = 1  => 0.00
 	 *
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getDataValueBySpaceIndex(String data, int spaceIndex) {
+	public static String getDataNumberValueBySpaceIndex(String data, int spaceIndex) {
 		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
@@ -104,5 +104,41 @@ public class NormalizeData {
 			return DecoderConstant.EMPTY;
 		}
 		return spiltDataList[spaceIndex].replaceAll(DecoderConstant.REGEX_ONLY_GET_DOUBLE, DecoderConstant.EMPTY);
+	}
+
+
+	/**
+	 * get data value from specify space index in string, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 / spaceIndex = 1  => (0.00)
+	 *
+	 * @param data the normalized data
+	 * @return String
+	 */
+	public static String getDataBySpaceIndex(String data, int spaceIndex) {
+		if (data == null) {
+			return DecoderConstant.EMPTY;
+		}
+		String[] spiltDataList = data.split(DecoderConstant.SPACE, 3);
+		if (spaceIndex >= spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[spaceIndex])) {
+			return DecoderConstant.EMPTY;
+		}
+		return spiltDataList[spaceIndex];
+	}
+
+	/**
+	 * get address from raw data, eg: "Any":UNRESOLVED => Any
+	 *
+	 * @param data the normalized data
+	 * @return String
+	 */
+	public static String getAddressFromRawData(String data) {
+		if (data == null) {
+			return DecoderConstant.EMPTY;
+		}
+		int dataIndex = 0;
+		int lastDoubleQuoteIndex = data.lastIndexOf(DecoderConstant.DOUBLE_QUOTATION);
+		if (lastDoubleQuoteIndex < dataIndex || StringUtils.isNullOrEmpty(data) ) {
+			return DecoderConstant.EMPTY;
+		}
+		return data.substring(1, lastDoubleQuoteIndex );
 	}
 }
