@@ -15,33 +15,45 @@ import java.util.Optional;
  */
 public enum SwitchOnOffControl {
 
-	ON("On", true, 1),
-	OFF("Off", false, 0);
+	ON("Enabled", "On", true, 1),
+	OFF("Disabled", "Off", false, 0);
 
-	private final String name;
+	private final String uiName;
+	private final String apiName;
 	private final boolean isEnable;
 	private final int code;
 
 	/**
 	 * Parameterized constructor
 	 *
-	 * @param name Name of switch on/off mode
+	 * @param uiName ui name of switch on/off mode
+	 * @param apiName api name of switch on/off mode
 	 * @param isEnable status of switch on/off mode
 	 * @param code code of switch on/off mode
 	 */
-	SwitchOnOffControl(String name, boolean isEnable, int code) {
-		this.name = name;
+	SwitchOnOffControl(String uiName, String apiName, boolean isEnable, int code) {
+		this.uiName = uiName;
+		this.apiName = apiName;
 		this.isEnable = isEnable;
 		this.code = code;
 	}
 
 	/**
-	 * Retrieves {@code {@link #name}}
+	 * Retrieves {@code {@link #uiName}}
 	 *
-	 * @return value of {@link #name}
+	 * @return value of {@link #uiName}
 	 */
-	public String getName() {
-		return this.name;
+	public String getUiName() {
+		return uiName;
+	}
+
+	/**
+	 * Retrieves {@code {@link #apiName }}
+	 *
+	 * @return value of {@link #apiName}
+	 */
+	public String getApiName() {
+		return this.apiName;
 	}
 
 	/**
@@ -68,8 +80,8 @@ public enum SwitchOnOffControl {
 	 * @param name is the name of switch on/off mode that want to get
 	 * @return SyncMode is the switch on/off mode that want to get
 	 */
-	public static SwitchOnOffControl getByName(String name) {
-		Optional<SwitchOnOffControl> state = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getName().equals(name)).findFirst();
+	public static SwitchOnOffControl getByApiName(String name) {
+		Optional<SwitchOnOffControl> state = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getApiName().equals(name)).findFirst();
 		return state.orElse(SwitchOnOffControl.OFF);
 	}
 

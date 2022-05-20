@@ -46,6 +46,9 @@ public enum CommandOperation {
 	// Video command
 	OPERATION_VIDDEC("viddec"),
 
+	// HDMI command
+	OPERATION_HDMI("hdmi"),
+
 	// Still image command
 	OPERATION_STILL_IMAGE("still list");
 

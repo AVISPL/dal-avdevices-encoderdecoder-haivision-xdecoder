@@ -17,7 +17,9 @@ public enum ControllingMetricGroup {
 
 	DECODER_SDI("DecoderSDI", "Decoder"),
 	CREATE_STREAM("CreateStream", "Create"),
-	STREAM("Stream", "Stream");
+	STREAM("Stream", "Stream"),
+	AUDIO("Audio", "Audio"),
+	HDMI("HDMI", "HDMI");
 
 	private final String uiName;
 	private final String apiName;

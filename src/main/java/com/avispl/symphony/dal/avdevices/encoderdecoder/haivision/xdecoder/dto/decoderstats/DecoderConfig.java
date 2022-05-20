@@ -424,7 +424,7 @@ public class DecoderConfig {
 			request.append(" stillImage=").append(StillImage.getByAPIName(stillImage).getApiName());
 		}
 		if (!StringUtils.isNullOrEmpty(stillFile) && stillImage.equals(StillImage.CUSTOM.getApiName())) {
-			request.append(" stillFile=\"").append(stillFile).append(DecoderConstant.DOUBLE_QUOTATION);
+			request.append(" stillFile=").append(stillFile);
 		}
 		if (!StringUtils.isNullOrEmpty(stillImageDelay)) {
 			request.append(" stillDelay=").append(NormalizeData.getDataNumberValue(stillImageDelay));
