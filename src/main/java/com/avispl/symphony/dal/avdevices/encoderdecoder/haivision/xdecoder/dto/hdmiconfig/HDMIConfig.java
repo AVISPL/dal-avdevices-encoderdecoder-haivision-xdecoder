@@ -28,6 +28,18 @@ public class HDMIConfig {
 	@JsonAlias("SurroundSound")
 	private String surroundSound;
 
+	@JsonAlias("CurrentResolution")
+	private String currentResolution;
+
+	@JsonAlias("CurrentFrameRate")
+	private String currentFrameRate;
+
+	@JsonAlias("Decoder1State")
+	private String decoderSDI1State;
+
+	@JsonAlias("Decoder2State")
+	private String decoderSDI2State;
+
 	public HDMIConfig() {
 	}
 
@@ -40,6 +52,10 @@ public class HDMIConfig {
 		videoSource = hdmiConfig.getVideoSource();
 		audioSource = hdmiConfig.getAudioSource();
 		surroundSound = hdmiConfig.getSurroundSound();
+		currentResolution = hdmiConfig.getCurrentResolution();
+		currentFrameRate = hdmiConfig.getCurrentFrameRate();
+		decoderSDI1State = hdmiConfig.getDecoderSDI1State();
+		decoderSDI2State = hdmiConfig.getDecoderSDI2State();
 	}
 
 	/**
@@ -94,6 +110,78 @@ public class HDMIConfig {
 	 */
 	public void setSurroundSound(String surroundSound) {
 		this.surroundSound = surroundSound;
+	}
+
+	/**
+	 * Retrieves {@code {@link #currentResolution}}
+	 *
+	 * @return value of {@link #currentResolution}
+	 */
+	public String getCurrentResolution() {
+		return currentResolution;
+	}
+
+	/**
+	 * Sets {@code currentResolution}
+	 *
+	 * @param currentResolution the {@code java.lang.String} field
+	 */
+	public void setCurrentResolution(String currentResolution) {
+		this.currentResolution = currentResolution;
+	}
+
+	/**
+	 * Retrieves {@code {@link #currentFrameRate}}
+	 *
+	 * @return value of {@link #currentFrameRate}
+	 */
+	public String getCurrentFrameRate() {
+		return currentFrameRate;
+	}
+
+	/**
+	 * Sets {@code currentFrameRate}
+	 *
+	 * @param currentFrameRate the {@code java.lang.String} field
+	 */
+	public void setCurrentFrameRate(String currentFrameRate) {
+		this.currentFrameRate = currentFrameRate;
+	}
+
+	/**
+	 * Retrieves {@code {@link #decoderSDI1State}}
+	 *
+	 * @return value of {@link #decoderSDI1State}
+	 */
+	public String getDecoderSDI1State() {
+		return decoderSDI1State;
+	}
+
+	/**
+	 * Sets {@code decoderSDI1State}
+	 *
+	 * @param decoderSDI1State the {@code java.lang.String} field
+	 */
+	public void setDecoderSDI1State(String decoderSDI1State) {
+		this.decoderSDI1State = decoderSDI1State;
+	}
+
+	/**
+	 * Retrieves {@code {@link #decoderSDI2State}}
+	 *
+	 * @return value of {@link #decoderSDI2State}
+	 */
+	public String getDecoderSDI2State() {
+		return decoderSDI2State;
+	}
+
+	/**
+	 * Sets {@code decoderSDI2State}
+	 *
+	 * @param decoderSDI2State the {@code java.lang.String} field
+	 */
+	public void setDecoderSDI2State(String decoderSDI2State) {
+		this.decoderSDI2State = decoderSDI2State;
 	}
 
 	/**
@@ -152,7 +240,6 @@ public class HDMIConfig {
 		return StringUtils.isNullOrEmpty(value) ? defaultValue : value;
 	}
 
-
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -162,11 +249,13 @@ public class HDMIConfig {
 			return false;
 		}
 		HDMIConfig that = (HDMIConfig) o;
-		return Objects.equals(videoSource, that.videoSource) && Objects.equals(audioSource, that.audioSource) && Objects.equals(surroundSound, that.surroundSound);
+		return Objects.equals(videoSource, that.videoSource) && Objects.equals(audioSource, that.audioSource) && Objects.equals(surroundSound, that.surroundSound)
+				&& Objects.equals(currentResolution, that.currentResolution) && Objects.equals(currentFrameRate, that.currentFrameRate) && Objects.equals(decoderSDI1State,
+				that.decoderSDI1State) && Objects.equals(decoderSDI2State, that.decoderSDI2State);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(videoSource, audioSource, surroundSound);
+		return Objects.hash(videoSource, audioSource, surroundSound, currentResolution, currentFrameRate, decoderSDI1State, decoderSDI2State);
 	}
 }
