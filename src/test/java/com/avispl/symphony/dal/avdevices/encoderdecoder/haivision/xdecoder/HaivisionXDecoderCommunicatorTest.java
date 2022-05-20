@@ -19,15 +19,15 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.audio.controllingmetric.AudioControllingMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.DecoderControllingMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputFrameRate;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.AudioOutput;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.HDMIControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.SurroundSound;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.VideoSource;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.DecoderControllingMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputFrameRate;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.NetworkType;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SRTMode;
@@ -741,6 +741,51 @@ class HaivisionXDecoderCommunicatorTest {
 	}
 
 	/**
+	 * Test HaivisionXDecoder.controlProperty HDMI control: Source
+	 *
+	 * Expected: control successfully
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testSetHDMISource1() {
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		String propertyName = "HDMI#" + HDMIControllingMetric.VIDEO_SOURCE.getName();
+		String propertyValue = VideoSource.DEFAULT_VIDEO_SOURCE.getUiName();
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		propertyName = "HDMI#" + HDMIControllingMetric.APPLY_CHANGE.getName();
+		propertyValue = "1";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		propertyName = "HDMI#" + HDMIControllingMetric.VIDEO_SOURCE.getName();
+		propertyValue = VideoSource.DECODER_2.getUiName();
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		propertyName = "HDMI#" + HDMIControllingMetric.APPLY_CHANGE.getName();
+		propertyValue = "1";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+
+
+		Assertions.assertEquals(propertyValue, stats.get(propertyName));
+	}
+
+	/**
 	 * Test HaivisionXDecoder.controlProperty HDMI control: Cancel
 	 *
 	 * Expected: control successfully
@@ -857,6 +902,35 @@ class HaivisionXDecoderCommunicatorTest {
 	}
 
 	/**
+	 * Test HaivisionXDecoder.controlProperty HDMI control: Surround Sound Mode
+	 *
+	 * Expected symphony will not show Audio Out dropdown control
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testSetHDMISoundMode1() {
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		// set sound mode to surround
+		String propertyName = "HDMI#" + HDMIControllingMetric.SOUND_MODE.getName();
+		String propertyValue = SurroundSound.SURROUND.getUiName();
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		// set audio out to 1 & 2
+		propertyName = "HDMI#" + HDMIControllingMetric.AUDIO_OUT.getName();
+		propertyValue = AudioOutput.CHANNEL_12.getUiName();
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		Assertions.assertNull(stats.get(propertyName));
+	}
+
+	/**
 	 * Test HaivisionXDecoderCommunicator.controlProperty to set audio config case: audio level
 	 * Expected set audio successfully
 	 */
@@ -918,7 +992,7 @@ class HaivisionXDecoderCommunicatorTest {
 		Assertions.assertEquals("SDI2", extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName()
 				+ DecoderConstant.HASH + AudioControllingMetric.AUDIO_SOURCE.getName()));
 		// Expect 'Edited' = false
-		Assertions.assertEquals(extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.EDITED.getName()), "False");
+		Assertions.assertEquals("False", extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.EDITED.getName()));
 	}
 
 	/**
@@ -934,7 +1008,7 @@ class HaivisionXDecoderCommunicatorTest {
 		// CancelChanges button is null
 		Assertions.assertNull(extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.CANCEL.getName()));
 		// Edited is false
-		Assertions.assertEquals(extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.EDITED.getName()), "False");
+		Assertions.assertEquals("False", extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.EDITED.getName()));
 	}
 
 	/**
@@ -987,6 +1061,6 @@ class HaivisionXDecoderCommunicatorTest {
 		// CancelChanges button is null
 		Assertions.assertNull(extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.CANCEL.getName()));
 		// Expect 'Edited' = false
-		Assertions.assertEquals(extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.EDITED.getName()), "False");
+		Assertions.assertEquals("False", extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.EDITED.getName()));
 	}
 }

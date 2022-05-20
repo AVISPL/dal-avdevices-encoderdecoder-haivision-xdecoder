@@ -109,27 +109,61 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private Set<String> streamsNameFiltered;
 	private Set<String> streamsStatusFiltered;
 	private Set<String> portNumbersFiltered;
+	private List<String> customStillImages;
 	private boolean isUpdateCachedStreamControl = false;
 	private boolean isEmergencyDelivery = false;
 	private ExtendedStatistics localExtendedStatistics;
-
-	// Decoder and stream DTO
-	private List<DecoderConfig> realtimeDecoderConfigs;
-	private List<DecoderConfig> cachedDecoderConfigs;
-	private List<StreamConfig> realtimeStreamConfigs;
-	private List<StreamConfig> cachedStreamConfigs;
-	private StreamConfig createStream;
-	private AudioConfig realtimeAudioConfig;
-	private AudioConfig cachedAudioConfig;
-	private HDMIConfig realtimeHDMIConfig;
-	private HDMIConfig cachedHDMIConfig;
-	private List<String> customStillImages;
 
 	//Adapter Properties
 	private String streamNameFilter;
 	private String portNumberFilter;
 	private String streamStatusFilter;
 	private String configManagement;
+
+	/**
+	 * store the list of decoder config info from device
+	 */
+	private List<DecoderConfig> realtimeDecoderConfigs;
+
+	/**
+	 * store the list of current decoder config info from symphony
+	 */
+	private List<DecoderConfig> cachedDecoderConfigs;
+
+	/**
+	 * store the list of stream config info from device
+	 */
+	private List<StreamConfig> realtimeStreamConfigs;
+
+	/**
+	 * store the list of current stream config info from symphony
+	 */
+	private List<StreamConfig> cachedStreamConfigs;
+
+	/**
+	 * store the current create stream config info from symphony
+	 */
+	private StreamConfig createStream;
+
+	/**
+	 * store the audio config info from device
+	 */
+	private AudioConfig realtimeAudioConfig;
+
+	/**
+	 * store the current audio config info from symphony
+	 */
+	private AudioConfig cachedAudioConfig;
+
+	/**
+	 * store the hdmi config info from device
+	 */
+	private HDMIConfig realtimeHDMIConfig;
+
+	/**
+	 * store the current hdmi config info from symphony
+	 */
+	private HDMIConfig cachedHDMIConfig;
 
 	/**
 	 * ReentrantLock to prevent null pointer exception to localExtendedStatistics when controlProperty method is called before GetMultipleStatistics method.
@@ -674,6 +708,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		Optional<DecoderConfig> realtimeDecoderConfig = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
 		Optional<DecoderConfig> cachedDecoderConfig = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
 
+		// update cachedDecoderConfigs when decoder SDI config info is not edited on symphony but is edited on real device
 		if (cachedDecoderConfig.isPresent() && realtimeDecoderConfig.isPresent() && cachedDecoderConfig.get().equals(realtimeDecoderConfig.get()) && !realtimeDecoderConfig.get().equals(decoderConfig)) {
 			this.cachedDecoderConfigs.remove(cachedDecoderConfig.get());
 			this.cachedDecoderConfigs.add(new DecoderConfig(decoderConfig));
@@ -868,6 +903,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		Optional<StreamConfig> realtimeStreamConfig = this.realtimeStreamConfigs.stream().filter(st -> streamID.toString().equals(st.getId())).findFirst();
 		Optional<StreamConfig> cachedStreamConfig = this.cachedStreamConfigs.stream().filter(st -> streamID.toString().equals(st.getId())).findFirst();
 
+		// update cachedStreamConfigs when stream config info is not edited on symphony but is edited on real device
 		if (cachedStreamConfig.isPresent() && realtimeStreamConfig.isPresent() && cachedStreamConfig.get().equals(realtimeStreamConfig.get()) && !realtimeStreamConfig.get().equals(streamConfigInfo)) {
 			this.cachedStreamConfigs.remove(cachedStreamConfig.get());
 			this.cachedStreamConfigs.add(new StreamConfig(streamConfigInfo));
@@ -965,6 +1001,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					updateFailedMonitor(CommandOperation.OPERATION_AUDDEC.getName(), DecoderConstant.GETTING_HDMI_CONFIG_ERR);
 				} else {
 					HDMIConfig hdmiConfig = hdmiConfigWrapper.getHdmiConfig();
+
+					// update cachedHDMIConfig when hdmi config info is not edited on symphony but is edited on real device
 					if (cachedHDMIConfig != null && cachedHDMIConfig.equals(realtimeHDMIConfig) && !realtimeHDMIConfig.equals(hdmiConfig)) {
 						cachedHDMIConfig = new HDMIConfig(hdmiConfig);
 					}
@@ -2901,6 +2939,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					rawAudioConfig.setChannels(formattedChannel);
 					// Formatted output source: SDI1CH12
 					rawAudioConfig.setOutputSource(rawAudioConfig.getOutputSource().replace(DecoderConstant.PLUS_SIGN, DecoderConstant.EMPTY));
+
+					// update cachedAudioConfig when audio config info is not edited on symphony but is edited on real device
 					if (cachedAudioConfig != null && cachedAudioConfig.deepEquals(realtimeAudioConfig) && !realtimeAudioConfig.deepEquals(rawAudioConfig)) {
 						cachedAudioConfig = new AudioConfig(rawAudioConfig);
 					}
@@ -3068,6 +3108,12 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		VideoSource videoSourceEnum = VideoSource.getByAPIName(getDefaultValueForNullData(cachedHDMIConfig.getVideoSource(), DecoderConstant.EMPTY));
 		SurroundSound surroundSoundEnum = SurroundSound.getByAPIName(getDefaultValueForNullData(cachedHDMIConfig.getSurroundSound(), DecoderConstant.EMPTY));
 		AudioOutput audioOutputEnum = AudioOutput.getByAPIName(getDefaultValueForNullData(cachedHDMIConfig.getAudioSource(), DecoderConstant.EMPTY));
+		String currentFrameRate = getDefaultValueForNullData(cachedHDMIConfig.getCurrentFrameRate(), DecoderConstant.EMPTY);
+		String currentResolution = getDefaultValueForNullData(cachedHDMIConfig.getCurrentFrameRate(), DecoderConstant.EMPTY);
+		String decoderState = getDefaultValueForNullData(cachedHDMIConfig.getDecoderSDI1State(), DecoderConstant.EMPTY);
+		if (decoderState.isEmpty()){
+			decoderState = getDefaultValueForNullData(cachedHDMIConfig.getDecoderSDI2State(), DecoderConstant.EMPTY);
+		}
 
 		// Get list values of controllable property (dropdown list)
 		List<String> videoSourceModes = DropdownList.getListOfEnumNames(VideoSource.class);
@@ -3077,6 +3123,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		String hdmiGroup = ControllingMetricGroup.HDMI.getUiName() + DecoderConstant.HASH;
 
 		// Populate control
+		stats.put(hdmiGroup + HDMIControllingMetric.RESOLUTION.getName(), currentResolution);
+		stats.put(hdmiGroup + HDMIControllingMetric.FRAME_RATE.getName(), currentFrameRate);
+		stats.put(hdmiGroup + HDMIControllingMetric.VIDEO_SOURCE_STATE.getName(), decoderState);
 		addAdvanceControlProperties(advancedControllableProperties,
 				createDropdown(stats, hdmiGroup + HDMIControllingMetric.VIDEO_SOURCE.getName(), videoSourceModes, videoSourceEnum.getUiName()));
 		addAdvanceControlProperties(advancedControllableProperties,

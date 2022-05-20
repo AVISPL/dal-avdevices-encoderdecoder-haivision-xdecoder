@@ -22,6 +22,7 @@ public class Deserializer {
 
 	private Deserializer(){
 	}
+
 	/**
 	 * This method is used to convert response data to object
 	 * @param responseData

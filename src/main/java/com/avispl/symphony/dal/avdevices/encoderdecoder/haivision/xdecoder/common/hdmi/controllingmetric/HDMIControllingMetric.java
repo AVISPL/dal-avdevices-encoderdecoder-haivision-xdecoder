@@ -18,6 +18,9 @@ public enum HDMIControllingMetric {
 	VIDEO_SOURCE("VideoSource"),
 	SOUND_MODE("SoundMode"),
 	AUDIO_OUT("AudioOut"),
+	FRAME_RATE("CurrentFrameRate"),
+	VIDEO_SOURCE_STATE("VideoSourceState"),
+	RESOLUTION("CurrentResolution"),
 	APPLY_CHANGE("ApplyChanges"),
 	CANCEL("CancelChanges"),
 	EDITED("Edited");
