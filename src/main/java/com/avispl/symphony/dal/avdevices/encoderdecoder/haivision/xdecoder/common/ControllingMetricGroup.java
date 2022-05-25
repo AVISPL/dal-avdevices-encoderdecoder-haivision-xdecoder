@@ -19,6 +19,8 @@ public enum ControllingMetricGroup {
 	CREATE_STREAM("CreateStream", "Create"),
 	STREAM("Stream", "Stream"),
 	AUDIO("Audio", "Audio"),
+	SERVICE("Services", "Services"),
+	TALKBACK("Talkback", "Talkback"),
 	HDMI("HDMI", "HDMI");
 
 	private final String uiName;
