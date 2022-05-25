@@ -4,9 +4,24 @@
 
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder;
 
-import java.util.Collections;
 import java.util.Map;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.ControllingMetricGroup;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.audio.controllingmetric.AudioControllingMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.DecoderControllingMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputFrameRate;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.AudioOutput;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.HDMIControllingMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.SurroundSound;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.VideoSource;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.NetworkType;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SRTMode;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.StreamControllingMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.talkback.controllingmetric.TalkbackControllingMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.service.controllingmetric.ServiceControllingMetric;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,23 +30,9 @@ import org.junit.jupiter.api.Test;
 
 import com.avispl.symphony.api.dal.dto.control.ControllableProperty;
 import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.ControllingMetricGroup;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.audio.controllingmetric.AudioControllingMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.AudioOutput;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.HDMIControllingMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.SurroundSound;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.VideoSource;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.DecoderControllingMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputFrameRate;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.NetworkType;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SRTMode;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.StreamControllingMetric;
 
 /**
  * Unit test for HaivisionXDecoderCommunicator
@@ -48,11 +49,8 @@ class HaivisionXDecoderCommunicatorTest {
 	public void setUp() throws Exception {
 		haivisionXDecoderCommunicator.setHost("***REMOVED***");
 		haivisionXDecoderCommunicator.setPort(22);
-		haivisionXDecoderCommunicator.setLogin("admintma");
-		haivisionXDecoderCommunicator.setPassword("12345678");
-		haivisionXDecoderCommunicator.setCommandErrorList(Collections.singletonList("~"));
-		haivisionXDecoderCommunicator.setCommandSuccessList(Collections.singletonList("~$ "));
-		haivisionXDecoderCommunicator.setLoginSuccessList(Collections.singletonList("~$ "));
+		haivisionXDecoderCommunicator.setLogin("harry");
+		haivisionXDecoderCommunicator.setPassword("123456789");
 		haivisionXDecoderCommunicator.init();
 		haivisionXDecoderCommunicator.connect();
 	}
@@ -902,35 +900,6 @@ class HaivisionXDecoderCommunicatorTest {
 	}
 
 	/**
-	 * Test HaivisionXDecoder.controlProperty HDMI control: Surround Sound Mode
-	 *
-	 * Expected symphony will not show Audio Out dropdown control
-	 */
-	@Tag("RealDevice")
-	@Test
-	void testSetHDMISoundMode1() {
-		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
-		Map<String, String> stats = extendedStatistics.getStatistics();
-		ControllableProperty controllableProperty = new ControllableProperty();
-
-		// set sound mode to surround
-		String propertyName = "HDMI#" + HDMIControllingMetric.SOUND_MODE.getName();
-		String propertyValue = SurroundSound.SURROUND.getUiName();
-		controllableProperty.setProperty(propertyName);
-		controllableProperty.setValue(propertyValue);
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		// set audio out to 1 & 2
-		propertyName = "HDMI#" + HDMIControllingMetric.AUDIO_OUT.getName();
-		propertyValue = AudioOutput.CHANNEL_12.getUiName();
-		controllableProperty.setProperty(propertyName);
-		controllableProperty.setValue(propertyValue);
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		Assertions.assertNull(stats.get(propertyName));
-	}
-
-	/**
 	 * Test HaivisionXDecoderCommunicator.controlProperty to set audio config case: audio level
 	 * Expected set audio successfully
 	 */
@@ -1063,4 +1032,213 @@ class HaivisionXDecoderCommunicatorTest {
 		// Expect 'Edited' = false
 		Assertions.assertEquals("False", extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.EDITED.getName()));
 	}
+
+	/**
+	 * Test HaivisionXDecoder.controlProperty Service control: enable ems
+	 *
+	 * Expected: control successfully
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testEnableEms() {
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		String propertyName = "Services#" + ServiceControllingMetric.EMS.getName();
+		String propertyValue = "1";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		Assertions.assertEquals(propertyValue, stats.get(propertyName));
+	}
+
+	/**
+	 * Test HaivisionXDecoder.controlProperty Service control: enable ems
+	 *
+	 * Expected: control successfully
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testDisableEms() {
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		String propertyName = "Services#" + ServiceControllingMetric.EMS.getName();
+		String propertyValue = "0";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		Assertions.assertEquals(propertyValue, stats.get(propertyName));
+	}
+
+	/**
+	 * Test HaivisionXDecoder.controlProperty Service control: enable ems
+	 *
+	 * Expected: control successfully
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testSetServiceEnableTalkback() {
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		String propertyName = "Services#" + ServiceControllingMetric.TALK_BACK.getName();
+		String propertyValue = "1";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+
+		Assertions.assertEquals(propertyValue, stats.get(propertyName));
+	}
+
+	/**
+	 * Test HaivisionXDecoder.controlProperty Service control: enable ems
+	 *
+	 * Expected: control successfully
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testSetServiceDisableTalkback() {
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		String propertyName = "Services#" + ServiceControllingMetric.TALK_BACK.getName();
+		String propertyValue = "0";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		Assertions.assertEquals(propertyValue, stats.get(propertyName));
+	}
+
+	/**
+	 * Test HaivisionXDecoder.controlProperty talkback control: active stream name
+	 *
+	 * Expected: control successfully
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testSetTalkBackActiveStreamName() {
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		String propertyName = "Talkback#" + TalkbackControllingMetric.ACTIVE_DECODER_SDI.getName();
+		String propertyValue = "SDI1";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+
+		propertyName = "Talkback#" + TalkbackControllingMetric.APPLY_CHANGE.getName();
+		propertyValue = "1";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+
+		Assertions.assertEquals(propertyValue, stats.get(propertyName));
+	}
+
+	/**
+	 * Test HaivisionXDecoder.controlProperty talkback control: port
+	 *
+	 * Expected: control successfully
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testSetTalkbackPort() {
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		String propertyName = "Talkback#" + TalkbackControllingMetric.PORT.getName();
+		String propertyValue = "1975";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+
+		// expected: control successful, symphony will show apply changes, cancel changes button and the edited field is true
+		Assertions.assertEquals(propertyValue, stats.get(propertyName));
+		Assertions.assertNotNull(stats.get("Talkback#" + TalkbackControllingMetric.APPLY_CHANGE.getName()));
+		Assertions.assertNotNull(stats.get("Talkback#" + TalkbackControllingMetric.CANCEL.getName()));
+		Assertions.assertEquals(DecoderConstant.TRUE_VALUE, stats.get("Talkback#" + TalkbackControllingMetric.EDITED.getName()));
+	}
+
+	/**
+	 * Test HaivisionXDecoder.controlProperty talkback control: ApplyChanges
+	 *
+	 * Expected: control successfully
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testSetTalkbackApplyChanges() {
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		// set port to 1975
+		String propertyName = "Talkback#" + TalkbackControllingMetric.PORT.getName();
+		String propertyValue = "9177";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		propertyName = "Talkback#" + TalkbackControllingMetric.APPLY_CHANGE.getName();
+		propertyValue = "1";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		// expected: symphony will not show apply changes, cancel changes button and the edited field is true
+		Assertions.assertNull(stats.get("Talkback#" + TalkbackControllingMetric.APPLY_CHANGE.getName()));
+		Assertions.assertNull(stats.get("Talkback#" + TalkbackControllingMetric.CANCEL.getName()));
+		Assertions.assertEquals(DecoderConstant.FALSE_VALUE, stats.get("Talkback#" + TalkbackControllingMetric.EDITED.getName()));
+	}
+
+
+	/**
+	 * Test HaivisionXDecoder.controlProperty talkback control: CancelChanges
+	 *
+	 * Expected: control successfully
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testSetTalkbackCancelChanges() {
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		// set sound mode to surround
+		String propertyName = "Talkback#" + TalkbackControllingMetric.PORT.getName();
+		String propertyValue = "1975";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		propertyName = "Talkback#" + TalkbackControllingMetric.CANCEL.getName();
+		propertyValue = "1";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		// expected: symphony will not show apply changes, cancel changes button and the edited field is true
+		Assertions.assertNull(stats.get("Talkback#" + TalkbackControllingMetric.APPLY_CHANGE.getName()));
+		Assertions.assertNull(stats.get("Talkback#" + TalkbackControllingMetric.CANCEL.getName()));
+		Assertions.assertEquals(DecoderConstant.FALSE_VALUE, stats.get("Talkback#" + TalkbackControllingMetric.EDITED.getName()));
+	}
+
 }

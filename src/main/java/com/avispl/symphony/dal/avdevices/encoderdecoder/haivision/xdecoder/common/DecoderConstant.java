@@ -27,13 +27,15 @@ public class DecoderConstant {
 	public static final String TARGET_CH = "Ch";
 	public static final String PLUS_SIGN = "+";
 	public static final String AND_SIGN = "&";
+	public static final String EQUAL = "=";
 	public static final String SPACE =  " ";
 	public static final String EMPTY = "";
 	public static final String AT = "at";
 	public static final String REGEX_ONLY_GET_DOUBLE = "[^0-9?!\\\\.\\\\-]";
 	public static final String REGEX_REMOVE_SPACE_AND_NUMBER = "[1-9\\s+]";
-	public static final String REGEX_SPECIAL_CHARACTER = "[\\(\\)&]";
-	public static final String REGEX_SPECIAL_CHARACTER_REPLACEMENT = "\\\\$0";
+	public static final String SERVICE_OBJECT_JSON_ALIAS = "serviceallstatus\r\n";
+	public static final String SERVICE_STRING_REPLACED = "service is currently";
+	public static final String CURRENTLY = "currently";
 	public static final String ADDRESS_ANY = "Any";
 	public static final String NONE = "None";
 	public static final String DEFAULT_STREAM_NAME = "(None)";
@@ -50,6 +52,8 @@ public class DecoderConstant {
 	public static final String GETTING_STREAM_STATS_ERR = "Failed to get stream statistic";
 	public static final String GETTING_AUDIO_CONFIG_ERR = "Failed to get Audio config info";
 	public static final String GETTING_HDMI_CONFIG_ERR = "Failed to get Hdmi config info";
+	public static final String GETTING_SERVICE_CONFIG_ERR = "Failed to get service config info";
+	public static final String GETTING_TALKBACK_CONFIG_ERR = "Failed to get talkback config info";
 	public static final String DECODER_CONTROL_ERR = "Failed to control decoder: ";
 	public static final String PORT_NUMBER_ERROR = "Invalid port number";
 	public static final String DEFAULT_SKIPPED_FRAMES_VALUE = "0";
