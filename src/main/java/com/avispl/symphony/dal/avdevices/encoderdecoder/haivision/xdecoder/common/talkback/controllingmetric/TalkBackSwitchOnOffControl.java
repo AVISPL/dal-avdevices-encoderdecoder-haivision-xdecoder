@@ -66,7 +66,7 @@ public enum TalkBackSwitchOnOffControl {
 	 * This method is used to get switch on/off mode by api stats name
 	 *
 	 * @param name is the name of switch on/off mode that want to get
-	 * @return SyncMode is the switch on/off mode that want to get
+	 * @return TalkBackSwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static TalkBackSwitchOnOffControl getByApiStatsName(String name) {
 		Optional<TalkBackSwitchOnOffControl> state = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(com -> com.getApiStatsName().equals(name)).findFirst();
@@ -77,7 +77,7 @@ public enum TalkBackSwitchOnOffControl {
 	 * This method is used to get switch on/off mode by api config name
 	 *
 	 * @param name is the name of switch on/off mode that want to get
-	 * @return SyncMode is the switch on/off mode that want to get
+	 * @return TalkBackSwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static TalkBackSwitchOnOffControl getByApiName(String name) {
 		Optional<TalkBackSwitchOnOffControl> state = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(com -> com.getApiConfigName().equals(name)).findFirst();

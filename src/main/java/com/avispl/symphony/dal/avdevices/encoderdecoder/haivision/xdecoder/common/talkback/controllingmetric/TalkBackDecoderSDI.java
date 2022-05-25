@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Set of service switch on/off modes
+ * Set of decoder SDI
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/8/2022
@@ -24,8 +24,8 @@ public enum TalkBackDecoderSDI {
 	/**
 	 * Parameterized constructor
 	 *
-	 * @param apiStatsName api stats name of switch on/off mode
-	 * @param apiConfigName api config name of switch on/off mode
+	 * @param apiStatsName api stats name of decoder SDI mode
+	 * @param apiConfigName api config name of decoder SDI mode
 	 */
 	TalkBackDecoderSDI(String apiStatsName, String apiConfigName) {
 		this.uiName = apiStatsName;
@@ -51,10 +51,10 @@ public enum TalkBackDecoderSDI {
 	}
 
 	/**
-	 * This method is used to get switch on/off mode by api stats name
+	 * This method is used to get decoder SDI mode by api stats name
 	 *
-	 * @param name is the name of switch on/off mode that want to get
-	 * @return SyncMode is the switch on/off mode that want to get
+	 * @param name is the name of decoder SDI mode that want to get
+	 * @return TalkBackDecoderSDI is the decoder SDI mode that want to get
 	 */
 	public static TalkBackDecoderSDI getByUiName(String name) {
 		Optional<TalkBackDecoderSDI> state = Arrays.stream(TalkBackDecoderSDI.values()).filter(com -> com.getUiName().equals(name)).findFirst();
@@ -62,14 +62,14 @@ public enum TalkBackDecoderSDI {
 	}
 
 	/**
-	 * This method is used to get switch on/off mode by api config name
+	 * This method is used to get decoder SDI mode by api config name
 	 *
-	 * @param name is the name of switch on/off mode that want to get
-	 * @return SyncMode is the switch on/off mode that want to get
+	 * @param name is the name of decoder SDI mode that want to get
+	 * @return TalkBackDecoderSDI is the decoder SDI mode that want to get
 	 */
 	public static TalkBackDecoderSDI getByApiConfigName(String name) {
 		Optional<TalkBackDecoderSDI> state = Arrays.stream(TalkBackDecoderSDI.values()).filter(com -> com.getApiConfigName().equals(name)).findFirst();
-		return state.orElse(TalkBackDecoderSDI.DECODER_SDI_2);
+		return state.orElse(TalkBackDecoderSDI.DECODER_SDI_1);
 	}
 
 }

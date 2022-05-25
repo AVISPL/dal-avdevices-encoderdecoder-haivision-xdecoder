@@ -1140,8 +1140,32 @@ class HaivisionXDecoderCommunicatorTest {
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 		haivisionXDecoderCommunicator.getMultipleStatistics();
 
+		propertyName = "Talkback#" + TalkbackControllingMetric.ACTIVE.getName();
+		propertyValue = "1";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
 		propertyName = "Talkback#" + TalkbackControllingMetric.APPLY_CHANGE.getName();
 		propertyValue = "1";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		propertyName = "Talkback#" + TalkbackControllingMetric.ACTIVE.getName();
+		propertyValue = "0";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		propertyName = "Talkback#" + TalkbackControllingMetric.ACTIVE_DECODER_SDI.getName();
+		propertyValue = "SDI2";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		propertyName = "Talkback#" + TalkbackControllingMetric.APPLY_CHANGE.getName();
+		propertyValue = "0";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
