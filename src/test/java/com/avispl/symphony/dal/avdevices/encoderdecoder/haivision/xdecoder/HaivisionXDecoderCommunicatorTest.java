@@ -6,7 +6,17 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder;
 
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+
+import com.avispl.symphony.api.dal.dto.control.ControllableProperty;
+import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.ControllingMetricGroup;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.audio.controllingmetric.AudioControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.DecoderControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputFrameRate;
@@ -16,23 +26,13 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.HDMIControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.SurroundSound;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.VideoSource;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.service.controllingmetric.ServiceControllingMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.NetworkType;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SRTMode;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.StreamControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.talkback.controllingmetric.TalkbackControllingMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.service.controllingmetric.ServiceControllingMetric;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Test;
-
-import com.avispl.symphony.api.dal.dto.control.ControllableProperty;
-import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
 
 /**
  * Unit test for HaivisionXDecoderCommunicator
@@ -92,6 +92,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetDecoderSDIPrimaryStream() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -113,6 +115,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetDecoderSDISecondaryStream() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -134,6 +138,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetDecoderSDIEnableBuffering() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -155,6 +161,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetDecoderSDIBufferingMode() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -185,6 +193,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetDecoderSDIBufferingDelayToMaxValue() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -222,6 +232,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetDecoderSDIBufferingDelayToMinValue() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -259,6 +271,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetDecoderSDIOutputResolution() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -281,6 +295,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetDecoderSDIOutputFrameRate() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -310,6 +326,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetDecoderSDIStillImage() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -332,6 +350,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetDecoderSDIStillDelayToMaxValue() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -355,6 +375,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetDecoderSDIStillDelayToMinValue() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -378,6 +400,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetCreateStreamName() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -399,6 +423,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetCreateStreamMulticastType() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -437,6 +463,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetCreateStreamPortToMaxValue() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -460,6 +488,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetCreateStreamPortToMinValue() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -483,6 +513,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetCreateStreamFec() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -513,6 +545,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetCreateStreamTSOverSRTProtocol() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -540,6 +574,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetCreateStreamTSOverSRTProtocolCase1() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -573,6 +609,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetCreateStreamTSOverSRTProtocolCase2() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -604,6 +642,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetCreateStreamTSOverSRTProtocolCase3() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -641,6 +681,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetCreateStreamTSOverSRTProtocolCase4() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -679,6 +721,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetCreateStreamTSOverSRTProtocolCase5() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -724,6 +768,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetHDMISource() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -738,50 +784,7 @@ class HaivisionXDecoderCommunicatorTest {
 		Assertions.assertEquals(propertyValue, stats.get(propertyName));
 	}
 
-	/**
-	 * Test HaivisionXDecoder.controlProperty HDMI control: Source
-	 *
-	 * Expected: control successfully
-	 */
-	@Tag("RealDevice")
-	@Test
-	void testSetHDMISource1() {
-		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
-		Map<String, String> stats = extendedStatistics.getStatistics();
-		ControllableProperty controllableProperty = new ControllableProperty();
 
-		String propertyName = "HDMI#" + HDMIControllingMetric.VIDEO_SOURCE.getName();
-		String propertyValue = VideoSource.DEFAULT_VIDEO_SOURCE.getUiName();
-		controllableProperty.setProperty(propertyName);
-		controllableProperty.setValue(propertyValue);
-
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		propertyName = "HDMI#" + HDMIControllingMetric.APPLY_CHANGE.getName();
-		propertyValue = "1";
-		controllableProperty.setProperty(propertyName);
-		controllableProperty.setValue(propertyValue);
-
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		propertyName = "HDMI#" + HDMIControllingMetric.VIDEO_SOURCE.getName();
-		propertyValue = VideoSource.DECODER_2.getUiName();
-		controllableProperty.setProperty(propertyName);
-		controllableProperty.setValue(propertyValue);
-
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		propertyName = "HDMI#" + HDMIControllingMetric.APPLY_CHANGE.getName();
-		propertyValue = "1";
-		controllableProperty.setProperty(propertyName);
-		controllableProperty.setValue(propertyValue);
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		haivisionXDecoderCommunicator.getMultipleStatistics();
-
-
-		Assertions.assertEquals(propertyValue, stats.get(propertyName));
-	}
 
 	/**
 	 * Test HaivisionXDecoder.controlProperty HDMI control: Cancel
@@ -791,6 +794,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetHDMICancel() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -821,6 +826,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetHDMIApplyChanges() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -849,6 +856,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetHDMIAudioOut() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -878,6 +887,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetHDMISoundMode() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -906,6 +917,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testHaivisionX4DecoderCommunicatorSetAudioCaseAudioLevel() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		haivisionXDecoderCommunicator.getMultipleStatistics();
 		ControllableProperty property = new ControllableProperty();
 		property.setProperty(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.AUDIO_ZERO_DBFS_AUDIO_LEVEL.getName());
@@ -927,6 +940,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testHaivisionX4DecoderCommunicatorSetAudioCaseAudioChannels() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		haivisionXDecoderCommunicator.getMultipleStatistics();
 		ControllableProperty property = new ControllableProperty();
 		property.setProperty(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.AUDIO_CHANNELS.getName());
@@ -948,6 +963,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testHaivisionX4DecoderCommunicatorSetAudioCaseAudioSource() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		haivisionXDecoderCommunicator.getMultipleStatistics();
 		ControllableProperty property = new ControllableProperty();
 		property.setProperty(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.AUDIO_SOURCE.getName());
@@ -987,6 +1004,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testHaivisionX4DecoderCommunicatorSetAudioCaseApplyChangeButtonIsHiddenAfterSetAudioSource() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		haivisionXDecoderCommunicator.getMultipleStatistics();
 		ControllableProperty property = new ControllableProperty();
 		property.setProperty(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.AUDIO_SOURCE.getName());
@@ -1013,6 +1032,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testHaivisionX4DecoderCommunicatorSetAudioCaseCancel() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		haivisionXDecoderCommunicator.getMultipleStatistics();
 		ControllableProperty property = new ControllableProperty();
 		property.setProperty(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.AUDIO_SOURCE.getName());
@@ -1041,6 +1062,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testEnableEms() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -1062,6 +1085,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testDisableEms() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -1084,6 +1109,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetServiceEnableTalkback() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -1108,6 +1135,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetServiceDisableTalkback() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -1129,6 +1158,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetTalkBackActiveStreamName() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -1184,6 +1215,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetTalkbackPort() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -1210,6 +1243,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetTalkbackApplyChanges() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
@@ -1242,6 +1277,8 @@ class HaivisionXDecoderCommunicatorTest {
 	@Tag("RealDevice")
 	@Test
 	void testSetTalkbackCancelChanges() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
