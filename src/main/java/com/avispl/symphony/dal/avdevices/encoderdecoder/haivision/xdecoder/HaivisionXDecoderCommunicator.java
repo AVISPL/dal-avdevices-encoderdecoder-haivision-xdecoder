@@ -535,11 +535,14 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 			}
 			if (StringUtils.isNullOrEmpty(role)) {
+				if(response != null && response.contains(DecoderConstant.MESSAGE_TO_RECOGNIZE_GUEST_ROLE)){
+					return DecoderConstant.GUEST_ROLE;
+				}
 				throw new ResourceNotReachableException("Role based is empty");
 			}
 			return role;
 		} catch (Exception e) {
-			throw new ResourceNotReachableException("Retrieve role based error: " + e.getMessage(), e);
+			throw new ResourceNotReachableException("Login to the device failed, user unauthorized  ", e);
 		}
 	}
 
@@ -3628,20 +3631,14 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		TalkBackDecoderSDI decoderSDI = TalkBackDecoderSDI.getByApiConfigName(getDefaultValueForNullData(cachedTalkbackConfig.getDecoderID(), DecoderConstant.EMPTY));
 
 		// get activated decoder name dropdown list
-		List<String> activatedDecoders = new ArrayList<>();
-		for (DecoderConfig cachedDecoderConfig : cachedDecoderConfigs) {
-			if (cachedDecoderConfig.getState().equals(State.START.getName()) && this.cachedStreamConfigs != null) {
-				String decoderSDIName = TalkBackDecoderSDI.getByApiConfigName(cachedDecoderConfig.getDecoderID()).getUiName();
-				activatedDecoders.add(decoderSDIName);
-			}
-		}
+		List<String> activatedDecoders = DropdownList.getListOfEnumNames(TalkBackDecoderSDI.class);
 
 		// populate primary stream and secondary stream
 		String talkbackGroup = ControllingMetricGroup.TALKBACK.getUiName() + DecoderConstant.HASH;
 		String primaryStreamPropertyName = talkbackGroup + TalkbackControllingMetric.PRIMARY_STREAM.getName();
 		String secondaryStreamPropertyName = talkbackGroup + TalkbackControllingMetric.SECONDARY_STREAM.getName();
 		for (DecoderConfig cachedDecoderConfig : cachedDecoderConfigs) {
-			if (cachedDecoderConfig.getState().equals(State.START.getName()) && cachedDecoderConfig.getDecoderID().equals(decoderSDI.getApiConfigName())) {
+			if (cachedDecoderConfig.getDecoderID().equals(decoderSDI.getApiConfigName())) {
 
 				// populate primary stream
 				String primaryStreamID = cachedDecoderConfig.getPrimaryStream();
@@ -3695,7 +3692,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			listKeyTobeRemove.add(cancel);
 			removeUnusedStatsAndControls(stats, advancedControllableProperties, listKeyTobeRemove);
 		}
-
 	}
 
 	//--------------------------------------------------------------------------------------------------------------------------------
@@ -3763,6 +3759,17 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				isEmergencyDelivery = true;
 				break;
 			case APPLY_CHANGE:
+				String decoderID = cachedTalkbackConfig.getDecoderID();
+				boolean isEditedDecoderSDI = !cachedTalkbackConfig.getDecoderID().equals(realtimeTalkbackConfig.getDecoderID());
+				boolean isEditedState = !cachedTalkbackConfig.getState().equals(realtimeTalkbackConfig.getState());
+				Optional<DecoderConfig> cachedDecoderConfig = this.cachedDecoderConfigs.stream().filter(st -> decoderID.equals(st.getDecoderID())).findFirst();
+				if (isEditedState && isEditedDecoderSDI && cachedDecoderConfig.isPresent() && cachedDecoderConfig.get().getPrimaryStream().equals(DecoderConstant.DEFAULT_STREAM_NAME) && cachedDecoderConfig.get().getSecondaryStream().equals(DecoderConstant.DEFAULT_STREAM_NAME)){
+					throw new ResourceNotReachableException(String.format("Primary stream and secondary stream is none. Please assign primary stream and secondary stream to Decoder SDI %s ", decoderID));
+				}
+				if (isEditedState && isEditedDecoderSDI && cachedDecoderConfig.isPresent() && cachedDecoderConfig.get().getState().equals(State.STOPPED.getName())){
+					throw new ResourceNotReachableException(String.format("Decoder SDI %s is stopped. Please start Decoder", decoderID));
+				}
+
 				// apply port changing
 				String cachedUdpPort = getDefaultValueForNullData(cachedTalkbackConfig.getUdpPort(), DecoderConstant.EMPTY);
 				String realtimeUdpPort = getDefaultValueForNullData(realtimeTalkbackConfig.getUdpPort(), DecoderConstant.EMPTY);
@@ -3772,7 +3779,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 				// apply talkback activate changing
 				talkBackSwitch = TalkBackSwitchOnOffControl.getByApiStatsName(getDefaultValueForNullData(cachedTalkbackConfig.getState(), DecoderConstant.EMPTY));
-				if (!cachedTalkbackConfig.getState().equals(realtimeTalkbackConfig.getState())) {
+				if (isEditedState) {
 					switch (talkBackSwitch) {
 						case OFF:
 							performTalkbackControl(CommandOperation.STOP);
@@ -3788,7 +3795,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					}
 				}
 				// apply decoder SDI changing
-				if (!cachedTalkbackConfig.getDecoderID().equals(realtimeTalkbackConfig.getDecoderID())) {
+				if (isEditedDecoderSDI) {
 					if (talkBackSwitch.equals(TalkBackSwitchOnOffControl.OFF)) {
 						performTalkbackControl(CommandOperation.START);
 						performTalkbackControl(CommandOperation.STOP);

@@ -40,7 +40,6 @@ public class TalkBackConfig {
 		udpPort = talkBackConfig.getUdpPort();
 		decoderID = talkBackConfig.getDecoderID();
 		state = talkBackConfig.getState();
-		udpPort = talkBackConfig.getUdpPort();
 	}
 
 	/**
@@ -139,7 +138,7 @@ public class TalkBackConfig {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		TalkBackConfig that = (TalkBackConfig) o;
-		return Objects.equals(activeStreamID, that.activeStreamID) && Objects.equals(udpPort, that.udpPort) && Objects.equals(decoderID, that.decoderID);
+		return Objects.equals(state, that.state) && Objects.equals(udpPort, that.udpPort) && Objects.equals(decoderID, that.decoderID);
 	}
 
 	@Override

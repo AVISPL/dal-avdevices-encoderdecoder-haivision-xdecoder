@@ -1185,6 +1185,9 @@ class HaivisionXDecoderCommunicatorTest {
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+
 		propertyName = "Talkback#" + TalkbackControllingMetric.ACTIVE.getName();
 		propertyValue = "0";
 		controllableProperty.setProperty(propertyName);
