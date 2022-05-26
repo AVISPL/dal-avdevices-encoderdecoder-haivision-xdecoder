@@ -3764,7 +3764,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				break;
 			case APPLY_CHANGE:
 				// apply port changing
-				if (!cachedTalkbackConfig.getUdpPort().equals((realtimeTalkbackConfig.getUdpPort()))) {
+				String cachedUdpPort = getDefaultValueForNullData(cachedTalkbackConfig.getUdpPort(), DecoderConstant.EMPTY);
+				String realtimeUdpPort = getDefaultValueForNullData(realtimeTalkbackConfig.getUdpPort(), DecoderConstant.EMPTY);
+				if (!cachedUdpPort.equals(realtimeUdpPort)) {
 					performTalkbackControl(CommandOperation.SET);
 				}
 
