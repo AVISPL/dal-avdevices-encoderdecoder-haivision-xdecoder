@@ -1724,7 +1724,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 							stillImageDelay = DecoderConstant.MAX_STILL_IMAGE_DELAY;
 						}
 						if (logger.isWarnEnabled()) {
-							logger.warn("Invalid still image delay value", e);
+							logger.warn(String.format("%s is invalid still image delay value, the still image delay must be integer value range to 1-1000", value), e);
 						}
 					}
 
@@ -1904,7 +1904,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				throw new ResourceNotReachableException(DecoderConstant.SPACE + ErrorMessage.convertErrorMessage(Deserializer.getErrorMessage(response)));
 			}
 		} catch (Exception e) {
-			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
+			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR, e);
 		}
 	}
 
@@ -2385,6 +2385,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				createStream.setEncapsulation(encapsulationEnum.getApiConfigName());
 
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, createStreamControllingGroup);
+
 				break;
 			case NETWORK_TYPE:
 				NetworkType networkType = NetworkType.getByUiName(value);
@@ -2404,7 +2405,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						}
 						break;
 				}
-
+        
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, createStreamControllingGroup);
 				break;
 			case PORT:
@@ -2425,7 +2426,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						port = DecoderConstant.MAX_PORT.toString();
 					}
 					if (logger.isWarnEnabled()) {
-						logger.warn("Invalid port value", e);
+						logger.warn(String.format("%s is invalid port value, the port value must be Integer value range to 1025-65535 ", value), e);
 					}
 				}
 				createStream.setPort(port);
@@ -2474,7 +2475,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						sourcePort = DecoderConstant.MAX_PORT.toString();
 					}
 					if (logger.isWarnEnabled()) {
-						logger.warn("Invalid port value", e);
+						logger.warn(String.format("%s is invalid port value, the port value must be Integer value range to 1025-65535", value), e);
 					}
 				}
 				createStream.setSourcePort(sourcePort);
@@ -2501,7 +2502,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						destinationPort = DecoderConstant.MAX_PORT.toString();
 					}
 					if (logger.isWarnEnabled()) {
-						logger.warn("Invalid port value", e);
+						logger.warn(String.format("%s is invalid port value, the port value must be Integer value range to 1025-65535", value), e);
 					}
 				}
 				createStream.setPort(destinationPort);
@@ -2523,6 +2524,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 				createStream.setSrtMode(srtMode.getUiName());
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, createStreamControllingGroup);
+
 				break;
 			case LATENCY:
 				String latency;
@@ -2542,7 +2544,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						latency = DecoderConstant.MAX_LATENCY.toString();
 					}
 					if (logger.isWarnEnabled()) {
-						logger.warn("Invalid port value", e);
+						logger.warn(String.format("%s is invalid latency value, the latency value must be Integer value range to 20-8000", value), e);
 					}
 				}
 				createStream.setLatency(latency);
@@ -2597,7 +2599,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						srtToUDPPort = DecoderConstant.MAX_PORT.toString();
 					}
 					if (logger.isWarnEnabled()) {
-						logger.warn("Invalid port value", e);
+						logger.warn(String.format("%s is invalid port value, the port value must be Integer value range to 1025-65535", value), e);
 					}
 				}
 				streamConversion.setUdpPort(srtToUDPPort);
@@ -2631,7 +2633,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					populateCancelButtonForCreateStream(stats, advancedControllableProperties);
 					break;
 				} catch (Exception var60) {
-					throw new NumberFormatException("Value of ParameterToS is invalid. TOS must be hex value range to 00-FF");
+					throw new NumberFormatException(String.format("%s is invalid ParameterToS value. TOS must be hex value range to 00-FF", value));
 				}
 			case SRT_TO_UDP_TTL:
 				streamConversion = createStream.getStreamConversion();
@@ -2651,7 +2653,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						ttl = DecoderConstant.MAX_TTL.toString();
 					}
 					if (logger.isWarnEnabled()) {
-						logger.warn("Invalid ttl value", e);
+						logger.warn(String.format("%s is invalid ttl value, the ttl value must be Integer value range to 1-255", value), e);
 					}
 				}
 				streamConversion.setTtl(ttl);
@@ -2721,7 +2723,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				throw new ResourceNotReachableException(DecoderConstant.SPACE + Deserializer.getErrorMessage(response));
 			}
 		} catch (Exception e) {
-			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
+			throw new ResourceNotReachableException(DecoderConstant.CREATE_STREAM_CONTROL_ERR, e);
 		}
 	}
 
@@ -3425,7 +3427,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				throw new ResourceNotReachableException(Deserializer.getErrorMessage(response));
 			}
 		} catch (Exception e) {
-			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
+			throw new ResourceNotReachableException(DecoderConstant.STREAM_CONTROL_ERR, e);
 		}
 	}
 
