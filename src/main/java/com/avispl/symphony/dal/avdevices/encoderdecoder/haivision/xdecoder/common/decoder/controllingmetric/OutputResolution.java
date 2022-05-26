@@ -47,8 +47,9 @@ public enum OutputResolution {
 
 	/**
 	 * Parameterized constructor
+	 *
 	 * @param uiName ui name of decoder resolutions
-	 * @param apiConfigName  api config name of decoder resolutions
+	 * @param apiConfigName api config name of decoder resolutions
 	 * @param apiStatsName api stats name of decoder resolutions
 	 * @param resolutionCategory Type of resolution category
 	 */
@@ -116,7 +117,5 @@ public enum OutputResolution {
 		Optional<OutputResolution> stillImage = Arrays.stream(OutputResolution.values()).filter(resolution -> resolution.getApiStatsName().equals(apiStatsName)).findFirst();
 		return stillImage.orElse(OutputResolution.AUTOMATIC);
 	}
-
-
 }
 
