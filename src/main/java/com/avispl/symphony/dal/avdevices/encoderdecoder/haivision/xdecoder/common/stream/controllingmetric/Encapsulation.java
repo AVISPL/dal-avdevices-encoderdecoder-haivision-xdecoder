@@ -82,7 +82,7 @@ public enum Encapsulation {
 	 * @return Encapsulation is the protocol that want to get
 	 */
 	public static Encapsulation getByUiName(String uiName) {
-		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(en -> en.getUiName().equals(uiName)).findFirst();
 		return encapsulation.orElse(Encapsulation.TS_OVER_UDP);
 	}
 
@@ -93,7 +93,7 @@ public enum Encapsulation {
 	 * @return Encapsulation is the protocol that want to get
 	 */
 	public static Encapsulation getByApiStatsName(String apiStatsName) {
-		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(com -> com.getApiStatsName().equals(apiStatsName)).findFirst();
+		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(en -> en.getApiStatsName().equals(apiStatsName)).findFirst();
 		return encapsulation.orElse(Encapsulation.TS_OVER_UDP);
 	}
 
@@ -104,7 +104,7 @@ public enum Encapsulation {
 	 * @return Encapsulation is the protocol that want to get
 	 */
 	public static Encapsulation getByApiConfigName(String apiConfigName) {
-		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(com -> com.getApiConfigName().equals(apiConfigName)).findFirst();
+		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(en -> en.getApiConfigName().equals(apiConfigName)).findFirst();
 		return encapsulation.orElse(Encapsulation.TS_OVER_UDP);
 	}
 }

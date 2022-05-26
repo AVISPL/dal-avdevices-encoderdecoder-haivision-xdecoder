@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Temperature
+ * Temperature status
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/18/2022

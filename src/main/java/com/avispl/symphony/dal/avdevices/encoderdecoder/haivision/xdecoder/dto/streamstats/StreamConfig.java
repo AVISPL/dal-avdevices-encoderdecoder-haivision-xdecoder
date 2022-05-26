@@ -20,7 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import com.avispl.symphony.dal.util.StringUtils;
 
 /**
- * Set of stream configuration properties
+ * Stream config info
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/19/2022

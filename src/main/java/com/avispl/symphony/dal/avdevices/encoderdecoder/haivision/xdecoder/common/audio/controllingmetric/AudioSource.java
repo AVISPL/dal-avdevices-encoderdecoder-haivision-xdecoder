@@ -40,7 +40,7 @@ public enum AudioSource {
 	 * @return AudioSource is the audio source that want to get
 	 */
 	public static AudioSource getByUiName(String uiName) {
-		Optional<AudioSource> audioSource = Arrays.stream(AudioSource.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<AudioSource> audioSource = Arrays.stream(AudioSource.values()).filter(source -> source.getUiName().equals(uiName)).findFirst();
 		return audioSource.orElse(AudioSource.SDI_1);
 	}
 }

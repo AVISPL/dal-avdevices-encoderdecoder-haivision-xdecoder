@@ -96,7 +96,7 @@ import com.avispl.symphony.dal.communicator.SshCommunicator;
 import com.avispl.symphony.dal.util.StringUtils;
 
 /**
- * An implementation of RestCommunicator to provide communication and interaction with Haivision X Decoders
+ * An implementation of SshCommunicator to provide communication and interaction with Haivision X Decoders
  * Supported features are:
  * <p>
  * Monitoring:
@@ -107,6 +107,10 @@ import com.avispl.symphony.dal.util.StringUtils;
  * Controlling:
  * <li>Start/Stop /Edit Decoder</li>
  * <li>Create/ Delete Stream</li>
+ * <li>Audio</li>
+ * <li>HDMI</li>
+ * <li>Service</li>
+ * <li>Talkback</li>
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/6/2022
@@ -444,6 +448,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * <li>Streams statistic</li>
 	 * <li>Audio config</li>
 	 * <li>HDMI config</li>
+	 * <li>Service config</li>
+	 * <li>Talkback config</li>
 	 *
 	 * @param stats list statistic property
 	 * @throws ResourceNotReachableException when failedMonitor said all device monitoring data are failed to get
@@ -476,7 +482,13 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 	/**
 	 * This method is used for populate all controlling properties:
-	 * <li>Decoder controlling</li>
+	 * <li>Decoder SDI </li>
+	 * <li>Create Stream</li>
+	 * <li>Stream Control</li>
+	 * <li>Audio</li>
+	 * <li>HDMI</li>
+	 * <li>Service</li>
+	 * <li>Talkback</li>
 	 *
 	 * @param stats is the map that store all statistics
 	 * @param advancedControllableProperties is the list that store all controllable properties
@@ -1181,7 +1193,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	}
 
 	/**
-	 * This method is used to retrieve audio by send command "talkback get all"
+	 * This method is used to retrieve talkback by send command "talkback get all"
 	 *
 	 * When there is no response data, the failedMonitor is going to update
 	 * When there is an exception, the failedMonitor is going to update and exception is not populated
@@ -1206,7 +1218,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					TalkBackStats talkBackStats = talkBackConfigWrapper.getTalkBackStats();
 					talkBackConfig.setState(getDefaultValueForNullData(talkBackStats.getState(), DecoderConstant.EMPTY));
 
-					// update cachedTalkBackConfig when audio config info is not edited on symphony but is edited on real device
+					// update cachedTalkBackConfig when talkback config info is not edited on symphony but is edited on real device
 					if (cachedTalkbackConfig != null && cachedTalkbackConfig.equals(realtimeTalkbackConfig) && !realtimeTalkbackConfig.equals(talkBackConfig)) {
 						cachedTalkbackConfig = new TalkBackConfig(talkBackConfig);
 					}
@@ -1242,9 +1254,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param advancedControllableProperties is the list that store all controllable properties
 	 * @param decoderID ID of decoder
 	 */
-	private void populateDecoderControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, Integer
-			decoderID) {
+	private void populateDecoderControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, Integer decoderID) {
 		// Get controllable property current value
 		Optional<DecoderConfig> cachedDecoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
 		Optional<DecoderConfig> realtimeDecoderConfigOptional = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
@@ -1411,9 +1421,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedDecoderConfig set of decoder configuration
 	 * @param decoderID ID of decoder SDI
 	 */
-	private void populateDecoderControlBufferingMode
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, DecoderConfig
-			cachedDecoderConfig, Integer decoderID) {
+	private void populateDecoderControlBufferingMode(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, DecoderConfig cachedDecoderConfig, Integer decoderID) {
 		// Get controllable property current value
 		BufferingMode bufferingMode = BufferingMode.getByAPIName(getDefaultValueForNullData(cachedDecoderConfig.getBufferingMode(), DecoderConstant.EMPTY));
 		SyncMode enableBuffering = SyncMode.getByName(getDefaultValueForNullData(cachedDecoderConfig.getEnableBuffering(), DecoderConstant.EMPTY));
@@ -1504,9 +1512,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param advancedControllableProperties is the list that store all controllable properties
 	 * @param decoderID ID of decoder SDI
 	 */
-	private void populateDecoderControlStillImage
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, Integer
-			decoderID) {
+	private void populateDecoderControlStillImage(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, Integer decoderID) {
 		Optional<DecoderConfig> cachedDecoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
 		if (cachedDecoderConfigOptional.isPresent()) {
 			DecoderConfig cachedDecoderConfig = cachedDecoderConfigOptional.get();
@@ -1568,9 +1574,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param advancedControllableProperties is the list that store all controllable properties
 	 * @param decoderID ID of decoder
 	 */
-	private void populateApplyChangeAndCancelButtonForDecoder
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, Integer
-			decoderID) {
+	private void populateApplyChangeAndCancelButtonForDecoder(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, Integer decoderID) {
 		Optional<DecoderConfig> cachedDecoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
 		Optional<DecoderConfig> realtimeDecoderConfigOptional = this.realtimeDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
 
@@ -1620,9 +1624,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param value value of controllable property
 	 * @throws ResourceNotReachableException when start/ stop/ update decoder SDI is failed
 	 */
-	private void decoderControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, Integer
-			decoderID, String controllableProperty, String value) {
+	private void decoderControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, Integer decoderID, String controllableProperty, String value) {
 		DecoderControllingMetric decoderControllingMetric = DecoderControllingMetric.getByName(controllableProperty);
 		Optional<DecoderConfig> cachedDecoderConfigOptional = this.cachedDecoderConfigs.stream().filter(st -> decoderID.toString().equals(st.getDecoderID())).findFirst();
 		if (cachedDecoderConfigOptional.isPresent()) {
@@ -1878,8 +1880,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param active start/ stop/ update activation
 	 * @throws ResourceNotReachableException when fail to send CLI command
 	 */
-	private void performActiveDecoderSDIControl(DecoderConfig decoderConfig, Integer decoderID, CommandOperation
-			active) {
+	private void performActiveDecoderSDIControl(DecoderConfig decoderConfig, Integer decoderID, CommandOperation active) {
 		try {
 			String request;
 			switch (active) {
@@ -1941,8 +1942,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param streamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateCreateStreamControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig streamConfig, String streamGroup) {
+	private void populateCreateStreamControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig streamConfig, String streamGroup) {
 		// Get controllable property current value
 		Encapsulation encapsulation = Encapsulation.getByApiConfigName(getDefaultValueForNullData(streamConfig.getEncapsulation(), DecoderConstant.EMPTY));
 		String streamName = streamConfig.getName();
@@ -1990,8 +1990,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateCreateStreamControlCaseTSOverUDP
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig, String streamGroup) {
+	private void populateCreateStreamControlCaseTSOverUDP(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig,
+			String streamGroup) {
 		// Get controllable property current value
 		String port = getDefaultValueForNullData(cachedStreamConfig.getPort(), DecoderConstant.EMPTY);
 		Fec fecFromApi = Fec.getByAPIStatsName(getDefaultValueForNullData(cachedStreamConfig.getFec(), DecoderConstant.EMPTY));
@@ -2026,9 +2026,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateCreateStreamControlCaseTSOverRTP
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig
-			cachedStreamConfig,
+	private void populateCreateStreamControlCaseTSOverRTP(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig,
 			String streamGroup) {
 		// Get controllable property current value
 		String port = getDefaultValueForNullData(cachedStreamConfig.getPort(), DecoderConstant.EMPTY);
@@ -2065,9 +2063,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateNetWorkTypeStreamControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig
-			cachedStreamConfig, String streamGroup) {
+	private void populateNetWorkTypeStreamControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig, String streamGroup) {
 		// Get controllable property current value
 		String multicastAddress = getDefaultValueForNullData(cachedStreamConfig.getDestinationAddress(), DecoderConstant.EMPTY);
 		String sourceAddress = getDefaultValueForNullData(cachedStreamConfig.getSourceAddress(), DecoderConstant.EMPTY);
@@ -2100,9 +2096,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateCreateStreamControlCaseTSOverSRT
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig
-			cachedStreamConfig,
+	private void populateCreateStreamControlCaseTSOverSRT(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig,
 			String streamGroup) {
 		SRTMode srtMode = SRTMode.getByName(getDefaultValueForNullData(cachedStreamConfig.getSrtMode(), DecoderConstant.EMPTY));
 		String latency = getDefaultValueForNullData(cachedStreamConfig.getLatency(), DecoderConstant.DEFAULT_LATENCY.toString());
@@ -2143,9 +2137,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateStreamCreateControlCaseTSOverSRTListener
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig
-			cachedStreamConfig,
+	private void populateStreamCreateControlCaseTSOverSRTListener(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig,
 			String streamGroup) {
 		addAdvanceControlProperties(advancedControllableProperties,
 				createNumeric(stats, streamGroup + StreamControllingMetric.PORT.getName(), cachedStreamConfig.getPort()));
@@ -2169,9 +2161,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateCreateStreamControlCaseTSOverSRTStreamConversion
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig
-			cachedStreamConfig,
+	private void populateCreateStreamControlCaseTSOverSRTStreamConversion(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig,
 			String streamGroup) {
 		// Get controllable property current value
 		StreamConversion streamConversion = cachedStreamConfig.getStreamConversion();
@@ -2211,9 +2201,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateCreateStreamControlCaseTSOverSRTEncrypted
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig
-			cachedStreamConfig,
+	private void populateCreateStreamControlCaseTSOverSRTEncrypted(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig,
 			String streamGroup) {
 		SwitchOnOffControl aeEncrypted = SwitchOnOffControl.getByApiName(getDefaultValueForNullData(cachedStreamConfig.getSrtSettings(), DecoderConstant.EMPTY));
 		String passphrase = getDefaultValueForNullData(cachedStreamConfig.getPassphrase(), DecoderConstant.EMPTY);
@@ -2238,9 +2226,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateCreateStreamControlCaseTSOverSRTCaller
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig
-			cachedStreamConfig,
+	private void populateCreateStreamControlCaseTSOverSRTCaller(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig,
 			String streamGroup) {
 		String address = getDefaultValueForNullData(cachedStreamConfig.getDestinationAddress(), DecoderConstant.EMPTY);
 		if (address.equals(DecoderConstant.ADDRESS_ANY)) {
@@ -2270,9 +2256,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateCreateStreamControlCaseTSOverSRTRendezvous
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig
-			cachedStreamConfig,
+	private void populateCreateStreamControlCaseTSOverSRTRendezvous(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig,
 			String streamGroup) {
 		// Get properties current value
 		String address = getDefaultValueForNullData(cachedStreamConfig.getDestinationAddress(), DecoderConstant.EMPTY);
@@ -2299,9 +2283,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateCreateStreamControlCaseRTSP
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig
-			cachedStreamConfig, String streamGroup) {
+	private void populateCreateStreamControlCaseRTSP(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig, String streamGroup) {
 		String rtspAddress = getDefaultValueForNullData(cachedStreamConfig.getAddress(), DecoderConstant.DEFAULT_RTSP_URL);
 		addAdvanceControlProperties(advancedControllableProperties,
 				createText(stats, streamGroup + StreamControllingMetric.RTSP_URL.getName(), rtspAddress));
@@ -2313,8 +2295,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param stats is the map that store all statistics
 	 * @param advancedControllableProperties is the list that store all controllable properties
 	 */
-	private void populateCancelButtonForCreateStream
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties) {
+	private void populateCancelButtonForCreateStream(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties) {
 		String cancel = ControllingMetricGroup.CREATE_STREAM.getUiName() + DecoderConstant.HASH + StreamControllingMetric.CANCEL.getName();
 
 		if (isEditedForCreateStream) {
@@ -2384,9 +2365,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param value value of controllable property
 	 * @throws ResourceNotReachableException when fail to create stream
 	 */
-	private void createStreamControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String
-			createStreamControllingGroup,
+	private void createStreamControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String createStreamControllingGroup,
 			String controllableProperty, String value) {
 		StreamControllingMetric streamControllingMetric = StreamControllingMetric.getByName(controllableProperty);
 
@@ -2757,9 +2736,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param preStreamInfo previous stream info
 	 * @param groupName group name
 	 */
-	private void removeUnusedStatsAndControlByProtocol
-	(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig
-			preStreamInfo, String groupName) {
+	private void removeUnusedStatsAndControlByProtocol(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig preStreamInfo, String groupName) {
 		Encapsulation preEncapsulation = Encapsulation.getByApiConfigName(getDefaultValueForNullData(preStreamInfo.getEncapsulation(), DecoderConstant.EMPTY));
 		List<String> listKeyToBeRemove = new ArrayList<>();
 		switch (preEncapsulation) {
@@ -2825,9 +2802,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param preStreamInfo previous stream info
 	 * @param groupName group name
 	 */
-	private void removeUnusedStatsAndControlByNetworkType
-	(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig
-			preStreamInfo, String groupName) {
+	private void removeUnusedStatsAndControlByNetworkType(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig preStreamInfo, String groupName) {
 		String address = getDefaultValueForNullData(preStreamInfo.getDestinationAddress(), DecoderConstant.EMPTY);
 		String sourceAddress = getDefaultValueForNullData(preStreamInfo.getSourceAddress(), DecoderConstant.EMPTY);
 		List<String> listKeyToBeRemove = new ArrayList<>();
@@ -2849,9 +2824,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param preStreamInfo previous stream info
 	 * @param groupName group name
 	 */
-	private void removeUnusedStatsAndControlBySRTMode
-	(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig
-			preStreamInfo, String groupName) {
+	private void removeUnusedStatsAndControlBySRTMode(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig preStreamInfo, String groupName) {
 		List<String> listKeyToBeRemove = new ArrayList<>();
 		SRTMode preSRTMode = SRTMode.getByName(getDefaultValueForNullData(preStreamInfo.getSrtMode(), DecoderConstant.EMPTY));
 		switch (preSRTMode) {
@@ -2883,9 +2856,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param preStreamInfo previous stream info
 	 * @param groupName group name
 	 */
-	private void removeUnusedStatsAndControlByStreamConversion
-	(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig
-			preStreamInfo, String groupName) {
+	private void removeUnusedStatsAndControlByStreamConversion(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig preStreamInfo, String groupName) {
 		List<String> listKeyToBeRemove = new ArrayList<>();
 		StreamConversion streamConversion = preStreamInfo.getStreamConversion();
 		SwitchOnOffControl streamFlipping = SwitchOnOffControl.getByApiName(getDefaultValueForNullData(createStream.getStreamFlipping(), DecoderConstant.EMPTY));
@@ -2909,9 +2880,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param preStreamInfo previous stream info
 	 * @param groupName group name
 	 */
-	private void removeUnusedStatsAndControlByEncrypted
-	(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig
-			preStreamInfo, String groupName) {
+	private void removeUnusedStatsAndControlByEncrypted(Map<String, String> stats, List<AdvancedControllableProperty> controls, StreamConfig preStreamInfo, String groupName) {
 		List<String> listKeyToBeRemove = new ArrayList<>();
 		SwitchOnOffControl aeEncrypted = SwitchOnOffControl.getByApiName(getDefaultValueForNullData(preStreamInfo.getSrtSettings(), DecoderConstant.EMPTY));
 		if (aeEncrypted.isEnable()) {
@@ -2928,8 +2897,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param controls List of controls that contains AdvancedControllableProperty to be removed
 	 * @param listKeys list key of statistics to be removed
 	 */
-	private void removeUnusedStatsAndControls
-	(Map<String, String> stats, List<AdvancedControllableProperty> controls, List<String> listKeys) {
+	private void removeUnusedStatsAndControls(Map<String, String> stats, List<AdvancedControllableProperty> controls, List<String> listKeys) {
 		for (String key : listKeys) {
 			stats.remove(key);
 			controls.removeIf(advancedControllableProperty -> advancedControllableProperty.getName().equals(key));
@@ -2952,9 +2920,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param advancedControllableProperties List of AdvancedControllableProperty
 	 * @param cachedStreamConfig stream config info
 	 */
-	private void populateStreamConfig
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig
-			cachedStreamConfig) {
+	private void populateStreamConfig(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, StreamConfig cachedStreamConfig) {
 		// Get controllable property current value
 		String streamGroup;
 		Encapsulation encapsulationEnum = Encapsulation.getByApiStatsName(getDefaultValueForNullData(cachedStreamConfig.getEncapsulation(), DecoderConstant.EMPTY));
@@ -2999,8 +2965,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateStreamConfigCaseTSOverUDPAndTSOverRTP(Map<String, String> stats, StreamConfig
-			cachedStreamConfig, String streamGroup) {
+	private void populateStreamConfigCaseTSOverUDPAndTSOverRTP(Map<String, String> stats, StreamConfig cachedStreamConfig, String streamGroup) {
 		String port = getDefaultValueForNullData(cachedStreamConfig.getPort(), DecoderConstant.EMPTY);
 		String address = getDefaultValueForNullData(cachedStreamConfig.getDestinationAddress(), DecoderConstant.EMPTY);
 		if (address.equalsIgnoreCase(DecoderConstant.ADDRESS_ANY)) {
@@ -3031,8 +2996,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param cachedStreamConfig stream config info
 	 * @param streamGroup is the stream group name
 	 */
-	private void populateStreamConfigCaseTSOverSRT(Map<String, String> stats, StreamConfig
-			cachedStreamConfig, String streamGroup) {
+	private void populateStreamConfigCaseTSOverSRT(Map<String, String> stats, StreamConfig cachedStreamConfig, String streamGroup) {
 		SRTMode srtMode = SRTMode.getByName(getDefaultValueForNullData(cachedStreamConfig.getSrtMode(), DecoderConstant.EMPTY));
 		String port = getDefaultValueForNullData(cachedStreamConfig.getPort(), DecoderConstant.EMPTY);
 		String latency = getDefaultValueForNullData(cachedStreamConfig.getLatency(), DecoderConstant.DEFAULT_LATENCY.toString());
@@ -3118,10 +3082,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param controllableProperty name of controllable property
 	 * @throws ResourceNotReachableException when fail to control stream
 	 */
-	private void streamControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String
-			streamName,
-			String controllableProperty) {
+	private void streamControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String streamName, String controllableProperty) {
 		StreamControllingMetric streamControllingMetric = StreamControllingMetric.getByName(controllableProperty);
 
 		Optional<StreamConfig> cachedStreamConfig = cachedStreamConfigs.stream().filter(config -> config.getName().equals(streamName) || config.getDefaultStreamName().equals(streamName)).findFirst();
@@ -3184,9 +3145,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param audioConfig audio source info
 	 * @param audioGroup Group of audio
 	 */
-	private void populateAudioControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, AudioConfig
-			audioConfig, String audioGroup) {
+	private void populateAudioControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, AudioConfig audioConfig, String audioGroup) {
 		// Get controllable property current value of AudioSource, AudioChannel, AudioLevel
 		AudioSource audioSource = AudioSource.getByUiName(getDefaultValueForNullData(audioConfig.getSource(), DecoderConstant.EMPTY));
 		AudioChannel audioChannel = AudioChannel.getByUiName(getDefaultValueForNullData(audioConfig.getChannels(), DecoderConstant.EMPTY));
@@ -3241,9 +3200,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param value of controllable property
 	 * @throws ResourceNotReachableException when fail to control stream
 	 */
-	private void audioControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String
-			audioControllingGroup, String controllableProperty, String value) {
+	private void audioControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String audioControllingGroup, String controllableProperty, String value) {
 		AudioControllingMetric audioControllingMetric = AudioControllingMetric.getByName(controllableProperty);
 		String formattedChannel;
 		isEmergencyDelivery = true;
@@ -3334,8 +3291,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param stats is the map that store all statistics
 	 * @param advancedControllableProperties is the list that store all controllable properties
 	 */
-	private void populateHDMIControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties) {
+	private void populateHDMIControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties) {
 		// Get controllable property current value
 		VideoSource videoSourceEnum = VideoSource.getByAPIName(getDefaultValueForNullData(cachedHDMIConfig.getVideoSource(), DecoderConstant.EMPTY));
 		SurroundSound surroundSoundEnum = SurroundSound.getByAPIName(getDefaultValueForNullData(cachedHDMIConfig.getSurroundSound(), DecoderConstant.EMPTY));
@@ -3414,9 +3370,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param value value of controllable property
 	 * @throws ResourceNotReachableException when fail to control hdmi
 	 */
-	private void hdmiControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties,
-			String controllableProperty, String value) {
+	private void hdmiControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties, String controllableProperty, String value) {
 		HDMIControllingMetric hdmiControllingMetric = HDMIControllingMetric.getByName(controllableProperty);
 
 		isEmergencyDelivery = true;
@@ -3487,8 +3441,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param stats is the map that store all statistics
 	 * @param advancedControllableProperties is the list that store all controllable properties
 	 */
-	private void populateServiceControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties) {
+	private void populateServiceControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties) {
 		// Get controllable property current value
 		ServiceSwitchOnOffControl emsSwitch = ServiceSwitchOnOffControl.getByApiName(getDefaultValueForNullData(realtimeServiceConfig.getEms(), DecoderConstant.EMPTY));
 		ServiceSwitchOnOffControl httpSwitch = ServiceSwitchOnOffControl.getByApiName(getDefaultValueForNullData(realtimeServiceConfig.getHttp(), DecoderConstant.EMPTY));
@@ -3587,7 +3540,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 			String response = send(request);
 			if (action.equals(CommandOperation.STOP.getName())) {
-				response = send("Y");
+				response = send(CommandOperation.CONFIRM_STOP_SERVICE.getName());
 			}
 			if (StringUtils.isNullOrEmpty(response) || !response.contains(action)) {
 				throw new ResourceNotReachableException(Deserializer.getErrorMessage(response));
@@ -3623,8 +3576,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param stats is the map that store all statistics
 	 * @param advancedControllableProperties is the list that store all controllable properties
 	 */
-	private void populateTalkBackControl
-	(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties) {
+	private void populateTalkBackControl(Map<String, String> stats, List<AdvancedControllableProperty> advancedControllableProperties) {
 		// Get controllable property current value
 		TalkBackSwitchOnOffControl talkBackSwitch = TalkBackSwitchOnOffControl.getByApiStatsName(getDefaultValueForNullData(cachedTalkbackConfig.getState(), DecoderConstant.EMPTY));
 		String udpPort = getDefaultValueForNullData(cachedTalkbackConfig.getUdpPort(), DecoderConstant.EMPTY);
@@ -3736,7 +3688,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						port = DecoderConstant.MAX_PORT.toString();
 					}
 					if (logger.isWarnEnabled()) {
-						logger.warn("Invalid port value", e);
+						logger.warn(String.format("%s is invalid port value, the port value must be Integer value range to 1025-65535", value), e);
 					}
 				}
 				cachedTalkbackConfig.setUdpPort(port);
@@ -3764,10 +3716,10 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				boolean isEditedState = !cachedTalkbackConfig.getState().equals(realtimeTalkbackConfig.getState());
 				Optional<DecoderConfig> cachedDecoderConfig = this.cachedDecoderConfigs.stream().filter(st -> decoderID.equals(st.getDecoderID())).findFirst();
 				if (isEditedState && isEditedDecoderSDI && cachedDecoderConfig.isPresent() && cachedDecoderConfig.get().getPrimaryStream().equals(DecoderConstant.DEFAULT_STREAM_NAME) && cachedDecoderConfig.get().getSecondaryStream().equals(DecoderConstant.DEFAULT_STREAM_NAME)){
-					throw new ResourceNotReachableException(String.format("Primary stream and secondary stream is none. Please assign primary stream and secondary stream to Decoder SDI %s ", decoderID));
+					throw new ResourceNotReachableException(String.format("Primary stream and secondary stream is none. Please assign primary stream or secondary stream to Decoder SDI %s ", decoderID));
 				}
 				if (isEditedState && isEditedDecoderSDI && cachedDecoderConfig.isPresent() && cachedDecoderConfig.get().getState().equals(State.STOPPED.getName())){
-					throw new ResourceNotReachableException(String.format("Decoder SDI %s is stopped. Please start Decoder", decoderID));
+					throw new ResourceNotReachableException(String.format("Decoder SDI %s is stopped. Please start Decoder %s", decoderID, decoderID));
 				}
 
 				// apply port changing
@@ -3880,8 +3832,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param advancedControllableProperties advancedControllableProperties is the list that store all controllable properties
 	 * @param property the property is item advancedControllableProperties
 	 */
-	private void addAdvanceControlProperties
-	(List<AdvancedControllableProperty> advancedControllableProperties, AdvancedControllableProperty property) {
+	private void addAdvanceControlProperties(List<AdvancedControllableProperty> advancedControllableProperties, AdvancedControllableProperty property) {
 		if (property != null) {
 			for (AdvancedControllableProperty controllableProperty : advancedControllableProperties) {
 				if (controllableProperty.getName().equals(property.getName())) {
@@ -3915,8 +3866,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param status initial switch state (0|1)
 	 * @return AdvancedControllableProperty button instance
 	 */
-	private AdvancedControllableProperty createSwitch(Map<String, String> stats, String name, int status, String
-			labelOff, String labelOn) {
+	private AdvancedControllableProperty createSwitch(Map<String, String> stats, String name, int status, String labelOff, String labelOn) {
 		AdvancedControllableProperty.Switch toggle = new AdvancedControllableProperty.Switch();
 		toggle.setLabelOff(labelOff);
 		toggle.setLabelOn(labelOn);
@@ -3946,8 +3896,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param initialValue initial value of the control
 	 * @return AdvancedControllableProperty preset instance
 	 */
-	private AdvancedControllableProperty createDropdown(Map<String, String> stats, String
-			name, List<String> values, String initialValue) {
+	private AdvancedControllableProperty createDropdown(Map<String, String> stats, String name, List<String> values, String initialValue) {
 		stats.put(name, initialValue);
 		AdvancedControllableProperty.DropDown dropDown = new AdvancedControllableProperty.DropDown();
 		dropDown.setOptions(values.toArray(new String[0]));
@@ -3963,8 +3912,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param initialValue character String
 	 * @return AdvancedControllableProperty Text instance
 	 */
-	private AdvancedControllableProperty createNumeric(Map<String, String> stats, String name, String
-			initialValue) {
+	private AdvancedControllableProperty createNumeric(Map<String, String> stats, String name, String initialValue) {
 		stats.put(name, initialValue);
 		AdvancedControllableProperty.Numeric numeric = new AdvancedControllableProperty.Numeric();
 		return new AdvancedControllableProperty(name, new Date(), numeric, initialValue);

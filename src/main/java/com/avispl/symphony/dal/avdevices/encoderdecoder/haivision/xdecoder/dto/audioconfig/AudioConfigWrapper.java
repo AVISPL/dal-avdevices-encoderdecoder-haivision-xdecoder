@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * AudioConfigWrapper
+ * Audio Config info Wrapper
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/16/2022

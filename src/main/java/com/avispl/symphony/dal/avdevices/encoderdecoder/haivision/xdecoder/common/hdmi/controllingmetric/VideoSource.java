@@ -58,7 +58,7 @@ public enum VideoSource {
 	 * @return VideoSource is the video source mode that want to get
 	 */
 	public static VideoSource getByUiName(String uiName) {
-		Optional<VideoSource> videoSourceMode = Arrays.stream(VideoSource.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<VideoSource> videoSourceMode = Arrays.stream(VideoSource.values()).filter(videoSource -> videoSource.getUiName().equals(uiName)).findFirst();
 		return videoSourceMode.orElse(VideoSource.DEFAULT_VIDEO_SOURCE);
 	}
 
@@ -69,7 +69,7 @@ public enum VideoSource {
 	 * @return VideoSource is the video source mode that want to get
 	 */
 	public static VideoSource getByAPIName(String apiName) {
-		Optional<VideoSource> videoSourceMode = Arrays.stream(VideoSource.values()).filter(com -> com.getApiName().equals(apiName)).findFirst();
+		Optional<VideoSource> videoSourceMode = Arrays.stream(VideoSource.values()).filter(videoSource -> videoSource.getApiName().equals(apiName)).findFirst();
 		return videoSourceMode.orElse(VideoSource.DEFAULT_VIDEO_SOURCE);
 	}
 }

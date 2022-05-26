@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.avispl.symphony.dal.util.StringUtils;
 
 /**
- * Set of decoder configuration properties
+ * decoder config info
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/18/2022

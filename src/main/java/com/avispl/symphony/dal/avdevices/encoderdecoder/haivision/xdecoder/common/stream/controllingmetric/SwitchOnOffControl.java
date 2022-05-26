@@ -81,7 +81,7 @@ public enum SwitchOnOffControl {
 	 * @return SwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static SwitchOnOffControl getByApiName(String name) {
-		Optional<SwitchOnOffControl> switchOnOffControl = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getApiName().equals(name)).findFirst();
+		Optional<SwitchOnOffControl> switchOnOffControl = Arrays.stream(SwitchOnOffControl.values()).filter(control -> control.getApiName().equals(name)).findFirst();
 		return switchOnOffControl.orElse(SwitchOnOffControl.OFF);
 	}
 
@@ -92,7 +92,7 @@ public enum SwitchOnOffControl {
 	 * @return SwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static SwitchOnOffControl getByCode(Integer code) {
-		Optional<SwitchOnOffControl> switchOnOffControl = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getCode().equals(code)).findFirst();
+		Optional<SwitchOnOffControl> switchOnOffControl = Arrays.stream(SwitchOnOffControl.values()).filter(control -> control.getCode().equals(code)).findFirst();
 		return switchOnOffControl.orElse(SwitchOnOffControl.OFF);
 	}
 }

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Objects;
 
 /**
- * Set of talkback config info
+ * Talkback config info
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/24/2022

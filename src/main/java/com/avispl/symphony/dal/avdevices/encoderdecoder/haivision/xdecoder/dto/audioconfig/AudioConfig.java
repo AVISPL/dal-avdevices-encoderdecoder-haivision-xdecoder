@@ -10,7 +10,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 
 
 /**
- * Audio
+ * Audio config info
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/16/2022

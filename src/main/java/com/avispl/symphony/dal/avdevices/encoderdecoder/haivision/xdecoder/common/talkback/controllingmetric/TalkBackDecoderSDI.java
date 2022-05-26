@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Set of decoder SDI
+ * Set of decoder SDI mode options
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/8/2022
@@ -57,7 +57,7 @@ public enum TalkBackDecoderSDI {
 	 * @return TalkBackDecoderSDI is the decoder SDI mode that want to get
 	 */
 	public static TalkBackDecoderSDI getByUiName(String name) {
-		Optional<TalkBackDecoderSDI> talkBackDecoderSDI = Arrays.stream(TalkBackDecoderSDI.values()).filter(com -> com.getUiName().equals(name)).findFirst();
+		Optional<TalkBackDecoderSDI> talkBackDecoderSDI = Arrays.stream(TalkBackDecoderSDI.values()).filter(decoderSDI -> decoderSDI.getUiName().equals(name)).findFirst();
 		return talkBackDecoderSDI.orElse(TalkBackDecoderSDI.DECODER_SDI_1);
 	}
 
@@ -68,7 +68,7 @@ public enum TalkBackDecoderSDI {
 	 * @return TalkBackDecoderSDI is the decoder SDI mode that want to get
 	 */
 	public static TalkBackDecoderSDI getByApiConfigName(String name) {
-		Optional<TalkBackDecoderSDI> talkBackDecoderSDI = Arrays.stream(TalkBackDecoderSDI.values()).filter(com -> com.getApiConfigName().equals(name)).findFirst();
+		Optional<TalkBackDecoderSDI> talkBackDecoderSDI = Arrays.stream(TalkBackDecoderSDI.values()).filter(decoderSDI -> decoderSDI.getApiConfigName().equals(name)).findFirst();
 		return talkBackDecoderSDI.orElse(TalkBackDecoderSDI.DECODER_SDI_1);
 	}
 

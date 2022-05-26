@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Set of service switch on/off modes
+ * Set of service switch on/off mode option
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/8/2022
@@ -69,7 +69,7 @@ public enum ServiceSwitchOnOffControl {
 	 * @return ServiceSwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static ServiceSwitchOnOffControl getByApiName(String name) {
-		Optional<ServiceSwitchOnOffControl> serviceSwitchOnOffControl = Arrays.stream(ServiceSwitchOnOffControl.values()).filter(com -> com.getApiName().equals(name)).findFirst();
+		Optional<ServiceSwitchOnOffControl> serviceSwitchOnOffControl = Arrays.stream(ServiceSwitchOnOffControl.values()).filter(control -> control.getApiName().equals(name)).findFirst();
 		return serviceSwitchOnOffControl.orElse(ServiceSwitchOnOffControl.OFF);
 	}
 }

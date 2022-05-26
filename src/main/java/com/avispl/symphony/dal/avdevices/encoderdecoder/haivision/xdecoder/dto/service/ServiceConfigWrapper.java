@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Service config wrapper
+ * Service config info wrapper
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/20/2022

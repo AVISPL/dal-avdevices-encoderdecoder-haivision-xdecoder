@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Set of service switch on/off modes
+ * Set of service switch on/off mode option
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/8/2022
@@ -69,7 +69,7 @@ public enum TalkBackSwitchOnOffControl {
 	 * @return TalkBackSwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static TalkBackSwitchOnOffControl getByApiStatsName(String name) {
-		Optional<TalkBackSwitchOnOffControl> talkBackSwitchOnOffControl = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(com -> com.getApiStatsName().equals(name)).findFirst();
+		Optional<TalkBackSwitchOnOffControl> talkBackSwitchOnOffControl = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(control -> control.getApiStatsName().equals(name)).findFirst();
 		return talkBackSwitchOnOffControl.orElse(TalkBackSwitchOnOffControl.OFF);
 	}
 
@@ -80,7 +80,7 @@ public enum TalkBackSwitchOnOffControl {
 	 * @return TalkBackSwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static TalkBackSwitchOnOffControl getByApiName(String name) {
-		Optional<TalkBackSwitchOnOffControl> talkBackSwitchOnOffControl = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(com -> com.getApiConfigName().equals(name)).findFirst();
+		Optional<TalkBackSwitchOnOffControl> talkBackSwitchOnOffControl = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(control -> control.getApiConfigName().equals(name)).findFirst();
 		return talkBackSwitchOnOffControl.orElse(TalkBackSwitchOnOffControl.OFF);
 	}
 
@@ -91,7 +91,7 @@ public enum TalkBackSwitchOnOffControl {
 	 * @return TalkBackSwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static TalkBackSwitchOnOffControl getByCode(Integer code) {
-		Optional<TalkBackSwitchOnOffControl> talkBackSwitchOnOffControl = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(com -> com.getCode().equals(code)).findFirst();
+		Optional<TalkBackSwitchOnOffControl> talkBackSwitchOnOffControl = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(control -> control.getCode().equals(code)).findFirst();
 		return talkBackSwitchOnOffControl.orElse(TalkBackSwitchOnOffControl.OFF);
 	}
 }
