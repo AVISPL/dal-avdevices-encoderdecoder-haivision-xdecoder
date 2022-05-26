@@ -59,7 +59,7 @@ public enum AudioOutput {
 	 * @return AudioOutputMode is the audio output mode that want to get
 	 */
 	public static AudioOutput getByUiName(String uiName) {
-		Optional<AudioOutput> audioOutputMode = Arrays.stream(AudioOutput.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<AudioOutput> audioOutputMode = Arrays.stream(AudioOutput.values()).filter(audioOutput -> audioOutput.getUiName().equals(uiName)).findFirst();
 		return audioOutputMode.orElse(AudioOutput.CHANNEL_12);
 	}
 
@@ -70,7 +70,7 @@ public enum AudioOutput {
 	 * @return AudioOutputMode is the audio output mode that want to get
 	 */
 	public static AudioOutput getByAPIName(String apiName) {
-		Optional<AudioOutput> audioOutputMode = Arrays.stream(AudioOutput.values()).filter(com -> com.getApiName().equals(apiName)).findFirst();
+		Optional<AudioOutput> audioOutputMode = Arrays.stream(AudioOutput.values()).filter(audioOutput -> audioOutput.getApiName().equals(apiName)).findFirst();
 		return audioOutputMode.orElse(AudioOutput.CHANNEL_12);
 	}
 }

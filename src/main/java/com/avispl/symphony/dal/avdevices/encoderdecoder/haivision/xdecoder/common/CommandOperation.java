@@ -19,7 +19,7 @@ public enum CommandOperation {
 	STOP("stop"),
 	SET("set"),
 
-	// Account command
+	// Account command,
 	OPERATION_ACCOUNT("account"),
 
 	// Audio command
@@ -32,6 +32,7 @@ public enum CommandOperation {
 	// Service command
 	OPERATION_SERVICE("service"),
 	OPERATION_STATUS("status"),
+	CONFIRM_STOP_SERVICE("Y"),
 
 	// Stream command
 	OPERATION_STREAM("stream"),

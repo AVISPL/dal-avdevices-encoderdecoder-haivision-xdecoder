@@ -43,7 +43,7 @@ public enum AudioChannel {
 	 * @return AudioChannel is the audio channel that want to get
 	 */
 	public static AudioChannel getByUiName(String uiName) {
-		Optional<AudioChannel> audioChannel = Arrays.stream(AudioChannel.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<AudioChannel> audioChannel = Arrays.stream(AudioChannel.values()).filter(channel -> channel.getUiName().equals(uiName)).findFirst();
 		return audioChannel.orElse(AudioChannel.CHANNEL_1_2);
 	}
 }

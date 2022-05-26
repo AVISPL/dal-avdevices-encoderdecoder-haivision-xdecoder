@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Set of talkback config info
+ * Talkback statistic
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/24/2022

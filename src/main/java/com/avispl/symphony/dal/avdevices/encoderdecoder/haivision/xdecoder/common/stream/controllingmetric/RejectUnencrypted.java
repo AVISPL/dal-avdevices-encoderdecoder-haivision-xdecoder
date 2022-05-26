@@ -80,8 +80,8 @@ public enum RejectUnencrypted {
 	 * @return SyncMode is the reject unencrypted mode that want to get
 	 */
 	public static RejectUnencrypted getByApiName(String apiName) {
-		Optional<RejectUnencrypted> state = Arrays.stream(RejectUnencrypted.values()).filter(com -> com.getApiName().equals(apiName)).findFirst();
-		return state.orElse(RejectUnencrypted.DISABLE_REJECT_UNENCRYPTED);
+		Optional<RejectUnencrypted> rejectUnencrypted = Arrays.stream(RejectUnencrypted.values()).filter(ru -> ru.getApiName().equals(apiName)).findFirst();
+		return rejectUnencrypted.orElse(RejectUnencrypted.DISABLE_REJECT_UNENCRYPTED);
 	}
 
 	/**
@@ -91,7 +91,7 @@ public enum RejectUnencrypted {
 	 * @return State is the reject unencrypted mode that want to get
 	 */
 	public static RejectUnencrypted getByCode(Integer code) {
-		Optional<RejectUnencrypted> rejectUnencrypted = Arrays.stream(RejectUnencrypted.values()).filter(com -> com.getCode().equals(code)).findFirst();
+		Optional<RejectUnencrypted> rejectUnencrypted = Arrays.stream(RejectUnencrypted.values()).filter(ru -> ru.getCode().equals(code)).findFirst();
 		return rejectUnencrypted.orElse(RejectUnencrypted.DISABLE_REJECT_UNENCRYPTED);
 	}
 }

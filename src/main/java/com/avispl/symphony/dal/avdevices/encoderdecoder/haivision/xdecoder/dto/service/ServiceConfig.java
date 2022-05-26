@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Objects;
 
 /**
- * Set of service config info
+ * Service config info
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/20/2022

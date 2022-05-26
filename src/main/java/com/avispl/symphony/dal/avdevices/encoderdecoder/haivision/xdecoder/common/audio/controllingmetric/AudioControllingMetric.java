@@ -45,7 +45,7 @@ public enum AudioControllingMetric {
 	 * @return AudioControllingMetric is the audio controlling metric that want to get
 	 */
 	public static AudioControllingMetric getByName(String name) {
-		Optional<AudioControllingMetric> audioControllingMetric = Arrays.stream(AudioControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();
+		Optional<AudioControllingMetric> audioControllingMetric = Arrays.stream(AudioControllingMetric.values()).filter(controllingMetric -> controllingMetric.getName().equals(name)).findFirst();
 		if (audioControllingMetric.isPresent()) {
 			return audioControllingMetric.get();
 		}

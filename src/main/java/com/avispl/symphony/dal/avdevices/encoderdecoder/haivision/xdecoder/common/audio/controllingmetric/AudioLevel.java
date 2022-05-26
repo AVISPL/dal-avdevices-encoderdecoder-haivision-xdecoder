@@ -55,7 +55,7 @@ public enum AudioLevel {
 	 * @return AudioLevel is the audio level that want to get
 	 */
 	public static AudioLevel getByUiName(String uiName) {
-		Optional<AudioLevel> audioLevel = Arrays.stream(AudioLevel.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		Optional<AudioLevel> audioLevel = Arrays.stream(AudioLevel.values()).filter(level -> level.getUiName().equals(uiName)).findFirst();
 		return audioLevel.orElse(AudioLevel.LEVEL_6);
 	}
 }
