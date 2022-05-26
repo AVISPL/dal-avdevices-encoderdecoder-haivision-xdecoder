@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Set of decoder controlling metric keys
+ * Set of HDMI controlling metric keys
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/3/2022
@@ -30,7 +30,7 @@ public enum HDMIControllingMetric {
 	/**
 	 * Parameterized constructor
 	 *
-	 * @param name Name of decoder monitoring metric
+	 * @param name Name of hdmi monitoring metric
 	 */
 	HDMIControllingMetric(String name) {
 		this.name = name;
@@ -46,15 +46,15 @@ public enum HDMIControllingMetric {
 	}
 
 	/**
-	 * This method is used to get decoder controlling metric by name
+	 * This method is used to get hdmi controlling metric by name
 	 *
-	 * @param name is the name of decoder controlling metric that want to get
-	 * @return DecoderControllingMetric is the decoder controlling metric that want to get
+	 * @param name is the name of hdmi controlling metric that want to get
+	 * @return HDMIControllingMetric is the hdmi controlling metric that want to get
 	 */
 	public static HDMIControllingMetric getByName(String name) {
-		Optional<HDMIControllingMetric> decoderControllingMetric = Arrays.stream(HDMIControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();
-		if(decoderControllingMetric.isPresent()) {
-			return decoderControllingMetric.get();
+		Optional<HDMIControllingMetric> hdmiControllingMetric = Arrays.stream(HDMIControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();
+		if(hdmiControllingMetric.isPresent()) {
+			return hdmiControllingMetric.get();
 		}
 		throw new IllegalArgumentException("Can not find the enum with name: " + name);
 	}

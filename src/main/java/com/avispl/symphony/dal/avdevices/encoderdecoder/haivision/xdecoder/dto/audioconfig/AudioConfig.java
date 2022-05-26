@@ -41,7 +41,7 @@ public class AudioConfig {
 	}
 
 	/**
-	 * No argument AudioConfig constructor
+	 * Non-parameterized constructor
 	 */
 	public AudioConfig() {
 	}
