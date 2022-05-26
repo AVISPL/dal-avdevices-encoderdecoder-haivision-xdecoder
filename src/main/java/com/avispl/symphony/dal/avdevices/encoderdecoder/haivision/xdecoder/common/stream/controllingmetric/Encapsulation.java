@@ -10,36 +10,48 @@ import java.util.Optional;
  * Set of encapsulation (protocol) option
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 5/8/2022
  * @since 1.0.0
  */
 public enum Encapsulation {
 
-	TS_OVER_UDP(" TS-UDP", "Udp"),
-	TS_OVER_RTP(" TS-RTP", "Rtp"),
-	TS_OVER_SRT(" TS-SRT", "Srt"),
-	RTSP(" RTSP", "rtsp");
+	TS_OVER_UDP("TS-UDP", "ts-udp", "Udp://"),
+	TS_OVER_RTP("TS-RTP", "ts-rtp", "Rtp://"),
+	TS_OVER_SRT("TS-SRT", "ts-srt", "Srt://"),
+	RTSP("RTSP", "rtsp", "Rtsp://");
 
-	private final String name;
+	private final String uiName;
+	private final String apiName;
 	private final String shortName;
 
 	/**
 	 * Parameterized constructor
-	 * @param name Name of decoder monitoring metric
+	 * @param uiName IU name of Encapsulation
+	 * @param apiName API name of Encapsulation
 	 * @param shortName
 	 */
-	Encapsulation(String name, String shortName) {
-		this.name = name;
+	Encapsulation(String uiName, String apiName, String shortName) {
+		this.uiName = uiName;
+		this.apiName = apiName;
 		this.shortName = shortName;
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * Retrieves {@code {@link #uiName }}
 	 *
-	 * @return value of {@link #name}
+	 * @return value of {@link #uiName}
 	 */
-	public String getName() {
-		return this.name;
+	public String getUiName() {
+		return this.uiName;
+	}
+
+	/**
+	 * Retrieves {@code {@link #apiName}}
+	 *
+	 * @return value of {@link #apiName}
+	 */
+	public String getApiName() {
+		return apiName;
 	}
 
 	/**
@@ -52,13 +64,24 @@ public enum Encapsulation {
 	}
 
 	/**
-	 * This method is used to get encapsulation mode by name
+	 * This method is used to get encapsulation mode by ui name
 	 *
-	 * @param name is the name of encapsulation mode that want to get
+	 * @param uiName is the ui name of encapsulation mode that want to get
 	 * @return Encapsulation is the protocol that want to get
 	 */
-	public static Encapsulation getByName(String name) {
-		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(com -> com.getName().equals(name)).findFirst();
+	public static Encapsulation getByUiName(String uiName) {
+		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(en -> en.getUiName().equals(uiName)).findFirst();
+		return encapsulation.orElse(Encapsulation.TS_OVER_UDP);
+	}
+
+	/**
+	 * This method is used to get encapsulation mode by api name
+	 *
+	 * @param apiName is the ui name of encapsulation mode that want to get
+	 * @return Encapsulation is the protocol that want to get
+	 */
+	public static Encapsulation getByApiName(String apiName) {
+		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(en -> en.getApiName().equals(apiName)).findFirst();
 		return encapsulation.orElse(Encapsulation.TS_OVER_UDP);
 	}
 }

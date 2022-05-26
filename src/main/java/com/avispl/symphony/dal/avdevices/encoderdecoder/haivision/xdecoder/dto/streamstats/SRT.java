@@ -7,13 +7,14 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.SRTMonitoringMetric;
 
 /**
  * Stream SRT
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 4/19/2022
  * @since 1.0.0
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,9 +22,6 @@ public class SRT {
 
 	@JsonAlias("Reconnections")
 	private String reconnections;
-
-	@JsonAlias("AESncryption")
-	private String aeSncryption;
 
 	@JsonAlias("KeyLength")
 	private String keyLength;
@@ -46,7 +44,7 @@ public class SRT {
 	@JsonAlias("LinkBandwidth")
 	private String linkBandwidth;
 
-	@JsonAlias("Rtt")
+	@JsonAlias("RTT")
 	private String rtt;
 
 	@JsonAlias("LocalBufferLevel")
@@ -71,24 +69,6 @@ public class SRT {
 	 */
 	public void setReconnections(String reconnections) {
 		this.reconnections = reconnections;
-	}
-
-	/**
-	 * Retrieves {@code {@link #aeSncryption}}
-	 *
-	 * @return value of {@link #aeSncryption}
-	 */
-	public String getAeSncryption() {
-		return aeSncryption;
-	}
-
-	/**
-	 * Sets {@code aeSncryption}
-	 *
-	 * @param aeSncryption the {@code java.lang.String} field
-	 */
-	public void setAeSncryption(String aeSncryption) {
-		this.aeSncryption = aeSncryption;
 	}
 
 	/**
@@ -278,8 +258,6 @@ public class SRT {
 		switch (srtMonitoringMetric) {
 			case RECONNECTIONS:
 				return getReconnections();
-			case SNCRYPTION:
-				return getAeSncryption();
 			case KEY_LENGTH:
 				return getKeyLength();
 			case DECRYPTION:
@@ -293,13 +271,13 @@ public class SRT {
 			case SENT_NAKS:
 				return getSentNaks();
 			case LINK_BANDWIDTH:
-				return getLinkBandwidth();
+				return NormalizeData.getDataNumberValue(getLinkBandwidth());
 			case RTT:
-				return getRtt();
+				return NormalizeData.getDataNumberValue(getRtt());
 			case BUFFER:
-				return getBuffer();
+				return NormalizeData.getDataNumberValue(getBuffer());
 			case LATENCY:
-				return getLatency();
+				return NormalizeData.getDataNumberValue(getLatency());
 			default:
 				return DecoderConstant.NONE;
 		}

@@ -15,6 +15,7 @@ public enum StreamMonitoringMetric {
 
 	// Static metric
 	NAME("GeneralName"),
+	STREAM_ID("GeneralStreamID"),
 	ENCAPSULATION("StatsEncapsulation");
 
 	private final String name;
@@ -29,7 +30,7 @@ public enum StreamMonitoringMetric {
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * Retrieves {@code {@link #name}}
 	 *
 	 * @return value of {@link #name}
 	 */
