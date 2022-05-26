@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 /**
- * Set of stream controlling metric keys
+ * Set of Audio controlling metric keys
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/16/2022
@@ -23,7 +23,7 @@ public enum AudioControllingMetric {
 	/**
 	 * Parameterized constructor
 	 *
-	 * @param name Name of decoder contorlling metric
+	 * @param name Name of audio controlling metric
 	 */
 	AudioControllingMetric(String name) {
 		this.name = name;
@@ -39,10 +39,10 @@ public enum AudioControllingMetric {
 	}
 
 	/**
-	 * This method is used to get decoder controlling metric by name
+	 * This method is used to get audio controlling metric by name
 	 *
-	 * @param name is the name of decoder controlling metric that want to get
-	 * @return AudioControllingMetric is the decoder controlling metric that want to get
+	 * @param name is the name of audio controlling metric that want to get
+	 * @return AudioControllingMetric is the audio controlling metric that want to get
 	 */
 	public static AudioControllingMetric getByName(String name) {
 		Optional<AudioControllingMetric> audioControllingMetric = Arrays.stream(AudioControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();

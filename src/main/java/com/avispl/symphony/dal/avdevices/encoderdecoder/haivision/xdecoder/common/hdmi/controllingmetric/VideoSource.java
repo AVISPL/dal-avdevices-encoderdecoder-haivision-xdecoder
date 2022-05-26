@@ -55,7 +55,7 @@ public enum VideoSource {
 	 * This method is used to get video source mode by ui name
 	 *
 	 * @param uiName is the ui name of video source mode that want to get
-	 * @return AudioOutputMode is the video source mode that want to get
+	 * @return VideoSource is the video source mode that want to get
 	 */
 	public static VideoSource getByUiName(String uiName) {
 		Optional<VideoSource> videoSourceMode = Arrays.stream(VideoSource.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
@@ -66,7 +66,7 @@ public enum VideoSource {
 	 * This method is used to get video source mode by api name
 	 *
 	 * @param apiName is the api name of video source mode that want to get
-	 * @return AudioOutputMode is the video source mode that want to get
+	 * @return VideoSource is the video source mode that want to get
 	 */
 	public static VideoSource getByAPIName(String apiName) {
 		Optional<VideoSource> videoSourceMode = Arrays.stream(VideoSource.values()).filter(com -> com.getApiName().equals(apiName)).findFirst();

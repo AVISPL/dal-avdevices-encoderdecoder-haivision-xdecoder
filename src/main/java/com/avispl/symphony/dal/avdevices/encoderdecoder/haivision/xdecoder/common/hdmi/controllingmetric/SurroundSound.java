@@ -54,22 +54,22 @@ public enum SurroundSound {
 	 * This method is used to get surround sound mode by ui name
 	 *
 	 * @param uiName is the ui name of surround sound mode that want to get
-	 * @return AudioOutputMode is the surround sound mode that want to get
+	 * @return SurroundSound is the surround sound mode that want to get
 	 */
 	public static SurroundSound getByUiName(String uiName) {
-		Optional<SurroundSound> bufferingMode = Arrays.stream(SurroundSound.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
-		return bufferingMode.orElse(SurroundSound.STEREO);
+		Optional<SurroundSound> surroundSound = Arrays.stream(SurroundSound.values()).filter(com -> com.getUiName().equals(uiName)).findFirst();
+		return surroundSound.orElse(SurroundSound.STEREO);
 	}
 
 	/**
 	 * This method is used to get surround sound mode by api name
 	 *
 	 * @param apiName is the api name of surround sound mode that want to get
-	 * @return AudioOutputMode is the surround sound mode that want to get
+	 * @return SurroundSound is the surround sound mode that want to get
 	 */
 	public static SurroundSound getByAPIName(String apiName) {
-		Optional<SurroundSound> bufferingMode = Arrays.stream(SurroundSound.values()).filter(com -> com.getApiName().equals(apiName)).findFirst();
-		return bufferingMode.orElse(SurroundSound.STEREO);
+		Optional<SurroundSound> surroundSound = Arrays.stream(SurroundSound.values()).filter(com -> com.getApiName().equals(apiName)).findFirst();
+		return surroundSound.orElse(SurroundSound.STEREO);
 	}
 }
 
