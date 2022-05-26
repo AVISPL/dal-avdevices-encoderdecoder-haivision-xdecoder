@@ -52,9 +52,9 @@ public enum HDMIControllingMetric {
 	 * @return HDMIControllingMetric is the hdmi controlling metric that want to get
 	 */
 	public static HDMIControllingMetric getByName(String name) {
-		Optional<HDMIControllingMetric> decoderControllingMetric = Arrays.stream(HDMIControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();
-		if(decoderControllingMetric.isPresent()) {
-			return decoderControllingMetric.get();
+		Optional<HDMIControllingMetric> hdmiControllingMetric = Arrays.stream(HDMIControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();
+		if(hdmiControllingMetric.isPresent()) {
+			return hdmiControllingMetric.get();
 		}
 		throw new IllegalArgumentException("Can not find the enum with name: " + name);
 	}

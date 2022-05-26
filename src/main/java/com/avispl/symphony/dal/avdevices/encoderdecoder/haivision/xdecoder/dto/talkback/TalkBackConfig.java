@@ -25,6 +25,9 @@ public class TalkBackConfig {
 	@JsonAlias("DecoderID")
 	private String decoderID;
 
+	/**
+	 * Non-parameterized constructor
+	 */
 	public TalkBackConfig() {
 	}
 

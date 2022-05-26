@@ -78,22 +78,22 @@ public enum SwitchOnOffControl {
 	 * This method is used to get switch on/off mode by name
 	 *
 	 * @param name is the name of switch on/off mode that want to get
-	 * @return SyncMode is the switch on/off mode that want to get
+	 * @return SwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static SwitchOnOffControl getByApiName(String name) {
-		Optional<SwitchOnOffControl> state = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getApiName().equals(name)).findFirst();
-		return state.orElse(SwitchOnOffControl.OFF);
+		Optional<SwitchOnOffControl> switchOnOffControl = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getApiName().equals(name)).findFirst();
+		return switchOnOffControl.orElse(SwitchOnOffControl.OFF);
 	}
 
 	/**
 	 * This method is used to get switch on/off code
 	 *
 	 * @param code is the code of switch on/off mode that want to get
-	 * @return State is the switch on/off mode that want to get
+	 * @return SwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static SwitchOnOffControl getByCode(Integer code) {
-		Optional<SwitchOnOffControl> rejectUnencrypted = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getCode().equals(code)).findFirst();
-		return rejectUnencrypted.orElse(SwitchOnOffControl.OFF);
+		Optional<SwitchOnOffControl> switchOnOffControl = Arrays.stream(SwitchOnOffControl.values()).filter(com -> com.getCode().equals(code)).findFirst();
+		return switchOnOffControl.orElse(SwitchOnOffControl.OFF);
 	}
 }
 

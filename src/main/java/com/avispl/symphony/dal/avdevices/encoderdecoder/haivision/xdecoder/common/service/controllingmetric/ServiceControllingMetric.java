@@ -50,9 +50,9 @@ public enum ServiceControllingMetric {
 	 * @return ServiceControllingMetric is the service controlling metric that want to get
 	 */
 	public static ServiceControllingMetric getByName(String name) {
-		Optional<ServiceControllingMetric> decoderControllingMetric = Arrays.stream(ServiceControllingMetric.values()).filter(controllingMetric -> controllingMetric.getName().equals(name)).findFirst();
-		if(decoderControllingMetric.isPresent()) {
-			return decoderControllingMetric.get();
+		Optional<ServiceControllingMetric> serviceControllingMetric = Arrays.stream(ServiceControllingMetric.values()).filter(controllingMetric -> controllingMetric.getName().equals(name)).findFirst();
+		if(serviceControllingMetric.isPresent()) {
+			return serviceControllingMetric.get();
 		}
 		throw new IllegalArgumentException("Could not find the controlling metric group with name: " + name);
 	}

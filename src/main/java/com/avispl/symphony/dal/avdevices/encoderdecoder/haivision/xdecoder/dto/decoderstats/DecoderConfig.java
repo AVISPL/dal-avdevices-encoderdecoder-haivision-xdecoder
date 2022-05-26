@@ -62,6 +62,9 @@ public class DecoderConfig {
 	@JsonAlias("State")
 	private String state;
 
+	/**
+	 * Non-parameterized constructor
+	 */
 	public DecoderConfig() {
 	}
 

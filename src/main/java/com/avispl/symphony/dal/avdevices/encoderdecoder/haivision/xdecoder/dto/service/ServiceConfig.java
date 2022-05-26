@@ -39,6 +39,9 @@ public class ServiceConfig {
 	@JsonAlias("telnet")
 	private String telnet;
 
+	/**
+	 * Non-parameterized constructor
+	 */
 	public ServiceConfig() {
 	}
 

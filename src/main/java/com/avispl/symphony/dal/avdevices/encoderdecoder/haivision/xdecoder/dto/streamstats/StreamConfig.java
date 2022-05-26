@@ -70,6 +70,9 @@ public class StreamConfig {
 	@JsonAlias("StreamFlipping")
 	private String  streamFlipping ;
 
+	/**
+	 * Non-parameterized constructor
+	 */
 	public StreamConfig() {
 	}
 

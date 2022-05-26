@@ -69,8 +69,8 @@ public enum TalkBackSwitchOnOffControl {
 	 * @return TalkBackSwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static TalkBackSwitchOnOffControl getByApiStatsName(String name) {
-		Optional<TalkBackSwitchOnOffControl> state = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(com -> com.getApiStatsName().equals(name)).findFirst();
-		return state.orElse(TalkBackSwitchOnOffControl.OFF);
+		Optional<TalkBackSwitchOnOffControl> talkBackSwitchOnOffControl = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(com -> com.getApiStatsName().equals(name)).findFirst();
+		return talkBackSwitchOnOffControl.orElse(TalkBackSwitchOnOffControl.OFF);
 	}
 
 	/**
@@ -80,19 +80,19 @@ public enum TalkBackSwitchOnOffControl {
 	 * @return TalkBackSwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static TalkBackSwitchOnOffControl getByApiName(String name) {
-		Optional<TalkBackSwitchOnOffControl> state = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(com -> com.getApiConfigName().equals(name)).findFirst();
-		return state.orElse(TalkBackSwitchOnOffControl.OFF);
+		Optional<TalkBackSwitchOnOffControl> talkBackSwitchOnOffControl = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(com -> com.getApiConfigName().equals(name)).findFirst();
+		return talkBackSwitchOnOffControl.orElse(TalkBackSwitchOnOffControl.OFF);
 	}
 
 	/**
 	 * This method is used to get switch on/off code
 	 *
 	 * @param code is the code of switch on/off mode that want to get
-	 * @return State is the switch on/off mode that want to get
+	 * @return TalkBackSwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static TalkBackSwitchOnOffControl getByCode(Integer code) {
-		Optional<TalkBackSwitchOnOffControl> rejectUnencrypted = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(com -> com.getCode().equals(code)).findFirst();
-		return rejectUnencrypted.orElse(TalkBackSwitchOnOffControl.OFF);
+		Optional<TalkBackSwitchOnOffControl> talkBackSwitchOnOffControl = Arrays.stream(TalkBackSwitchOnOffControl.values()).filter(com -> com.getCode().equals(code)).findFirst();
+		return talkBackSwitchOnOffControl.orElse(TalkBackSwitchOnOffControl.OFF);
 	}
 }
 
