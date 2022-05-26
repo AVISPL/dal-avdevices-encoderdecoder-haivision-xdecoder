@@ -19,9 +19,6 @@ public class TalkBackStats {
 	@JsonAlias("DestinationAddress")
 	private String destinationAddress;
 
-	public TalkBackStats() {
-	}
-
 	/**
 	 * Retrieves {@code {@link #state }}
 	 *

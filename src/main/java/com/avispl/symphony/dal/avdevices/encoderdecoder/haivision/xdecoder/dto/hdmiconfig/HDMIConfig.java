@@ -40,6 +40,9 @@ public class HDMIConfig {
 	@JsonAlias("Decoder2State")
 	private String decoderSDI2State;
 
+	/**
+	 * Non-parameterized constructor
+	 */
 	public HDMIConfig() {
 	}
 

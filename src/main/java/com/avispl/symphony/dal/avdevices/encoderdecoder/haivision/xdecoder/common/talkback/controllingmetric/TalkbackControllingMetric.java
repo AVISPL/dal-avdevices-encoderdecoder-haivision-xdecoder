@@ -52,9 +52,9 @@ public enum TalkbackControllingMetric {
 	 * @return TalkbackControllingMetric is the talkback controlling metric that want to get
 	 */
 	public static TalkbackControllingMetric getByName(String name) {
-		Optional<TalkbackControllingMetric> decoderControllingMetric = Arrays.stream(TalkbackControllingMetric.values()).filter(controllingMetric -> controllingMetric.getName().equals(name)).findFirst();
-		if(decoderControllingMetric.isPresent()) {
-			return decoderControllingMetric.get();
+		Optional<TalkbackControllingMetric> talkbackControllingMetric = Arrays.stream(TalkbackControllingMetric.values()).filter(controllingMetric -> controllingMetric.getName().equals(name)).findFirst();
+		if(talkbackControllingMetric.isPresent()) {
+			return talkbackControllingMetric.get();
 		}
 		throw new IllegalArgumentException("Could not find the controlling metric group with name: " + name);
 	}

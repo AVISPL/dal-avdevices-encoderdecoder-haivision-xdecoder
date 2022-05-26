@@ -57,8 +57,8 @@ public enum TalkBackDecoderSDI {
 	 * @return TalkBackDecoderSDI is the decoder SDI mode that want to get
 	 */
 	public static TalkBackDecoderSDI getByUiName(String name) {
-		Optional<TalkBackDecoderSDI> state = Arrays.stream(TalkBackDecoderSDI.values()).filter(com -> com.getUiName().equals(name)).findFirst();
-		return state.orElse(TalkBackDecoderSDI.DECODER_SDI_1);
+		Optional<TalkBackDecoderSDI> talkBackDecoderSDI = Arrays.stream(TalkBackDecoderSDI.values()).filter(com -> com.getUiName().equals(name)).findFirst();
+		return talkBackDecoderSDI.orElse(TalkBackDecoderSDI.DECODER_SDI_1);
 	}
 
 	/**
@@ -68,8 +68,8 @@ public enum TalkBackDecoderSDI {
 	 * @return TalkBackDecoderSDI is the decoder SDI mode that want to get
 	 */
 	public static TalkBackDecoderSDI getByApiConfigName(String name) {
-		Optional<TalkBackDecoderSDI> state = Arrays.stream(TalkBackDecoderSDI.values()).filter(com -> com.getApiConfigName().equals(name)).findFirst();
-		return state.orElse(TalkBackDecoderSDI.DECODER_SDI_1);
+		Optional<TalkBackDecoderSDI> talkBackDecoderSDI = Arrays.stream(TalkBackDecoderSDI.values()).filter(com -> com.getApiConfigName().equals(name)).findFirst();
+		return talkBackDecoderSDI.orElse(TalkBackDecoderSDI.DECODER_SDI_1);
 	}
 
 }

@@ -69,8 +69,8 @@ public enum ServiceSwitchOnOffControl {
 	 * @return ServiceSwitchOnOffControl is the switch on/off mode that want to get
 	 */
 	public static ServiceSwitchOnOffControl getByApiName(String name) {
-		Optional<ServiceSwitchOnOffControl> state = Arrays.stream(ServiceSwitchOnOffControl.values()).filter(com -> com.getApiName().equals(name)).findFirst();
-		return state.orElse(ServiceSwitchOnOffControl.OFF);
+		Optional<ServiceSwitchOnOffControl> serviceSwitchOnOffControl = Arrays.stream(ServiceSwitchOnOffControl.values()).filter(com -> com.getApiName().equals(name)).findFirst();
+		return serviceSwitchOnOffControl.orElse(ServiceSwitchOnOffControl.OFF);
 	}
 }
 
