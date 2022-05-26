@@ -45,20 +45,40 @@ public class Deserializer {
 						object = new HashMap<>();
 					} else {
 						// when wrapper object key is empty, replace empty key by default key
-						key = request.replaceAll("[1-9\\s+]", "");
+						key = request.replaceAll("[1-9\\s+]", DecoderConstant.EMPTY);
 					}
 
 					// put object to object wrapper
-					objectWrapper.put(key.replaceAll("\\s+", ""), object);
+					objectWrapper.put(key.replaceAll("\\s+", DecoderConstant.EMPTY), object);
 				} else {
 					// put data to object
-					object.put(key.replaceAll("\\s+", ""), fieldElement[1].replaceFirst(" ", ""));
+
+					String value = fieldElement[1].trim();
+					int lastCharacterIndex = value.length() - 1;
+					if(value.charAt(0) == '\"' && value.charAt(lastCharacterIndex) == '\"' ){
+						value = value.substring(1,lastCharacterIndex);
+					}
+					object.put(key.replaceAll("\\s+", DecoderConstant.EMPTY), value);
 				}
 			}
 			return objectWrapper;
 		} catch (Exception e) {
 			logger.error("Error while convert data to object: ", e);
 			return Collections.emptyMap();
+		}
+	}
+
+	/**
+	 * This method is used to get error message from response
+	 * @param responseData
+	 * @return String error message
+	 */
+	public static String getErrorMessage(String responseData) {
+		try {
+			String[] fields = responseData.split("\r\n");
+			return fields[1];
+		} catch (Exception e) {
+			return DecoderConstant.EMPTY;
 		}
 	}
 }

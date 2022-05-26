@@ -15,17 +15,16 @@ public enum SRTMonitoringMetric {
 
 	// Static metric
 	RECONNECTIONS("SRTReconnections"),
-	SNCRYPTION("SRTAESncryption"),
 	KEY_LENGTH("SRTKeyLength"),
 	DECRYPTION("SRTDecryption"),
 	LOST_PACKETS("SRTLostPackets"),
 	SKIPPED_PACKETS("SRTSkippedPackets"),
 	SENT_ACKS("SRTSentAcks"),
 	SENT_NAKS("SRTSentNaks"),
-	LINK_BANDWIDTH("SRTLinkBandwidth"),
-	RTT("SRTRtt"),
-	BUFFER("SRTBuffer"),
-	LATENCY("SRTLatency");
+	LINK_BANDWIDTH("SRTLinkBandwidth(ms)"),
+	RTT("SRTRtt(ms)"),
+	BUFFER("SRTBuffer(ms)"),
+	LATENCY("SRTLatency(ms)");
 
 	private final String name;
 
@@ -39,7 +38,7 @@ public enum SRTMonitoringMetric {
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * Retrieves {@code {@link #name}}
 	 *
 	 * @return value of {@link #name}
 	 */

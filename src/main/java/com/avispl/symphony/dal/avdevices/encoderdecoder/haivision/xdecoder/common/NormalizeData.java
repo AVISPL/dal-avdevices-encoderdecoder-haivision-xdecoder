@@ -5,11 +5,13 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.comm
 
 import java.util.UUID;
 
+import com.avispl.symphony.dal.util.StringUtils;
+
 /**
  * Normalizing Data
  *
  * @author Harry / Symphony Dev Team<br>
- * Created on 3/8/2022
+ * Created on 5/4/2022
  * @since 1.0.0
  */
 public class NormalizeData {
@@ -40,89 +42,67 @@ public class NormalizeData {
 	}
 
 	/**
-	 * get value contain number only
+	 * get value contain number only, eg: 1,000 => 1000
 	 *
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getValueOnly(String data) {
+	public static String convertToNumberValue(String data) {
 		if(data == null){
 			return DecoderConstant.EMPTY;
 		}
-		return data.replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
+		return data.replaceAll(DecoderConstant.REGEX_ONLY_GET_DOUBLE, DecoderConstant.EMPTY);
 	}
 
 	/**
-	 * get data value number in string
+	 * get data  number value in string, eg: 128 kbps => 128
 	 *
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getDataValue(String data) {
-		if(data == null){
+	public static String getDataNumberValue(String data) {
+		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
 		String[] spiltDataList = data.split(DecoderConstant.SPACE, 2);
-		return spiltDataList[0].replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
+		int dataNumberIndex = 0;
+		if (StringUtils.isNullOrEmpty(spiltDataList[dataNumberIndex])) {
+			return DecoderConstant.EMPTY;
+		}
+		return spiltDataList[dataNumberIndex].replaceAll(DecoderConstant.REGEX_ONLY_GET_DOUBLE, DecoderConstant.EMPTY);
 	}
 
 	/**
-	 * get data extra info in string in case the extra data is behind the "last" keyword eg: 0 [0.00%] (Last: Never)
+	 * get data extra info in string in case the extra data is behind the "at" keyword, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 => 2019-01-17 13:40:31.322
 	 *
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getDataExtraInfoCase1(String data) {
-		if(data == null){
+	public static String getDataExtraInfo(String data) {
+		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
-		StringBuilder stringBuilder = new StringBuilder();
-		String[] spiltDataList = data.split(DecoderConstant.SPACE);
-		for (int i = 0; i < spiltDataList.length; ++i) {
-			if (spiltDataList[i].contains("(")) {
-				for (int j = i; j < spiltDataList.length; j++) {
-					stringBuilder.append(spiltDataList[j] + DecoderConstant.SPACE);
-				}
-				break;
-			}
-		}
-		return stringBuilder.toString().replace(DecoderConstant.RIGHT_PARENTHESES, DecoderConstant.EMPTY);
+		String[] spiltDataList = data.split(DecoderConstant.AT);
+		int extraInfoIndex = 1;
+		if (extraInfoIndex >= spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[extraInfoIndex]))
+			return DecoderConstant.EMPTY;
+		return spiltDataList[extraInfoIndex];
 	}
 
 	/**
-	 * get data extra info in string in case the extra data is cover by parenthesis's  eg: (TC - System Time)
+	 * get data value from specify space index in string, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 / spaceIndex = 1  => 0.00
 	 *
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getDataExtraInfoCase2(String data) {
-		if(data == null){
+	public static String getDataValueBySpaceIndex(String data, int spaceIndex) {
+		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
-		StringBuilder stringBuilder = new StringBuilder();
-		String[] spiltDataList = data.split(DecoderConstant.SPACE);
-		for (int i = 0; i < spiltDataList.length; i++) {
-			if (spiltDataList[i].contains("(")) {
-				for (int j = i; j < spiltDataList.length; j++) {
-					stringBuilder.append(spiltDataList[j] + DecoderConstant.SPACE);
-				}
-				break;
-			}
-		}
-		return stringBuilder.toString().replace(DecoderConstant.RIGHT_PARENTHESES, DecoderConstant.EMPTY).replace(DecoderConstant.LEFT_PARENTHESES, DecoderConstant.EMPTY);
-	}
-
-	/**
-	 * get data percent value in string
-	 *
-	 * @param data the normalized data
-	 * @return String
-	 */
-	public static String getDataPercentValue(String data) {
-		if(data == null){
+		String[] spiltDataList = data.split(DecoderConstant.SPACE, 4);
+		if (spaceIndex >= spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[spaceIndex])) {
 			return DecoderConstant.EMPTY;
 		}
-		String[] spiltDataList = data.split(DecoderConstant.SPACE, 3);
-		return spiltDataList[1].replaceAll("[^0-9?!\\.]", DecoderConstant.EMPTY);
+		return spiltDataList[spaceIndex].replaceAll(DecoderConstant.REGEX_ONLY_GET_DOUBLE, DecoderConstant.EMPTY);
 	}
 }

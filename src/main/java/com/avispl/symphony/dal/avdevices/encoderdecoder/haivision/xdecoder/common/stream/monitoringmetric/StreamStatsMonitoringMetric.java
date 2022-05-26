@@ -17,7 +17,7 @@ public enum StreamStatsMonitoringMetric {
 	STATE("StatsState"),
 	OUTPUT("StatsOutput"),
 	SOURCE_ADDRESS("StatsSourceAddress"),
-	BIT_RATE("StatsBitRate"),
+	BIT_RATE("StatsBitRate(kbps)"),
 	RECEIVED_PACKET("StatsReceivedPacket"),
 	RECEIVED_BYTES("StatsReceivedBytes"),
 	LAST_RECEIVED("StatsLastReceived"),
@@ -40,7 +40,7 @@ public enum StreamStatsMonitoringMetric {
 	}
 
 	/**
-	 * retrieve {@code {@link #name}}
+	 * Retrieves {@code {@link #name}}
 	 *
 	 * @return value of {@link #name}
 	 */
