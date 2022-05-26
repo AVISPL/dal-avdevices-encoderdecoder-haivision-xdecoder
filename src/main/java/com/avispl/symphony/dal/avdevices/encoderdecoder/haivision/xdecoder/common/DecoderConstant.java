@@ -76,6 +76,8 @@ public class DecoderConstant {
 	public static final String SUCCESSFUL_RESPONSE = "successfully";
 	public static final String OPERATOR_ROLE = "Operator";
 	public static final String ADMIN_ROLE = "Administrator";
+	public static final String GUEST_ROLE = "Guest";
+	public static final String MESSAGE_TO_RECOGNIZE_GUEST_ROLE = "insufficient rights";
 	public static final String STREAM_CONVERSION_OBJECT_RESPONSE = "Stream Flipping";
 	public static final String STREAM_CONVERSION_ALT_OBJECT_RESPONSE = "StreamConversion:\r\nStream Flipping\t";
 	public static final String TRUE_VALUE = "True";
