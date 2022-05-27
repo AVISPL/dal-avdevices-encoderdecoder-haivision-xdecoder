@@ -25,7 +25,7 @@ public enum StreamControllingMetric {
 	ADDRESS("Address"),
 	FEC("Fec"),
 	ID("Id"),
-	LATENCY("Latency"),
+	LATENCY("Latency(ms)"),
 	PASSPHRASE("Passphrase"),
 	PORT("ConnectionPort"),
 	SOURCE_PORT("ConnectionSourcePort"),
@@ -49,7 +49,7 @@ public enum StreamControllingMetric {
 	/**
 	 * Parameterized constructor
 	 *
-	 * @param name Name of decoder monitoring metric
+	 * @param name Name of stream monitoring metric
 	 */
 	StreamControllingMetric(String name) {
 		this.name = name;
@@ -65,13 +65,13 @@ public enum StreamControllingMetric {
 	}
 
 	/**
-	 * This method is used to get decoder controlling metric by name
+	 * This method is used to get stream controlling metric by name
 	 *
-	 * @param name is the name of decoder controlling metric that want to get
+	 * @param name is the name of stream controlling metric that want to get
 	 * @return DecoderControllingMetric is the decoder controlling metric that want to get
 	 */
 	public static StreamControllingMetric getByName(String name) {
-		Optional<StreamControllingMetric> streamControllingMetric = Arrays.stream(StreamControllingMetric.values()).filter(com -> com.getName().equals(name)).findFirst();
+		Optional<StreamControllingMetric> streamControllingMetric = Arrays.stream(StreamControllingMetric.values()).filter(controllingMetric -> controllingMetric.getName().equals(name)).findFirst();
 		if (streamControllingMetric.isPresent()) {
 			return streamControllingMetric.get();
 		}

@@ -5,21 +5,22 @@ package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.
 
 import java.util.Objects;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SRTMode;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SwitchOnOffControl;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
+
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SRTMode;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SwitchOnOffControl;
 import com.avispl.symphony.dal.util.StringUtils;
 
 /**
- * Set of stream configuration properties
+ * Stream config info
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 4/19/2022
@@ -69,6 +70,9 @@ public class StreamConfig {
 	@JsonAlias("StreamFlipping")
 	private String  streamFlipping ;
 
+	/**
+	 * Non-parameterized constructor
+	 */
 	public StreamConfig() {
 	}
 
@@ -409,9 +413,9 @@ public class StreamConfig {
 	 * @return String default stream name
 	 */
 	public String getDefaultStreamName() {
-		Encapsulation encapsulationEnum = Encapsulation.getByUiName(getEncapsulation());
+		Encapsulation encapsulationEnum = Encapsulation.getByApiStatsName(getEncapsulation());
 		String encapsulationShortName = encapsulationEnum.getShortName();
-		if (getEncapsulation().equals(Encapsulation.RTSP.getUiName())) {
+		if (getEncapsulation().equals(Encapsulation.RTSP.getApiStatsName())) {
 			return getAddress().substring(0, 1).toUpperCase() + getAddress().substring(1);
 		} else if (StringUtils.isNullOrEmpty(getDestinationAddress()) || getDestinationAddress().equals(DecoderConstant.ADDRESS_ANY.toUpperCase())) {
 			return encapsulationShortName + DecoderConstant.AT_SIGN + DecoderConstant.LEFT_PARENTHESES + DecoderConstant.ADDRESS_ANY
@@ -434,16 +438,16 @@ public class StreamConfig {
 				.append(DecoderConstant.SPACE)
 				.append(action);
 
-		Encapsulation encapsulationEnum = Encapsulation.getByApiName(getDefaultValueForNullData(this.encapsulation, DecoderConstant.EMPTY));
+		Encapsulation encapsulationEnum = Encapsulation.getByApiConfigName(getDefaultValueForNullData(this.encapsulation, DecoderConstant.EMPTY));
 		SRTMode srtModeEnum = SRTMode.getByName(getDefaultValueForNullData(this.srtMode, DecoderConstant.EMPTY));
-		SwitchOnOffControl aeEncryptedEnum = SwitchOnOffControl.getByName(getDefaultValueForNullData(this.srtSettings, DecoderConstant.EMPTY));
-		SwitchOnOffControl streamFlippingEnum = SwitchOnOffControl.getByName(getDefaultValueForNullData(this.streamFlipping, DecoderConstant.EMPTY));
+		SwitchOnOffControl aeEncryptedEnum = SwitchOnOffControl.getByApiName(getDefaultValueForNullData(this.srtSettings, DecoderConstant.EMPTY));
+		SwitchOnOffControl streamFlippingEnum = SwitchOnOffControl.getByApiName(getDefaultValueForNullData(this.streamFlipping, DecoderConstant.EMPTY));
 
 		if (!StringUtils.isNullOrEmpty(name)) {
 			request.append(" name=\"").append(name).append(DecoderConstant.DOUBLE_QUOTATION);
 		}
 		if (!StringUtils.isNullOrEmpty(port) || !StringUtils.isNullOrEmpty(destinationPort)) {
-			request.append(" port=\"").append(port).append(DecoderConstant.DOUBLE_QUOTATION);
+			request.append(" port=").append(port);
 		}
 		if (!StringUtils.isNullOrEmpty(destinationAddress) && !destinationAddress.equals(DecoderConstant.ADDRESS_ANY)) {
 			request.append(" addr=\"").append(destinationAddress).append(DecoderConstant.DOUBLE_QUOTATION);
@@ -477,7 +481,6 @@ public class StreamConfig {
 					}
 				}
 				if (streamFlippingEnum.isEnable() && streamConversion != null) {
-					request.append(" flip=" + streamFlippingEnum.getName());
 					String flipAddress = getDefaultValueForNullData(streamConversion.getAddress(), DecoderConstant.EMPTY);
 					String flipPort = getDefaultValueForNullData(streamConversion.getUdpPort(), DecoderConstant.EMPTY);
 					String flipTtl = getDefaultValueForNullData(streamConversion.getTtl(), DecoderConstant.DEFAULT_TTL.toString());
@@ -486,7 +489,7 @@ public class StreamConfig {
 						request.append(" flipaddr=\"").append(flipAddress).append(DecoderConstant.DOUBLE_QUOTATION);
 					}
 					if (!StringUtils.isNullOrEmpty(flipPort)) {
-						request.append(" flipport=\"").append(flipPort).append(DecoderConstant.DOUBLE_QUOTATION);
+						request.append(" flipport=").append(flipPort);
 					}
 					if (!StringUtils.isNullOrEmpty(flipTtl)) {
 						request.append(" flipttl=").append(flipTtl);
