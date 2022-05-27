@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.SurroundSound;
 import com.avispl.symphony.dal.util.StringUtils;
 
 /**
@@ -188,28 +187,6 @@ public class HDMIConfig {
 	}
 
 	/**
-	 * This method is used to compare object in specify case
-	 */
-	public boolean deepEquals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		SurroundSound surroundSoundEnum = SurroundSound.getByAPIName(getDefaultValueForNullData(surroundSound, DecoderConstant.EMPTY));
-		HDMIConfig that = (HDMIConfig) o;
-		if (surroundSoundEnum.equals(SurroundSound.STEREO)) {
-			return Objects.equals(videoSource, that.videoSource)
-					&& Objects.equals(surroundSound, that.surroundSound)
-					&& Objects.equals(audioSource, that.audioSource);
-		}else
-			return Objects.equals(videoSource, that.videoSource)
-					&& Objects.equals(surroundSound, that.surroundSound);
-
-	}
-
-	/**
 	 * This method is used to create command for HDMI controlling: update
 	 *
 	 * @return String CLI command
@@ -231,16 +208,6 @@ public class HDMIConfig {
 		}
 
 		return request.toString();
-	}
-
-	/**
-	 * get default value for null data
-	 *
-	 * @param value value of monitoring properties
-	 * @return String (none/value)
-	 */
-	private String getDefaultValueForNullData(String value, String defaultValue) {
-		return StringUtils.isNullOrEmpty(value) ? defaultValue : value;
 	}
 
 	@Override

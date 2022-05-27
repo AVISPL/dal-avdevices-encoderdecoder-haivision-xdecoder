@@ -271,13 +271,13 @@ public class SRT {
 			case SENT_NAKS:
 				return getSentNaks();
 			case LINK_BANDWIDTH:
-				return NormalizeData.getDataNumberValue(getLinkBandwidth());
+				return NormalizeData.extractNumbers(getLinkBandwidth());
 			case RTT:
-				return NormalizeData.getDataNumberValue(getRtt());
+				return NormalizeData.extractNumbers(getRtt());
 			case BUFFER:
-				return NormalizeData.getDataNumberValue(getBuffer());
+				return NormalizeData.extractNumbers(getBuffer());
 			case LATENCY:
-				return NormalizeData.getDataNumberValue(getLatency());
+				return NormalizeData.extractNumbers(getLatency());
 			default:
 				return DecoderConstant.NONE;
 		}

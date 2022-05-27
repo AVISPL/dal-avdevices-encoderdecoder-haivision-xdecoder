@@ -60,7 +60,7 @@ public class NormalizeData {
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getDataNumberValue(String data) {
+	public static String extractNumbers(String data) {
 		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
@@ -78,7 +78,7 @@ public class NormalizeData {
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getDataExtraInfo(String data) {
+	public static String extractDataExtraInfo(String data) {
 		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
@@ -90,16 +90,20 @@ public class NormalizeData {
 	}
 
 	/**
-	 * get data number value from specify space index in string, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 / spaceIndex = 1  => 0.00
+	 * get data number value from specify space index in string,
+	 * eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 / spaceIndex = 0  => 7
+	 * eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 / spaceIndex = 1  => 0.00
+	 * eg: 224.0.0.11 (from "192.168.1.1":UNRESOLVED) [IPv4]/ spaceIndex = 2 => 192.168.1.1
+	 * eg: 224.0.0.11 (from "192.168.1.1":UNRESOLVED) [IPv4]/ spaceIndex = 3 => [IPv4]
 	 *
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getDataNumberValueBySpaceIndex(String data, int spaceIndex) {
+	public static String extractNumbersFromDataBySpaceIndex(String data, int spaceIndex) {
 		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
-		String[] spiltDataList = data.split(DecoderConstant.SPACE, 4);
+		String[] spiltDataList = data.split(DecoderConstant.SPACE, DecoderConstant.LAST_DATA_POSITION_OF_EXTRACT_NUMBERS_FROM_DATA_BY_SPACE_INDEX);
 		if (spaceIndex >= spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[spaceIndex])) {
 			return DecoderConstant.EMPTY;
 		}
@@ -108,16 +112,19 @@ public class NormalizeData {
 
 
 	/**
-	 * get data value from specify space index in string, eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 / spaceIndex = 1  => (0.00)
+	 * get data value from specify space index in string,
+	 * eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 / spaceIndex = 0  => 7
+	 * eg: 7 (0.00%) last one at 2019-01-17 13:40:31.322 / spaceIndex = 1  => (0.00%)
+	 * eg: 224.0.0.11 (from "any":UNRESOLVED) [IPv4]/ spaceIndex = 2 => "any":UNRESOLVED) [IPv4]
 	 *
 	 * @param data the normalized data
 	 * @return String
 	 */
-	public static String getDataBySpaceIndex(String data, int spaceIndex) {
+	public static String extractDataBySpaceIndex(String data, int spaceIndex) {
 		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
-		String[] spiltDataList = data.split(DecoderConstant.SPACE, 3);
+		String[] spiltDataList = data.split(DecoderConstant.SPACE, DecoderConstant.LAST_DATA_POSITION_OF_EXTRACT_DATA_BY_SPACE_INDEX);
 		if (spaceIndex >= spiltDataList.length || StringUtils.isNullOrEmpty(spiltDataList[spaceIndex])) {
 			return DecoderConstant.EMPTY;
 		}
@@ -134,9 +141,8 @@ public class NormalizeData {
 		if (data == null) {
 			return DecoderConstant.EMPTY;
 		}
-		int dataIndex = 0;
 		int lastDoubleQuoteIndex = data.lastIndexOf(DecoderConstant.DOUBLE_QUOTATION);
-		if (lastDoubleQuoteIndex < dataIndex || StringUtils.isNullOrEmpty(data) ) {
+		if (lastDoubleQuoteIndex < DecoderConstant.DATA_INDEX || StringUtils.isNullOrEmpty(data) ) {
 			return DecoderConstant.EMPTY;
 		}
 		return data.substring(1, lastDoubleQuoteIndex );

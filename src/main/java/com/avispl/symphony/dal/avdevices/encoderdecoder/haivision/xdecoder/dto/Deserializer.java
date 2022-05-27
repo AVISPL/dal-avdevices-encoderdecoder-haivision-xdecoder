@@ -31,7 +31,7 @@ public class Deserializer {
 	 */
 	public static Map<String, Object> convertDataToObject(String responseData, String request) {
 		try {
-			String[] fields = responseData.split("\r\n");
+			String[] fields = responseData.split(DecoderConstant.REGEX_TRAILING_OF_FIELD);
 
 			Map<String, Object> objectWrapper = new HashMap<>();
 			Map<String, String> object = new HashMap<>();
@@ -76,7 +76,7 @@ public class Deserializer {
 	 */
 	public static String getErrorMessage(String responseData) {
 		try {
-			String[] fields = responseData.split("\r\n");
+			String[] fields = responseData.split(DecoderConstant.REGEX_TRAILING_OF_FIELD);
 			return fields[1];
 		} catch (Exception e) {
 			return DecoderConstant.EMPTY;

@@ -47,23 +47,6 @@ public class AudioConfig {
 	}
 
 	/**
-	 * This method is used to compare object in specify case
-	 */
-	public boolean deepEquals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		AudioConfig that = (AudioConfig) o;
-		return Objects.equals(source, that.source)
-				&& Objects.equals(channels, that.channels)
-				&& Objects.equals(outputSource, that.outputSource)
-				&& Objects.equals(outputLevel, that.outputLevel);
-	}
-
-	/**
 	 * This method is used to create command for decoder audio controlling
 	 *
 	 * @return String CLI command
@@ -148,5 +131,25 @@ public class AudioConfig {
 	 */
 	public void setChannels(String channels) {
 		this.channels = channels;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		AudioConfig that = (AudioConfig) o;
+		return Objects.equals(source, that.source)
+				&& Objects.equals(channels, that.channels)
+				&& Objects.equals(outputSource, that.outputSource)
+				&& Objects.equals(outputLevel, that.outputLevel);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(source, channels, outputSource, outputLevel);
 	}
 }

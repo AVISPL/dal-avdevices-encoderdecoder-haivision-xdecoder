@@ -305,7 +305,7 @@ public class StreamStats {
 			case SOURCE_ADDRESS:
 				return getSourceAddress();
 			case BIT_RATE:
-				return NormalizeData.getDataNumberValue(getBitRate());
+				return NormalizeData.extractNumbers(getBitRate());
 			case RECEIVED_PACKET:
 				return NormalizeData.convertToNumberValue(getReceivedPackets());
 			case RECEIVED_BYTES:
