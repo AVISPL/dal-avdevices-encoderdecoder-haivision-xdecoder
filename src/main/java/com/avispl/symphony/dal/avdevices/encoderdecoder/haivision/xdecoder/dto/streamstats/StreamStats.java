@@ -3,12 +3,12 @@
  */
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamStatsMonitoringMetric;
+
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.StreamStatsMonitoringMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 
 /**
  * Stream statistics
@@ -305,7 +305,7 @@ public class StreamStats {
 			case SOURCE_ADDRESS:
 				return getSourceAddress();
 			case BIT_RATE:
-				return NormalizeData.getDataNumberValue(getBitRate());
+				return NormalizeData.extractNumbers(getBitRate());
 			case RECEIVED_PACKET:
 				return NormalizeData.convertToNumberValue(getReceivedPackets());
 			case RECEIVED_BYTES:

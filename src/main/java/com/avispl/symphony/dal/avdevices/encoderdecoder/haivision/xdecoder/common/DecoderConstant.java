@@ -21,16 +21,22 @@ public class DecoderConstant {
 	public static final String DOUBLE_QUOTATION = "\"";
 	public static final String COLON = ":";
 	public static final String DASH = "-";
-	public static final String AMPERSAND = "&";
 	public static final String RIGHT_PARENTHESES = ")";
 	public static final String LEFT_PARENTHESES = "(";
+	public static final String TARGET_CH = "Ch";
+	public static final String PLUS_SIGN = "+";
+	public static final String AND_SIGN = "&";
+	public static final String EQUAL = "=";
 	public static final String SPACE =  " ";
 	public static final String EMPTY = "";
 	public static final String AT = "at";
 	public static final String REGEX_ONLY_GET_DOUBLE = "[^0-9?!\\\\.\\\\-]";
+	public static final String REGEX_TRAILING_OF_FIELD = "\r\n";
+	public static final String REGEX_TRAILING_OF_OBJECT= "\r\n\r";
 	public static final String REGEX_REMOVE_SPACE_AND_NUMBER = "[1-9\\s+]";
-	public static final String REGEX_SPECIAL_CHARACTER = "[\\(\\)&]";
-	public static final String REGEX_SPECIAL_CHARACTER_REPLACEMENT = "\\\\$0";
+	public static final String SERVICE_OBJECT_JSON_ALIAS = "serviceallstatus\r\n";
+	public static final String SERVICE_STRING_REPLACED = "service is currently";
+	public static final String CURRENTLY = "currently";
 	public static final String ADDRESS_ANY = "Any";
 	public static final String NONE = "None";
 	public static final String DEFAULT_STREAM_NAME = "(None)";
@@ -46,6 +52,9 @@ public class DecoderConstant {
 	public static final String GETTING_DECODER_STATS_ERR = "Failed to get decoder statistic";
 	public static final String GETTING_STREAM_STATS_ERR = "Failed to get stream statistic";
 	public static final String GETTING_AUDIO_CONFIG_ERR = "Failed to get Audio config info";
+	public static final String GETTING_HDMI_CONFIG_ERR = "Failed to get Hdmi config info";
+	public static final String GETTING_SERVICE_CONFIG_ERR = "Failed to get service config info";
+	public static final String GETTING_TALKBACK_CONFIG_ERR = "Failed to get talkback config info";
 	public static final String DECODER_CONTROL_ERR = "Failed to control decoder: ";
 	public static final String CREATE_STREAM_CONTROL_ERR = "Failed to control create stream: ";
 	public static final String STREAM_CONTROL_ERR = "Failed to control stream: ";
@@ -71,6 +80,8 @@ public class DecoderConstant {
 	public static final String SUCCESSFUL_RESPONSE = "successfully";
 	public static final String OPERATOR_ROLE = "Operator";
 	public static final String ADMIN_ROLE = "Administrator";
+	public static final String GUEST_ROLE = "Guest";
+	public static final String MESSAGE_TO_RECOGNIZE_GUEST_ROLE = "insufficient rights";
 	public static final String STREAM_CONVERSION_OBJECT_RESPONSE = "Stream Flipping";
 	public static final String STREAM_CONVERSION_ALT_OBJECT_RESPONSE = "StreamConversion:\r\nStream Flipping\t";
 	public static final String TRUE_VALUE = "True";
@@ -79,6 +90,7 @@ public class DecoderConstant {
 	public static final String MAX_OF_TOS = "FF";
 	public static final String MIN_OF_TOS = "00";
 	public static final String HEX_PREFIX = "0x";
+	public static final String CODE_OF_ENABLED_SWITCH = "1";
 	public static final int PERCENT_VALUE_DATA_INDEX = 1;
 	public static final int SOURCE_ADDRESS_DATA_INDEX = 2;
 	public static final int ADDRESS_DATA_INDEX = 0;
@@ -107,4 +119,10 @@ public class DecoderConstant {
 
 	// index of stream name in controlling metric group, eg: StreamTest => name = Test
 	public static final Integer INDEX_OF_STREAM_NAME_IN_CONTROLLING_METRIC_GROUP = 6;
+
+	// Normalize Data constant
+	public static final Integer DATA_INDEX = 0;
+	public static final Integer LAST_DATA_POSITION_OF_EXTRACT_DATA_BY_SPACE_INDEX = 3;
+	public static final Integer LAST_DATA_POSITION_OF_EXTRACT_NUMBERS_FROM_DATA_BY_SPACE_INDEX = 4;
+
 }
