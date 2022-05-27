@@ -245,27 +245,27 @@ public class Audio {
 			case AUDIO_STATE:
 				return getState();
 			case AUDIO_BITRATE:
-				return NormalizeData.getDataNumberValue(getBitrate());
+				return NormalizeData.extractNumbers(getBitrate());
 			case AUDIO_SAMPLE_RATE:
-				return NormalizeData.getDataNumberValue(getSampleRate());
+				return NormalizeData.extractNumbers(getSampleRate());
 			case AUDIO_NUMBER_OF_PAIR:
 				return getNumberOfPair();
 			case AUDIO_INPUT_LAYOUT_1:
 				return getInputLayout1DecodedFrames();
 			case AUDIO_DECODED_FRAMES:
-				return NormalizeData.getDataNumberValue(getDecodedFrames());
+				return NormalizeData.extractNumbers(getDecodedFrames());
 			case AUDIO_DECODED_FRAMES_PERCENT:
-				return NormalizeData.getDataNumberValueBySpaceIndex(getDecodedFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
+				return NormalizeData.extractNumbersFromDataBySpaceIndex(getDecodedFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
 			case AUDIO_OUTPUT_FRAME:
-				return NormalizeData.getDataNumberValue(getOutputFrames());
+				return NormalizeData.extractNumbers(getOutputFrames());
 			case AUDIO_OUTPUT_FRAME_PERCENT:
-				return NormalizeData.getDataNumberValueBySpaceIndex(getOutputFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
+				return NormalizeData.extractNumbersFromDataBySpaceIndex(getOutputFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
 			case AUDIO_OUTPUT_LAYOUT:
 				return getOutputLayout();
 			case AUDIO_SKIPPED_FRAMES:
-				return NormalizeData.getDataNumberValue(getSkippedFrames());
+				return NormalizeData.extractNumbers(getSkippedFrames());
 			case AUDIO_SKIPPED_FRAMES_PERCENT:
-				return NormalizeData.getDataNumberValueBySpaceIndex(getSkippedFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
+				return NormalizeData.extractNumbersFromDataBySpaceIndex(getSkippedFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
 			default:
 				return DecoderConstant.EMPTY;
 		}

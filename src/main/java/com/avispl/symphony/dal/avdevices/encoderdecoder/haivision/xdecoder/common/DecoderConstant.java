@@ -31,6 +31,8 @@ public class DecoderConstant {
 	public static final String EMPTY = "";
 	public static final String AT = "at";
 	public static final String REGEX_ONLY_GET_DOUBLE = "[^0-9?!\\\\.\\\\-]";
+	public static final String REGEX_TRAILING_OF_FIELD = "\r\n";
+	public static final String REGEX_TRAILING_OF_OBJECT= "\r\n\r";
 	public static final String REGEX_REMOVE_SPACE_AND_NUMBER = "[1-9\\s+]";
 	public static final String SERVICE_OBJECT_JSON_ALIAS = "serviceallstatus\r\n";
 	public static final String SERVICE_STRING_REPLACED = "service is currently";
@@ -86,6 +88,7 @@ public class DecoderConstant {
 	public static final String MAX_OF_TOS = "FF";
 	public static final String MIN_OF_TOS = "00";
 	public static final String HEX_PREFIX = "0x";
+	public static final String CODE_OF_ENABLED_SWITCH = "1";
 	public static final int PERCENT_VALUE_DATA_INDEX = 1;
 	public static final int SOURCE_ADDRESS_DATA_INDEX = 2;
 	public static final int ADDRESS_DATA_INDEX = 0;
@@ -114,4 +117,10 @@ public class DecoderConstant {
 
 	// index of stream name in controlling metric group, eg: StreamTest => name = Test
 	public static final Integer INDEX_OF_STREAM_NAME_IN_CONTROLLING_METRIC_GROUP = 6;
+
+	// Normalize Data constant
+	public static final Integer DATA_INDEX = 0;
+	public static final Integer LAST_DATA_POSITION_OF_EXTRACT_DATA_BY_SPACE_INDEX = 3;
+	public static final Integer LAST_DATA_POSITION_OF_EXTRACT_NUMBERS_FROM_DATA_BY_SPACE_INDEX = 4;
+
 }

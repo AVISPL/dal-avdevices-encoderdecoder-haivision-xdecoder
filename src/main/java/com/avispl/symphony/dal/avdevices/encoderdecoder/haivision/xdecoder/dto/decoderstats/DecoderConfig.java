@@ -8,7 +8,6 @@ import java.util.Objects;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.BufferingMode;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.SyncMode;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 
@@ -305,97 +304,6 @@ public class DecoderConfig {
 	}
 
 	/**
-	 * This method is used to compare object in specify case
-	 */
-	public boolean deepEquals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		DecoderConfig that = (DecoderConfig) o;
-		return Objects.equals(primaryStream, that.primaryStream)
-				&& Objects.equals(secondaryStream, that.secondaryStream)
-				&& Objects.equals(stillImage, that.stillImage)
-				&& Objects.equals(NormalizeData.getDataNumberValue(stillImageDelay), NormalizeData.getDataNumberValue(that.stillImageDelay))
-				&& Objects.equals(enableBuffering, that.enableBuffering)
-				&& Objects.equals(outputResolution, that.outputResolution)
-				&& equalsByOutputResolution(o)
-				&& equalsByBufferingMode(o)
-				&& equalsByStillImage(o);
-	}
-
-	/**
-	 * This method is used to compare object in specify BufferingMode
-	 */
-	public boolean equalsByBufferingMode(Object o) {
-		BufferingMode bufferingModeEnum = BufferingMode.getByAPIName(getDefaultValueForNullData(getBufferingMode(), DecoderConstant.EMPTY));
-		SyncMode syncModeEnum = SyncMode.getByName(getDefaultValueForNullData(getEnableBuffering(), DecoderConstant.EMPTY));
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		DecoderConfig that = (DecoderConfig) o;
-		if (!syncModeEnum.isEnable()) {
-			return true;
-		}
-		switch (bufferingModeEnum) {
-			case AUTO:
-			case ADAPTIVE_LOW_LATENCY:
-				return Objects.equals(bufferingMode, that.bufferingMode);
-			case FIXED:
-			case MULTI_SYNC:
-				return Objects.equals(bufferingMode, that.bufferingMode)
-						&& Objects.equals(NormalizeData.getDataNumberValue(bufferingDelay), NormalizeData.getDataNumberValue(that.bufferingDelay));
-			default:
-				return true;
-		}
-	}
-
-	/**
-	 * This method is used to compare object in specify OutputResolution
-	 */
-	public boolean equalsByOutputResolution(Object o) {
-		OutputResolution outputResolutionEnum = OutputResolution.getByAPIStatsName(getDefaultValueForNullData(getOutputResolution(), DecoderConstant.EMPTY));
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		DecoderConfig that = (DecoderConfig) o;
-		switch (outputResolutionEnum.getResolutionCategory()) {
-			case DecoderConstant.AUTOMATIC_RESOLUTION:
-			case DecoderConstant.TV_RESOLUTION:
-			case DecoderConstant.COMPUTER_RESOLUTION:
-				return Objects.equals(outputFrameRate, that.outputFrameRate);
-			case DecoderConstant.NATIVE_RESOLUTION:
-			default:
-				return true;
-		}
-	}
-
-	/**
-	 * This method is used to compare object in specify BufferingMode
-	 */
-	public boolean equalsByStillImage(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		DecoderConfig that = (DecoderConfig) o;
-		if (this.stillImage.equals(StillImage.CUSTOM.getApiName())) {
-			return stillFile.equals(that.getStillFile());
-		}
-		return true;
-	}
-
-	/**
 	 * This method is used to create command for decoder SDI controlling: update
 	 *
 	 * @return String CLI command
@@ -409,14 +317,14 @@ public class DecoderConfig {
 				.append(action);
 		if (!StringUtils.isNullOrEmpty(primaryStream)) {
 			String tempStream = primaryStream;
-			if (primaryStream.equals(DecoderConstant.DEFAULT_STREAM_NAME)) {
+			if (DecoderConstant.DEFAULT_STREAM_NAME.equals(primaryStream)) {
 				tempStream = DecoderConstant.NONE;
 			}
 			request.append(" streamId=").append(tempStream);
 		}
 		if (!StringUtils.isNullOrEmpty(secondaryStream)) {
 			String tempStream = secondaryStream;
-			if (secondaryStream.equals(DecoderConstant.DEFAULT_STREAM_NAME)) {
+			if (DecoderConstant.DEFAULT_STREAM_NAME.equals(secondaryStream)) {
 				tempStream = DecoderConstant.NONE;
 			}
 			request.append(" altStreamId=").append(tempStream);
@@ -431,7 +339,7 @@ public class DecoderConfig {
 			request.append(" stillFile=").append(stillFile);
 		}
 		if (!StringUtils.isNullOrEmpty(stillImageDelay)) {
-			request.append(" stillDelay=").append(NormalizeData.getDataNumberValue(stillImageDelay));
+			request.append(" stillDelay=").append(NormalizeData.extractNumbers(stillImageDelay));
 		}
 		if (!StringUtils.isNullOrEmpty(enableBuffering)) {
 			request.append(" syncMode=").append(enableBuffering);
@@ -447,23 +355,13 @@ public class DecoderConfig {
 		}
 		if (!StringUtils.isNullOrEmpty(bufferingDelay)) {
 			if (bufferingMode.equals(BufferingMode.FIXED.getApiName())) {
-				request.append(" delay=").append(NormalizeData.getDataNumberValue(bufferingDelay));
+				request.append(" delay=").append(NormalizeData.extractNumbers(bufferingDelay));
 			}
 			if (bufferingMode.equals(BufferingMode.MULTI_SYNC.getApiName())) {
-				request.append(" multiSyncDelay=").append(NormalizeData.getDataNumberValue(bufferingDelay));
+				request.append(" multiSyncDelay=").append(NormalizeData.extractNumbers(bufferingDelay));
 			}
 		}
 		return request.toString();
-	}
-
-	/**
-	 * get default value for null data
-	 *
-	 * @param value value of monitoring properties
-	 * @return String (none/value)
-	 */
-	private String getDefaultValueForNullData(String value, String defaultValue) {
-		return StringUtils.isNullOrEmpty(value) ? defaultValue : value;
 	}
 
 	@Override
@@ -478,10 +376,10 @@ public class DecoderConfig {
 		return Objects.equals(primaryStream, that.primaryStream)
 				&& Objects.equals(secondaryStream, that.secondaryStream)
 				&& Objects.equals(stillImage, that.stillImage)
-				&& Objects.equals(NormalizeData.getDataNumberValue(stillImageDelay), NormalizeData.getDataNumberValue(that.stillImageDelay))
+				&& Objects.equals(NormalizeData.extractNumbers(stillImageDelay), NormalizeData.extractNumbers(that.stillImageDelay))
 				&& Objects.equals(enableBuffering, that.enableBuffering)
 				&& Objects.equals(bufferingMode, that.bufferingMode)
-				&& Objects.equals(NormalizeData.getDataNumberValue(bufferingDelay), NormalizeData.getDataNumberValue(that.bufferingDelay))
+				&& Objects.equals(NormalizeData.extractNumbers(bufferingDelay), NormalizeData.extractNumbers(that.bufferingDelay))
 				&& Objects.equals(outputResolution, that.outputResolution)
 				&& Objects.equals(outputFrameRate, that.outputFrameRate)
 				&& Objects.equals(state, that.state);

@@ -381,7 +381,7 @@ public class VideoDecoder {
 			case MULTISYNC_STATUS:
 				return getMultisyncStatus();
 			case BUFFERING_DELAY:
-				return NormalizeData.getDataNumberValue(getMultisyncDelay());
+				return NormalizeData.extractNumbers(getMultisyncDelay());
 			case MULTISYNC_DELAY_RANGE:
 				return getMultiSyncDelayRange();
 			case MULTISYNC_DELAY_SET:
@@ -389,29 +389,29 @@ public class VideoDecoder {
 			case VIDEO_INPUT_FORMAT:
 				return getInputFormat();
 			case VIDEO_BITRATE:
-				return NormalizeData.getDataNumberValue(getBitrate());
+				return NormalizeData.extractNumbers(getBitrate());
 			case VIDEO_DECODED_FRAMES:
-				return NormalizeData.getDataNumberValue(getDecodedFrames());
+				return NormalizeData.extractNumbers(getDecodedFrames());
 			case VIDEO_DECODED_FRAMES_PERCENT:
-				return NormalizeData.getDataNumberValueBySpaceIndex(getDecodedFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
+				return NormalizeData.extractNumbersFromDataBySpaceIndex(getDecodedFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
 			case VIDEO_OUTPUT_FORMAT:
 				return getOutputFormat();
 			case VIDEO_OUTPUT_FRAMES:
-				return  NormalizeData.getDataNumberValue(getOutputFrames());
+				return  NormalizeData.extractNumbers(getOutputFrames());
 			case VIDEO_OUTPUT_FRAMES_PERCENT:
-				return  NormalizeData.getDataNumberValueBySpaceIndex(getOutputFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
+				return  NormalizeData.extractNumbersFromDataBySpaceIndex(getOutputFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
 			case VIDEO_SKIPPED_OUTPUT_FRAMES:
-				return NormalizeData.getDataNumberValue(getSkippedOutputFrames());
+				return NormalizeData.extractNumbers(getSkippedOutputFrames());
 			case VIDEO_SKIPPED_OUTPUT_FRAMES_PERCENT:
-				return NormalizeData.getDataNumberValueBySpaceIndex(getSkippedOutputFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
+				return NormalizeData.extractNumbersFromDataBySpaceIndex(getSkippedOutputFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
 			case LAST_VIDEO_SKIPPED_OUTPUT_FRAMES_PERCENT:
-				return NormalizeData.getDataExtraInfo(getSkippedOutputFrames());
+				return NormalizeData.extractDataExtraInfo(getSkippedOutputFrames());
 			case VIDEO_REPLAYED_OUTPUT_FRAMES:
-				return NormalizeData.getDataNumberValue(getReplayedOutputFrames());
+				return NormalizeData.extractNumbers(getReplayedOutputFrames());
 			case VIDEO_REPLAYED_OUTPUT_FRAMES_PERCENT:
-				return NormalizeData.getDataNumberValueBySpaceIndex(getReplayedOutputFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
+				return NormalizeData.extractNumbersFromDataBySpaceIndex(getReplayedOutputFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
 			case LAST_VIDEO_REPLAYED_OUTPUT_FRAMES:
-				return NormalizeData.getDataExtraInfo(getReplayedOutputFrames());
+				return NormalizeData.extractDataExtraInfo(getReplayedOutputFrames());
 			default:
 				return DecoderConstant.EMPTY;
 		}

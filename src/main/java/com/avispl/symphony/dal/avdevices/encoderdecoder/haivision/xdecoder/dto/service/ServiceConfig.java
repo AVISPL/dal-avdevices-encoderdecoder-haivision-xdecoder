@@ -1,12 +1,9 @@
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.service;
 
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.SurroundSound;
-import com.avispl.symphony.dal.util.StringUtils;
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.util.Objects;
 
 /**
  * Service config info
@@ -184,38 +181,6 @@ public class ServiceConfig {
 	 */
 	public void setTelnet(String telnet) {
 		this.telnet = telnet;
-	}
-
-	/**
-	 * This method is used to compare object in specify case
-	 */
-	public boolean deepEquals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (o == null || getClass() != o.getClass()) {
-			return false;
-		}
-		SurroundSound surroundSoundEnum = SurroundSound.getByAPIName(getDefaultValueForNullData(sap, DecoderConstant.EMPTY));
-		ServiceConfig that = (ServiceConfig) o;
-		if (surroundSoundEnum.equals(SurroundSound.STEREO)) {
-			return Objects.equals(ems, that.ems)
-					&& Objects.equals(sap, that.sap)
-					&& Objects.equals(http, that.http);
-		}else
-			return Objects.equals(ems, that.ems)
-					&& Objects.equals(sap, that.sap);
-
-	}
-
-	/**
-	 * get default value for null data
-	 *
-	 * @param value value of monitoring properties
-	 * @return String (none/value)
-	 */
-	private String getDefaultValueForNullData(String value, String defaultValue) {
-		return StringUtils.isNullOrEmpty(value) ? defaultValue : value;
 	}
 
 	@Override
