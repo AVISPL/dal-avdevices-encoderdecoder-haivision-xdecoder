@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Set of stream conversion properties
+ * Stream conversion
  *
  * @author Harry / Symphony Dev Team<br>
  * Created on 5/7/2022

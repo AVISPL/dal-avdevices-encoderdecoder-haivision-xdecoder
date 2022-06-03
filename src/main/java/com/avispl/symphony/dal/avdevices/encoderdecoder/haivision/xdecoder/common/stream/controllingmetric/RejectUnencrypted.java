@@ -15,32 +15,44 @@ import java.util.Optional;
  */
 public enum RejectUnencrypted {
 
-	ENABLE_REJECT_UNENCRYPTED("Yes", true, 1),
-	DISABLE_REJECT_UNENCRYPTED("No", false, 0);
+	ENABLE_REJECT_UNENCRYPTED("Enabled", "Yes", true, 1),
+	DISABLE_REJECT_UNENCRYPTED("Disabled", "No", false, 0);
 
-	private final String name;
+	private final String uiName;
+	private final String apiName;
 	private final boolean isEnable;
 	private final Integer code;
 
 	/**
 	 * Parameterized constructor
-	 * @param name Name of reject unencrypted modes
+	 * @param uiName ui name of reject unencrypted modes
+	 * @param apiName api name of reject unencrypted modes
 	 * @param isEnable status of reject unencrypted modes
 	 * @param code code of reject unencrypted modes
 	 */
-	RejectUnencrypted(String name, boolean isEnable, int code) {
-		this.name = name;
+	RejectUnencrypted(String uiName, String apiName, boolean isEnable, int code) {
+		this.uiName = uiName;
+		this.apiName = apiName;
 		this.isEnable = isEnable;
 		this.code = code;
 	}
 
 	/**
-	 * Retrieves {@code {@link #name}}
+	 * Retrieves {@code {@link #uiName}}
 	 *
-	 * @return value of {@link #name}
+	 * @return value of {@link #uiName}
 	 */
-	public String getName() {
-		return this.name;
+	public String getUiName() {
+		return uiName;
+	}
+
+	/**
+	 * Retrieves {@code {@link #apiName }}
+	 *
+	 * @return value of {@link #apiName}
+	 */
+	public String getApiName() {
+		return this.apiName;
 	}
 
 	/**
@@ -64,12 +76,12 @@ public enum RejectUnencrypted {
 	/**
 	 * This method is used to get reject unencrypted mode by name
 	 *
-	 * @param name is the name of reject unencrypted mode that want to get
+	 * @param apiName is the api name of reject unencrypted mode that want to get
 	 * @return SyncMode is the reject unencrypted mode that want to get
 	 */
-	public static RejectUnencrypted getByName(String name) {
-		Optional<RejectUnencrypted> state = Arrays.stream(RejectUnencrypted.values()).filter(ru -> ru.getName().equals(name)).findFirst();
-		return state.orElse(RejectUnencrypted.DISABLE_REJECT_UNENCRYPTED);
+	public static RejectUnencrypted getByApiName(String apiName) {
+		Optional<RejectUnencrypted> rejectUnencrypted = Arrays.stream(RejectUnencrypted.values()).filter(ru -> ru.getApiName().equals(apiName)).findFirst();
+		return rejectUnencrypted.orElse(RejectUnencrypted.DISABLE_REJECT_UNENCRYPTED);
 	}
 
 	/**

@@ -15,24 +15,27 @@ import java.util.Optional;
  */
 public enum Encapsulation {
 
-	TS_OVER_UDP("TS-UDP", "ts-udp", "Udp://"),
-	TS_OVER_RTP("TS-RTP", "ts-rtp", "Rtp://"),
-	TS_OVER_SRT("TS-SRT", "ts-srt", "Srt://"),
-	RTSP("RTSP", "rtsp", "Rtsp://");
+	TS_OVER_UDP("TS over UDP", "TS-UDP", "ts-udp", "Udp://"),
+	TS_OVER_RTP("TS over RTP", "TS-RTP", "ts-rtp", "Rtp://"),
+	TS_OVER_SRT("TS over SRT", "TS-SRT", "ts-srt", "Srt://"),
+	RTSP("RTSP", "RTSP", "rtsp", "Rtsp://");
 
 	private final String uiName;
-	private final String apiName;
+	private final String apiStatsName;
+	private final String apiConfigName;
 	private final String shortName;
 
 	/**
 	 * Parameterized constructor
 	 * @param uiName IU name of Encapsulation
-	 * @param apiName API name of Encapsulation
+	 * @param apiStatsName API stats name of Encapsulation
+	 * @param apiName API config name of Encapsulation
 	 * @param shortName
 	 */
-	Encapsulation(String uiName, String apiName, String shortName) {
+	Encapsulation(String uiName, String apiStatsName, String apiName, String shortName) {
 		this.uiName = uiName;
-		this.apiName = apiName;
+		this.apiStatsName = apiStatsName;
+		this.apiConfigName = apiName;
 		this.shortName = shortName;
 	}
 
@@ -46,12 +49,21 @@ public enum Encapsulation {
 	}
 
 	/**
-	 * Retrieves {@code {@link #apiName}}
+	 * Retrieves {@code {@link #apiStatsName}}
 	 *
-	 * @return value of {@link #apiName}
+	 * @return value of {@link #apiStatsName}
 	 */
-	public String getApiName() {
-		return apiName;
+	public String getApiStatsName() {
+		return apiStatsName;
+	}
+
+	/**
+	 * Retrieves {@code {@link #apiConfigName }}
+	 *
+	 * @return value of {@link #apiConfigName}
+	 */
+	public String getApiConfigName() {
+		return apiConfigName;
 	}
 
 	/**
@@ -75,13 +87,24 @@ public enum Encapsulation {
 	}
 
 	/**
-	 * This method is used to get encapsulation mode by api name
+	 * This method is used to get encapsulation mode by api stats name
 	 *
-	 * @param apiName is the ui name of encapsulation mode that want to get
+	 * @param apiStatsName is the api stats name of encapsulation mode that want to get
 	 * @return Encapsulation is the protocol that want to get
 	 */
-	public static Encapsulation getByApiName(String apiName) {
-		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(en -> en.getApiName().equals(apiName)).findFirst();
+	public static Encapsulation getByApiStatsName(String apiStatsName) {
+		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(en -> en.getApiStatsName().equals(apiStatsName)).findFirst();
+		return encapsulation.orElse(Encapsulation.TS_OVER_UDP);
+	}
+
+	/**
+	 * This method is used to get encapsulation mode by api config name
+	 *
+	 * @param apiConfigName is the api config name of encapsulation mode that want to get
+	 * @return Encapsulation is the protocol that want to get
+	 */
+	public static Encapsulation getByApiConfigName(String apiConfigName) {
+		Optional<Encapsulation> encapsulation = Arrays.stream(Encapsulation.values()).filter(en -> en.getApiConfigName().equals(apiConfigName)).findFirst();
 		return encapsulation.orElse(Encapsulation.TS_OVER_UDP);
 	}
 }

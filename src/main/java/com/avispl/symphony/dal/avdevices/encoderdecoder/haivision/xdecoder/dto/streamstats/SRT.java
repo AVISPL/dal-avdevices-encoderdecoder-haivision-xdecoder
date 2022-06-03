@@ -3,12 +3,13 @@
  */
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.streamstats;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.SRTMonitoringMetric;
+import com.avispl.symphony.dal.util.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Stream SRT
@@ -271,13 +272,15 @@ public class SRT {
 			case SENT_NAKS:
 				return getSentNaks();
 			case LINK_BANDWIDTH:
-				return NormalizeData.getDataNumberValue(getLinkBandwidth());
+				if(StringUtils.isNotNullOrEmpty(getLinkBandwidth()) && !getLinkBandwidth().matches(DecoderConstant.REGEX_ONLY_GET_NUMBER))
+					return getLinkBandwidth();
+				return NormalizeData.extractNumbers(getLinkBandwidth());
 			case RTT:
-				return NormalizeData.getDataNumberValue(getRtt());
+				return NormalizeData.extractNumbers(getRtt());
 			case BUFFER:
-				return NormalizeData.getDataNumberValue(getBuffer());
+				return NormalizeData.extractNumbers(getBuffer());
 			case LATENCY:
-				return NormalizeData.getDataNumberValue(getLatency());
+				return NormalizeData.extractNumbers(getLatency());
 			default:
 				return DecoderConstant.NONE;
 		}
