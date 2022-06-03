@@ -3,12 +3,13 @@
  */
 package com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderAudioMonitoringMetric;
+
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.NormalizeData;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.monitoringmetric.DecoderAudioMonitoringMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.util.StringUtils;
 
 /**
@@ -244,27 +245,27 @@ public class Audio {
 			case AUDIO_STATE:
 				return getState();
 			case AUDIO_BITRATE:
-				return NormalizeData.getDataNumberValue(getBitrate());
+				return NormalizeData.extractNumbers(getBitrate());
 			case AUDIO_SAMPLE_RATE:
-				return NormalizeData.getDataNumberValue(getSampleRate());
+				return NormalizeData.extractNumbers(getSampleRate());
 			case AUDIO_NUMBER_OF_PAIR:
 				return getNumberOfPair();
 			case AUDIO_INPUT_LAYOUT_1:
 				return getInputLayout1DecodedFrames();
 			case AUDIO_DECODED_FRAMES:
-				return NormalizeData.getDataNumberValue(getDecodedFrames());
+				return NormalizeData.extractNumbers(getDecodedFrames());
 			case AUDIO_DECODED_FRAMES_PERCENT:
-				return NormalizeData.getDataValueBySpaceIndex(getDecodedFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
+				return NormalizeData.extractNumbersFromDataBySpaceIndex(getDecodedFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
 			case AUDIO_OUTPUT_FRAME:
-				return NormalizeData.getDataNumberValue(getOutputFrames());
+				return NormalizeData.extractNumbers(getOutputFrames());
 			case AUDIO_OUTPUT_FRAME_PERCENT:
-				return NormalizeData.getDataValueBySpaceIndex(getOutputFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
+				return NormalizeData.extractNumbersFromDataBySpaceIndex(getOutputFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
 			case AUDIO_OUTPUT_LAYOUT:
 				return getOutputLayout();
 			case AUDIO_SKIPPED_FRAMES:
-				return NormalizeData.getDataNumberValue(getSkippedFrames());
+				return NormalizeData.extractNumbers(getSkippedFrames());
 			case AUDIO_SKIPPED_FRAMES_PERCENT:
-				return NormalizeData.getDataValueBySpaceIndex(getSkippedFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
+				return NormalizeData.extractNumbersFromDataBySpaceIndex(getSkippedFrames(), DecoderConstant.PERCENT_VALUE_DATA_INDEX);
 			default:
 				return DecoderConstant.EMPTY;
 		}
