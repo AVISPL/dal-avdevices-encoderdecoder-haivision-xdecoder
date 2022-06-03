@@ -1306,39 +1306,4 @@ class HaivisionXDecoderCommunicatorTest {
 		Assertions.assertNull(stats.get("Talkback#" + TalkbackControllingMetric.CANCEL.getName()));
 		Assertions.assertEquals(DecoderConstant.FALSE_VALUE, stats.get("Talkback#" + TalkbackControllingMetric.EDITED.getName()));
 	}
-
-	/**
-	 * Test HaivisionXDecoder.controlProperty talkback control: CancelChanges
-	 *
-	 * Expected: control successfully
-	 */
-	@Tag("RealDevice")
-	@Test
-	void testSetTalkbackCance() {
-		String configManagement = "true";
-		String streamNameFilter = "harry";
-		haivisionXDecoderCommunicator.setStreamNameFilter(streamNameFilter);
-		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
-		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
-		Map<String, String> stats = extendedStatistics.getStatistics();
-		ControllableProperty controllableProperty = new ControllableProperty();
-
-		// set sound mode to surround
-		String propertyName = "Talkback#" + TalkbackControllingMetric.PORT.getName();
-		String propertyValue = "1975";
-		controllableProperty.setProperty(propertyName);
-		controllableProperty.setValue(propertyValue);
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		propertyName = "Talkback#" + TalkbackControllingMetric.CANCEL.getName();
-		propertyValue = "1";
-		controllableProperty.setProperty(propertyName);
-		controllableProperty.setValue(propertyValue);
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
-		// expected: symphony will not show apply changes, cancel changes button and the edited field is true
-		Assertions.assertNull(stats.get("Talkback#" + TalkbackControllingMetric.APPLY_CHANGE.getName()));
-		Assertions.assertNull(stats.get("Talkback#" + TalkbackControllingMetric.CANCEL.getName()));
-		Assertions.assertEquals(DecoderConstant.FALSE_VALUE, stats.get("Talkback#" + TalkbackControllingMetric.EDITED.getName()));
-	}
 }
