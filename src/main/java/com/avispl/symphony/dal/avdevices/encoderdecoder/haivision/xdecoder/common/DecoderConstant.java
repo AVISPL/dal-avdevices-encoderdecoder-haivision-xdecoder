@@ -59,6 +59,10 @@ public class DecoderConstant {
 	public static final String DECODER_CONTROL_ERR = "Failed to control decoder: ";
 	public static final String CREATE_STREAM_CONTROL_ERR = "Failed to control create stream: ";
 	public static final String STREAM_CONTROL_ERR = "Failed to control stream: ";
+	public static final String HDMI_CONTROL_ERR = "Failed to control HDMI: ";
+	public static final String AUDIO_CONTROL_ERR = "Failed to control audio: ";
+	public static final String TALKBACK_CONTROL_ERR = "Failed to control audio: ";
+	public static final String SERVICE_CONTROL_ERR = "Failed to control service: ";
 	public static final String PORT_NUMBER_ERROR = "Invalid port number";
 	public static final String DEFAULT_SKIPPED_FRAMES_VALUE = "0";
 	public static final String DEFAULT_RTSP_URL = "rtsp://";
@@ -87,7 +91,7 @@ public class DecoderConstant {
 	public static final String STREAM_CONVERSION_ALT_OBJECT_RESPONSE = "StreamConversion:\r\nStream Flipping\t";
 	public static final String TRUE_VALUE = "True";
 	public static final String FALSE_VALUE = "False";
-	public static final String DEFAULT_TOS = "0x80";
+	public static final String DEFAULT_TOS = "0xB8";
 	public static final String MAX_OF_TOS = "FF";
 	public static final String MIN_OF_TOS = "00";
 	public static final String HEX_PREFIX = "0x";

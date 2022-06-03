@@ -22,12 +22,12 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.commo
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.VideoSource;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.talkback.controllingmetric.TalkbackControllingMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.ControllingMetricGroup;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.audio.controllingmetric.AudioControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.DecoderControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputFrameRate;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.service.controllingmetric.ServiceControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.NetworkType;
@@ -100,6 +100,55 @@ class HaivisionXDecoderCommunicatorTest {
 
 		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.PRIMARY_STREAM.getName();
 		String propertyValue = "(None)";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		Assertions.assertEquals(propertyValue, stats.get(propertyName));
+	}
+
+	/**
+	 * Test HaivisionXDecoder.controlProperty DecoderSDI control: Primary Stream
+	 *
+	 * Expected: control successfully
+	 */
+	@Tag("RealDevice")
+	@Test
+	void testSetDecoderSDIPrimaryStream1() {
+		String configManagement = "true";
+		haivisionXDecoderCommunicator.setConfigManagement(configManagement);
+		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
+		Map<String, String> stats = extendedStatistics.getStatistics();
+		ControllableProperty controllableProperty = new ControllableProperty();
+
+		String propertyName = "DecoderSDI2#" + DecoderControllingMetric.PRIMARY_STREAM.getName();
+		String propertyValue = "talkback";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+		propertyName = "DecoderSDI2#" + DecoderControllingMetric.SECONDARY_STREAM.getName();
+		propertyValue = "talkback";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+		haivisionXDecoderCommunicator.getMultipleStatistics();
+
+		propertyName = "DecoderSDI2#" + DecoderControllingMetric.APPLY_CHANGE.getName();
+		propertyValue = "1";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		propertyName = "DecoderSDI1#" + DecoderControllingMetric.SECONDARY_STREAM.getName();
+		propertyValue = "talkback";
+		controllableProperty.setProperty(propertyName);
+		controllableProperty.setValue(propertyValue);
+		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
+
+		propertyName = "DecoderSDI1#" + DecoderControllingMetric.SECONDARY_STREAM.getName();
+		propertyValue = "test rtsp";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
@@ -188,7 +237,7 @@ class HaivisionXDecoderCommunicatorTest {
 	/**
 	 * Test HaivisionXDecoder.controlProperty DecoderSDI control: buffering delay max value
 	 *
-	 *Expected: control successfully
+	 * Expected: control successfully
 	 */
 	@Tag("RealDevice")
 	@Test
@@ -783,7 +832,6 @@ class HaivisionXDecoderCommunicatorTest {
 
 		Assertions.assertEquals(propertyValue, stats.get(propertyName));
 	}
-
 
 
 	/**
