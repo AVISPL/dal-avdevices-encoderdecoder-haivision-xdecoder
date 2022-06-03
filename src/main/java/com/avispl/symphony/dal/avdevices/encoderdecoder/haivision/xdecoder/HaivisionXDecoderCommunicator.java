@@ -53,25 +53,24 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.D
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.deviceinfo.DeviceInfo;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.ControllingMetricGroup;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DropdownList;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.BufferingMode;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.DecoderControllingMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.State;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.SyncMode;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.NetworkType;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.RejectUnencrypted;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SRTMode;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.deviceinfo.DeviceInfoWrapper;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.ErrorMessage;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.audio.controllingmetric.AudioChannel;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.audio.controllingmetric.AudioControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.audio.controllingmetric.AudioLevel;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.audio.controllingmetric.AudioSource;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.BufferingMode;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.DecoderControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputFrameRate;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.State;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.SyncMode;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.service.controllingmetric.ServiceControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.service.controllingmetric.ServiceSwitchOnOffControl;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.NetworkType;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.RejectUnencrypted;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SRTMode;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.StreamControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SwitchOnOffControl;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.monitoringmetric.SRTMonitoringMetric;
@@ -80,6 +79,7 @@ import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.a
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.authentication.AuthenticationRole;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderConfig;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.decoderstats.DecoderStatsWrapper;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.deviceinfo.DeviceInfoWrapper;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.hdmiconfig.HDMIConfig;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.hdmiconfig.HDMIConfigWrapper;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.dto.service.ServiceConfig;
@@ -136,11 +136,13 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private String configManagement;
 
 	// flags for populate apply changes/ cancel changes
-	private boolean isEditedForDecoderSDI = false;
+	private boolean isEditedForDecoderSDI1 = false;
+	private boolean isEditedForDecoderSDI2 = false;
 	private boolean isEditedForCreateStream = false;
 	private boolean isEditedForAudio = false;
 	private boolean isEditedForHDMI = false;
 	private boolean isEditedForTalkback = false;
+
 
 	/**
 	 * store the list of decoder config info from device
@@ -323,7 +325,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			final List<AdvancedControllableProperty> advancedControllableProperties = new ArrayList<>();
 			failedMonitor = new HashMap<>();
 			filteredStreamIDSet = new HashSet<>();
-			realtimeStreamConfigs = new ArrayList<>();
 
 			if (realtimeDecoderConfigs == null) {
 				realtimeDecoderConfigs = new ArrayList<>();
@@ -353,6 +354,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				realtimeTalkbackConfig = new TalkBackConfig();
 			}
 			if (!isEmergencyDelivery) {
+				realtimeStreamConfigs = new ArrayList<>();
 				populateDecoderMonitoringMetrics(stats);
 				if (cachedDecoderConfigs.isEmpty()) {
 					cachedDecoderConfigs = realtimeDecoderConfigs.stream().map(DecoderConfig::new).collect(Collectors.toList());
@@ -374,7 +376,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 				// check Role is Admin or Operator
 				String role = retrieveUserRole();
-				if ((role.equals(DecoderConstant.OPERATOR_ROLE) || role.equals(DecoderConstant.ADMIN_ROLE)) && isValidConfigManagement()) {
+				if (!StringUtils.isNullOrEmpty(role) && (role.equals(DecoderConstant.OPERATOR_ROLE) || role.equals(DecoderConstant.ADMIN_ROLE)) && isValidConfigManagement()) {
 					populateControllingMetrics(stats, advancedControllableProperties);
 					extendedStatistics.setControllableProperties(advancedControllableProperties);
 				}
@@ -573,7 +575,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			}
 			return role;
 		} catch (Exception e) {
-			throw new ResourceNotReachableException("Login to the device failed, user unauthorized  ", e);
+			throw new ResourceNotReachableException("Login to the device failed, user unauthorized ", e);
 		}
 	}
 
@@ -1635,8 +1637,11 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		if (cachedDecoderConfigOptional.isPresent() && realtimeDecoderConfigOptional.isPresent()) {
 			String applyChange = ControllingMetricGroup.DECODER_SDI.getUiName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.APPLY_CHANGE.getName();
 			String cancel = ControllingMetricGroup.DECODER_SDI.getUiName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.CANCEL.getName();
-
-			if (isEditedForDecoderSDI) {
+			boolean isEdited = isEditedForDecoderSDI1;
+			if (decoderID.equals(2)) {
+				isEdited = isEditedForDecoderSDI2;
+			}
+			if (isEdited) {
 				stats.put(ControllingMetricGroup.DECODER_SDI.getUiName() + decoderID + DecoderConstant.HASH + DecoderControllingMetric.EDITED.getName(), DecoderConstant.TRUE_VALUE);
 				stats.put(applyChange, DecoderConstant.EMPTY);
 				stats.put(cancel, DecoderConstant.EMPTY);
@@ -1699,7 +1704,12 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			String decoderControllingGroup = ControllingMetricGroup.DECODER_SDI.getUiName() + decoderID + DecoderConstant.HASH;
 
 			isEmergencyDelivery = true;
-			isEditedForDecoderSDI = true;
+			if (decoderID.equals(2)) {
+				isEditedForDecoderSDI2 = true;
+			}
+			if (decoderID.equals(1)) {
+				isEditedForDecoderSDI1 = true;
+			}
 			switch (decoderControllingMetric) {
 				case PRIMARY_STREAM:
 					this.cachedDecoderConfigs.remove(cachedDecoderConfig);
@@ -1864,7 +1874,12 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 							} else {
 								throw new ResourceNotReachableException("failed to stop decoder SDI " + decoderID);
 							}
-							isEditedForDecoderSDI = false;
+							if (decoderID.equals(2)) {
+								isEditedForDecoderSDI2 = false;
+							}
+							if (decoderID.equals(1)) {
+								isEditedForDecoderSDI1 = false;
+							}
 							populateDecoderControl(stats, advancedControllableProperties, decoderID);
 							break;
 						case START:
@@ -1883,7 +1898,12 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 							} else {
 								throw new ResourceNotReachableException("failed to start decoder SDI " + decoderID);
 							}
-							isEditedForDecoderSDI = false;
+							if (decoderID.equals(2)) {
+								isEditedForDecoderSDI2 = false;
+							}
+							if (decoderID.equals(1)) {
+								isEditedForDecoderSDI1 = false;
+							}
 							populateDecoderControl(stats, advancedControllableProperties, decoderID);
 							break;
 						default:
@@ -1902,7 +1922,12 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						this.realtimeDecoderConfigs.remove(config);
 						this.realtimeDecoderConfigs.add(new DecoderConfig(cachedDecoderConfig));
 					});
-					isEditedForDecoderSDI = false;
+					if (decoderID.equals(2)) {
+						isEditedForDecoderSDI2 = false;
+					}
+					if (decoderID.equals(1)) {
+						isEditedForDecoderSDI1 = false;
+					}
 					populateDecoderControl(stats, advancedControllableProperties, decoderID);
 					isEmergencyDelivery = false;
 					break;
@@ -1913,7 +1938,12 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						this.cachedDecoderConfigs.remove(cachedDecoderConfig);
 						this.cachedDecoderConfigs.add(new DecoderConfig(config));
 					});
-					isEditedForDecoderSDI = false;
+					if (decoderID.equals(2)) {
+						isEditedForDecoderSDI2 = false;
+					}
+					if (decoderID.equals(1)) {
+						isEditedForDecoderSDI1 = false;
+					}
 					populateDecoderControl(stats, advancedControllableProperties, decoderID);
 					isEmergencyDelivery = false;
 					break;
@@ -1958,7 +1988,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				throw new ResourceNotReachableException(DecoderConstant.SPACE + ErrorMessage.convertErrorMessage(Deserializer.getErrorMessage(response)));
 			}
 		} catch (Exception e) {
-			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR, e);
+			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + e.getMessage(), e);
 		}
 	}
 
@@ -2459,7 +2489,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						}
 						break;
 				}
-        
+
 				populateCreateStreamControl(stats, advancedControllableProperties, createStream, createStreamControllingGroup);
 				break;
 			case PORT:
@@ -2777,7 +2807,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				throw new ResourceNotReachableException(DecoderConstant.SPACE + Deserializer.getErrorMessage(response));
 			}
 		} catch (Exception e) {
-			throw new ResourceNotReachableException(DecoderConstant.CREATE_STREAM_CONTROL_ERR, e);
+			throw new ResourceNotReachableException(DecoderConstant.CREATE_STREAM_CONTROL_ERR + e.getMessage(), e);
 		}
 	}
 
@@ -3185,7 +3215,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				throw new ResourceNotReachableException(Deserializer.getErrorMessage(response));
 			}
 		} catch (Exception e) {
-			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
+			throw new ResourceNotReachableException(DecoderConstant.STREAM_CONTROL_ERR + e.getMessage(), e);
 		}
 	}
 	//--------------------------------------------------------------------------------------------------------------------------------
@@ -3329,10 +3359,10 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			String request = audioConfig.contributeCommand(CommandOperation.OPERATION_AUDDEC.getName());
 			String response = send(request);
 			if (StringUtils.isNullOrEmpty(response) || !response.contains(DecoderConstant.SUCCESSFUL_RESPONSE)) {
-				throw new ResourceNotReachableException(DecoderConstant.SPACE + ErrorMessage.convertErrorMessage(Deserializer.getErrorMessage(response)));
+				throw new ResourceNotReachableException( ErrorMessage.convertErrorMessage(Deserializer.getErrorMessage(response)));
 			}
 		} catch (Exception e) {
-			throw new ResourceNotReachableException(DecoderConstant.GETTING_AUDIO_CONFIG_ERR + DecoderConstant.SPACE + e.getMessage(), e);
+			throw new ResourceNotReachableException(DecoderConstant.AUDIO_CONTROL_ERR + e.getMessage(), e);
 		}
 	}
 
@@ -3482,7 +3512,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				throw new ResourceNotReachableException(Deserializer.getErrorMessage(response));
 			}
 		} catch (Exception e) {
-			throw new ResourceNotReachableException(DecoderConstant.STREAM_CONTROL_ERR, e);
+			throw new ResourceNotReachableException(DecoderConstant.HDMI_CONTROL_ERR + e.getMessage(), e);
 		}
 	}
 
@@ -3603,7 +3633,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				throw new ResourceNotReachableException(Deserializer.getErrorMessage(response));
 			}
 		} catch (Exception e) {
-			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
+			throw new ResourceNotReachableException(DecoderConstant.SERVICE_CONTROL_ERR + e.getMessage(), e);
 		}
 	}
 
@@ -3646,11 +3676,11 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		String talkbackGroup = ControllingMetricGroup.TALKBACK.getUiName() + DecoderConstant.HASH;
 		String primaryStreamPropertyName = talkbackGroup + TalkbackControllingMetric.PRIMARY_STREAM.getName();
 		String secondaryStreamPropertyName = talkbackGroup + TalkbackControllingMetric.SECONDARY_STREAM.getName();
-		for (DecoderConfig cachedDecoderConfig : cachedDecoderConfigs) {
-			if (cachedDecoderConfig.getDecoderID().equals(decoderSDI.getApiConfigName())) {
+		for (DecoderConfig realtimeDecoderConfig : realtimeDecoderConfigs) {
+			if (realtimeDecoderConfig.getDecoderID().equals(decoderSDI.getApiConfigName())) {
 
 				// populate primary stream
-				String primaryStreamID = cachedDecoderConfig.getPrimaryStream();
+				String primaryStreamID = realtimeDecoderConfig.getPrimaryStream();
 				Optional<StreamConfig> cachedStreamConfig = this.realtimeStreamConfigs.stream().filter(st -> primaryStreamID.equals(st.getId())).findFirst();
 				if (cachedStreamConfig.isPresent()) {
 					String streamName = cachedStreamConfig.get().getName();
@@ -3663,7 +3693,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 
 				// populate secondary stream
-				String secondaryStreamID = cachedDecoderConfig.getSecondaryStream();
+				String secondaryStreamID = realtimeDecoderConfig.getSecondaryStream();
 				cachedStreamConfig = this.realtimeStreamConfigs.stream().filter(st -> secondaryStreamID.equals(st.getId())).findFirst();
 				if (cachedStreamConfig.isPresent()) {
 					String streamName = cachedStreamConfig.get().getName();
@@ -3871,7 +3901,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				throw new ResourceNotReachableException(Deserializer.getErrorMessage(response));
 			}
 		} catch (Exception e) {
-			throw new ResourceNotReachableException(DecoderConstant.DECODER_CONTROL_ERR + DecoderConstant.SPACE + e.getMessage(), e);
+			throw new ResourceNotReachableException(DecoderConstant.TALKBACK_CONTROL_ERR + e.getMessage(), e);
 		}
 	}
 
