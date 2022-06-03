@@ -31,6 +31,7 @@ public class DecoderConstant {
 	public static final String EMPTY = "";
 	public static final String AT = "at";
 	public static final String REGEX_ONLY_GET_DOUBLE = "[^0-9?!\\\\.\\\\-]";
+	public static final String REGEX_ONLY_GET_NUMBER = ".*\\d.*";
 	public static final String REGEX_TRAILING_OF_FIELD = "\r\n";
 	public static final String REGEX_TRAILING_OF_OBJECT= "\r\n\r";
 	public static final String REGEX_REMOVE_SPACE_AND_NUMBER = "[1-9\\s+]";
