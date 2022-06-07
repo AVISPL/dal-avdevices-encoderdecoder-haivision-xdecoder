@@ -218,7 +218,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * Prevent case where {@link HaivisionXDecoderCommunicator#controlProperty(ControllableProperty)} slow down -
 	 * the getMultipleStatistics interval if it's fail to send the cmd
 	 */
-	private static final int CONTROL_SSH_TIMEOUT = 3000;
+	private static final int CONTROL_SSH_TIMEOUT = 5000;
 
 	/**
 	 * Set back to default timeout value in {@link SshCommunicator}
@@ -319,7 +319,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		}
 		reentrantLock.lock();
 		try {
-			this.timeout = CONTROL_SSH_TIMEOUT;
 			final ExtendedStatistics extendedStatistics = new ExtendedStatistics();
 			final Map<String, String> stats = new HashMap<>();
 			final List<AdvancedControllableProperty> advancedControllableProperties = new ArrayList<>();
@@ -386,7 +385,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			}
 			isEmergencyDelivery = false;
 		} finally {
-			this.timeout = STATISTICS_SSH_TIMEOUT;
 			reentrantLock.unlock();
 		}
 		return Collections.singletonList(localExtendedStatistics);
@@ -399,6 +397,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 		reentrantLock.lock();
 		try {
+			this.timeout = CONTROL_SSH_TIMEOUT;
 			if (this.localExtendedStatistics == null) {
 				return;
 			}
@@ -449,6 +448,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			}
 		} finally {
 			reentrantLock.unlock();
+			this.timeout = STATISTICS_SSH_TIMEOUT;
 		}
 	}
 
