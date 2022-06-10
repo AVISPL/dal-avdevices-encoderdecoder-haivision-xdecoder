@@ -874,7 +874,11 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					updateRealtimeStreamConfig(streamInfoWrapper);
 
 					// Stream name filtering
-					if (this.streamNameFilter != null && streamsNameFiltered != null && streamsNameFiltered.contains(stream.getStreamName())) {
+					String streamName = stream.getStreamName();
+					if (DecoderConstant.DEFAULT_STREAM_NAME.equals(streamName)){
+						streamName = streamConfigInfo.getDefaultStreamName();
+					}
+					if (this.streamNameFilter != null && streamsNameFiltered != null && streamsNameFiltered.contains(streamName)) {
 						populateStreamStats(stats, streamInfoWrapper);
 						updateLocalStreamConfigInfo(streamInfoWrapper, Integer.parseInt(stream.getStreamId()));
 						continue;
@@ -905,7 +909,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						populateStreamStats(stats, streamInfoWrapper);
 						updateLocalStreamConfigInfo(streamInfoWrapper, Integer.parseInt(stream.getStreamId()));
 					}
-					if (this.streamNameFilter == null) {
+					if (StringUtils.isNullOrEmpty(this.streamNameFilter)){
 						populateStreamStats(stats, streamInfoWrapper);
 						updateLocalStreamConfigInfo(streamInfoWrapper, Integer.parseInt(stream.getStreamId().trim()));
 					}
