@@ -14,20 +14,20 @@ import org.junit.jupiter.api.Test;
 
 import com.avispl.symphony.api.dal.dto.control.ControllableProperty;
 import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.AudioOutput;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.HDMIControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.SurroundSound;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.VideoSource;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.talkback.controllingmetric.TalkbackControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.ControllingMetricGroup;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.audio.controllingmetric.AudioControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.DecoderControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputFrameRate;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.service.controllingmetric.ServiceControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.NetworkType;
@@ -49,10 +49,10 @@ class HaivisionXDecoderCommunicatorTest {
 	public void setUp() throws Exception {
 		haivisionXDecoderCommunicator.setHost("10.8.51.55");
 		haivisionXDecoderCommunicator.setPort(22);
-		haivisionXDecoderCommunicator.setLogin("harry");
-		haivisionXDecoderCommunicator.setPassword("123456789");
+		haivisionXDecoderCommunicator.setLogin("user2");
+		haivisionXDecoderCommunicator.setPassword("123456");
 		haivisionXDecoderCommunicator.init();
-		haivisionXDecoderCommunicator.connect();
+//		haivisionXDecoderCommunicator.connect();
 	}
 
 	@AfterEach()
@@ -1094,7 +1094,7 @@ class HaivisionXDecoderCommunicatorTest {
 		property.setProperty(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.CANCEL.getName());
 		haivisionXDecoderCommunicator.controlProperty(property);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
-		Assertions.assertEquals("SDI2", extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName()
+		Assertions.assertEquals("SDI1", extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName()
 				+ DecoderConstant.HASH + AudioControllingMetric.AUDIO_SOURCE.getName()));
 		// ApplyChanges button is null
 		Assertions.assertNull(extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.APPLY_CHANGE.getName()));

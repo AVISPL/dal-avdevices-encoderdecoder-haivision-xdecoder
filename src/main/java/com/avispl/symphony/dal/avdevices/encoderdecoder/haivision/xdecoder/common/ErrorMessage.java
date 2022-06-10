@@ -26,6 +26,7 @@ public class ErrorMessage {
 			errorMessages = new HashMap<>();
 			errorMessages.put("Decoder 1 configuration failed: \"Stream still in use\"", "Decoder 1 configuration failed: Please choose a different secondary stream");
 			errorMessages.put("Decoder 2 configuration failed: \"Stream still in use\"", "Decoder 2 configuration failed: Please choose a different secondary stream");
+			errorMessages.put("You have insufficient privileges to perform this operation.", "Your role (Guest) doesn't have sufficient rights to perform this operation.");
 		}
 		Optional<String> result = Optional.ofNullable(errorMessages.get(errorMessage));
 		return result.orElse(errorMessage);
