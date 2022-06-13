@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jcraft.jsch.JSchException;
 import org.apache.http.conn.ConnectTimeoutException;
 
 import com.avispl.symphony.api.dal.control.Controller;
@@ -572,8 +573,8 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 			}
 			return DecoderConstant.GUEST_ROLE;
-		} catch (ConnectTimeoutException c) {
-			throw new ResourceNotReachableException(c.getMessage(), c);
+		} catch (JSchException j) {
+			throw new ResourceNotReachableException(j.getMessage(), j);
 		} catch (Exception e) {
 			throw new ResourceNotReachableException("Retrieve role based error: " + e.getMessage(), e);
 		}
