@@ -22,7 +22,6 @@ import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jcraft.jsch.JSchException;
-import org.apache.http.conn.ConnectTimeoutException;
 
 import com.avispl.symphony.api.dal.control.Controller;
 import com.avispl.symphony.api.dal.dto.control.AdvancedControllableProperty;
@@ -876,7 +875,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 					// Stream name filtering
 					String streamName = stream.getStreamName();
-					if (DecoderConstant.DEFAULT_STREAM_NAME.equals(streamName)){
+					if (DecoderConstant.DEFAULT_STREAM_NAME.equals(streamName)) {
 						streamName = streamConfigInfo.getDefaultStreamName();
 					}
 					if (this.streamNameFilter != null && streamsNameFiltered != null && streamsNameFiltered.contains(streamName)) {
@@ -910,7 +909,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 						populateStreamStats(stats, streamInfoWrapper);
 						updateLocalStreamConfigInfo(streamInfoWrapper, Integer.parseInt(stream.getStreamId()));
 					}
-					if (StringUtils.isNullOrEmpty(this.streamNameFilter)){
+					if (StringUtils.isNullOrEmpty(this.streamNameFilter)) {
 						populateStreamStats(stats, streamInfoWrapper);
 						updateLocalStreamConfigInfo(streamInfoWrapper, Integer.parseInt(stream.getStreamId().trim()));
 					}
