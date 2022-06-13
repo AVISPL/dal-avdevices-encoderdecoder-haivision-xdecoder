@@ -885,12 +885,12 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					}
 
 					// Stream status filtering
-					if (this.streamStatusFilter != null && streamsStatusFiltered != null && !streamsStatusFiltered.contains(streamStats.getState())) {
+					if (StringUtils.isNotNullOrEmpty(this.streamStatusFilter) && streamsStatusFiltered != null && !streamsStatusFiltered.contains(streamStats.getState())) {
 						continue;
 					}
 
 					// Port number filtering
-					if (this.portNumberFilter != null && portNumbersFiltered != null) {
+					if (StringUtils.isNotNullOrEmpty(this.portNumberFilter) && portNumbersFiltered != null) {
 						String port = getDefaultValueForNullData(streamConfigInfo.getPort(), DecoderConstant.EMPTY);
 						if (port.isEmpty()) {
 							streamConfigInfo.setPort(getDefaultValueForNullData(streamConfigInfo.getDestinationPort(), DecoderConstant.EMPTY));
