@@ -14,23 +14,23 @@ import org.junit.jupiter.api.Test;
 
 import com.avispl.symphony.api.dal.dto.control.ControllableProperty;
 import com.avispl.symphony.api.dal.dto.monitor.ExtendedStatistics;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.ControllingMetricGroup;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DecoderConstant;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.DeviceInfoMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.AudioOutput;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.HDMIControllingMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.SurroundSound;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.VideoSource;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.talkback.controllingmetric.TalkbackControllingMetric;
-import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.ControllingMetricGroup;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.audio.controllingmetric.AudioControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.DecoderControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputFrameRate;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.OutputResolution;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.decoder.controllingmetric.StillImage;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.AudioOutput;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.HDMIControllingMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.SurroundSound;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.hdmi.controllingmetric.VideoSource;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.service.controllingmetric.ServiceControllingMetric;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Fec;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.NetworkType;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.talkback.controllingmetric.TalkbackControllingMetric;
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.Encapsulation;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.SRTMode;
 import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.common.stream.controllingmetric.StreamControllingMetric;
 
@@ -49,8 +49,8 @@ class HaivisionXDecoderCommunicatorTest {
 	public void setUp() throws Exception {
 		haivisionXDecoderCommunicator.setHost("***REMOVED***");
 		haivisionXDecoderCommunicator.setPort(22);
-		haivisionXDecoderCommunicator.setLogin("harry");
-		haivisionXDecoderCommunicator.setPassword("123456789");
+		haivisionXDecoderCommunicator.setLogin("admintma");
+		haivisionXDecoderCommunicator.setPassword("12345678");
 		haivisionXDecoderCommunicator.init();
 		haivisionXDecoderCommunicator.connect();
 	}
@@ -98,7 +98,7 @@ class HaivisionXDecoderCommunicatorTest {
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
 
-		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.PRIMARY_STREAM.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.PRIMARY_STREAM.getName();
 		String propertyValue = "(None)";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -121,33 +121,33 @@ class HaivisionXDecoderCommunicatorTest {
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
 
-		String propertyName = "DecoderSDI2#" + DecoderControllingMetric.PRIMARY_STREAM.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "2#" + DecoderControllingMetric.PRIMARY_STREAM.getName();
 		String propertyValue = "talkback";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		haivisionXDecoderCommunicator.getMultipleStatistics();
-		propertyName = "DecoderSDI2#" + DecoderControllingMetric.SECONDARY_STREAM.getName();
+		propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "2#" + DecoderControllingMetric.SECONDARY_STREAM.getName();
 		propertyValue = "talkback";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 		haivisionXDecoderCommunicator.getMultipleStatistics();
 
-		propertyName = "DecoderSDI2#" + DecoderControllingMetric.APPLY_CHANGE.getName();
+		propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "2#" + DecoderControllingMetric.APPLY_CHANGE.getName();
 		propertyValue = "1";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
-		propertyName = "DecoderSDI1#" + DecoderControllingMetric.SECONDARY_STREAM.getName();
+		propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.SECONDARY_STREAM.getName();
 		propertyValue = "talkback";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
-		propertyName = "DecoderSDI1#" + DecoderControllingMetric.SECONDARY_STREAM.getName();
+		propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.SECONDARY_STREAM.getName();
 		propertyValue = "test rtsp";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -170,7 +170,7 @@ class HaivisionXDecoderCommunicatorTest {
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
 
-		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.SECONDARY_STREAM.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.SECONDARY_STREAM.getName();
 		String propertyValue = "(None)";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -193,13 +193,13 @@ class HaivisionXDecoderCommunicatorTest {
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
 
-		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.SYNC_MODE.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.SYNC_MODE.getName();
 		String propertyValue = "1";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
-		Assertions.assertNotNull(stats.get("DecoderSDI1#" + DecoderControllingMetric.BUFFERING_MODE.getName()));
+		Assertions.assertNotNull(stats.get(ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.BUFFERING_MODE.getName()));
 	}
 
 	/**
@@ -217,21 +217,21 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set enable buffering to enabled
-		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.SYNC_MODE.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.SYNC_MODE.getName();
 		String propertyValue = "1";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set buffering mode to Fixed
-		propertyName = "DecoderSDI1#" + DecoderControllingMetric.BUFFERING_MODE.getName();
+		propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.BUFFERING_MODE.getName();
 		propertyValue = "Fixed";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// Expected: symphony will show the buffering delay numeric control
-		Assertions.assertNotNull(stats.get("DecoderSDI1#" + DecoderControllingMetric.BUFFERING_DELAY.getName()));
+		Assertions.assertNotNull(stats.get(ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.BUFFERING_DELAY.getName()));
 	}
 
 	/**
@@ -249,21 +249,21 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set enable buffering to enabled
-		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.SYNC_MODE.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.SYNC_MODE.getName();
 		String propertyValue = "1";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set buffering mode to Fixed
-		propertyName = "DecoderSDI1#" + DecoderControllingMetric.BUFFERING_MODE.getName();
+		propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.BUFFERING_MODE.getName();
 		propertyValue = "Fixed";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set buffering delay value to 100000
-		propertyName = "DecoderSDI1#" + DecoderControllingMetric.BUFFERING_DELAY.getName();
+		propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.BUFFERING_DELAY.getName();
 		propertyValue = "100000";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -288,21 +288,21 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set enable buffering to enabled
-		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.SYNC_MODE.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.SYNC_MODE.getName();
 		String propertyValue = "1";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set buffering mode to Fixed
-		propertyName = "DecoderSDI1#" + DecoderControllingMetric.BUFFERING_MODE.getName();
+		propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.BUFFERING_MODE.getName();
 		propertyValue = "Fixed";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set buffering delay value to -100000
-		propertyName = "DecoderSDI1#" + DecoderControllingMetric.BUFFERING_DELAY.getName();
+		propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.BUFFERING_DELAY.getName();
 		propertyValue = "-10000000";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -326,7 +326,7 @@ class HaivisionXDecoderCommunicatorTest {
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
 
-		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.OUTPUT_RESOLUTION.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.OUTPUT_RESOLUTION.getName();
 		String propertyValue = OutputResolution.NATIVE.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -351,14 +351,14 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set Output Resolution to Auto
-		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.OUTPUT_RESOLUTION.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.OUTPUT_RESOLUTION.getName();
 		String propertyValue = OutputResolution.AUTOMATIC.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set Output Frame Rate to 60
-		propertyName = "DecoderSDI1#" + DecoderControllingMetric.OUTPUT_FRAME_RATE.getName();
+		propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.OUTPUT_FRAME_RATE.getName();
 		propertyValue = OutputFrameRate.OUTPUT_FRAME_RATE_60.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -382,13 +382,13 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set Still Image to select Image
-		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.STILL_IMAGE.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.STILL_IMAGE.getName();
 		String propertyValue = StillImage.SELECT_IMAGE.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
-		Assertions.assertNotNull(stats.get("DecoderSDI1#" + DecoderControllingMetric.SELECT_STILL_IMAGE.getName()));
+		Assertions.assertNotNull(stats.get(ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.SELECT_STILL_IMAGE.getName()));
 	}
 
 	/**
@@ -406,7 +406,7 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set still image delay value to 100000
-		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.STILL_IMAGE_DELAY.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.STILL_IMAGE_DELAY.getName();
 		String propertyValue = "100000";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -431,7 +431,7 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set still image delay value to -100000
-		String propertyName = "DecoderSDI1#" + DecoderControllingMetric.STILL_IMAGE_DELAY.getName();
+		String propertyName = ControllingMetricGroup.DECODER_SDI.getUiName() + "1#" + DecoderControllingMetric.STILL_IMAGE_DELAY.getName();
 		String propertyValue = "-100000";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -455,7 +455,7 @@ class HaivisionXDecoderCommunicatorTest {
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
 
-		String propertyName = "CreateStream#" + StreamControllingMetric.STREAM_NAME.getName();
+		String propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.STREAM_NAME.getName();
 		String propertyValue = "Harry";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -479,29 +479,29 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set network type to Multicast
-		String propertyName = "CreateStream#" + StreamControllingMetric.NETWORK_TYPE.getName();
+		String propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.NETWORK_TYPE.getName();
 		String propertyValue = NetworkType.MULTI_CAST.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set network type to Unicast
-		propertyName = "CreateStream#" + StreamControllingMetric.NETWORK_TYPE.getName();
+		propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.NETWORK_TYPE.getName();
 		propertyValue = NetworkType.UNI_CAST.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set network type to Multicast
-		propertyName = "CreateStream#" + StreamControllingMetric.NETWORK_TYPE.getName();
+		propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.NETWORK_TYPE.getName();
 		propertyValue = NetworkType.MULTI_CAST.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// Expected: the Multicast Address and Source Address Will be reset to Empty the When we switch back and forth between Unicast and Multicast
-		Assertions.assertEquals(DecoderConstant.EMPTY, stats.get("CreateStream#" + StreamControllingMetric.MULTICAST_ADDRESS.getName()));
-		Assertions.assertEquals(DecoderConstant.EMPTY, stats.get("CreateStream#" + StreamControllingMetric.SOURCE_ADDRESS.getName()));
+		Assertions.assertEquals(DecoderConstant.EMPTY, stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.MULTICAST_ADDRESS.getName()));
+		Assertions.assertEquals(DecoderConstant.EMPTY, stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.SOURCE_ADDRESS.getName()));
 	}
 
 	/**
@@ -519,7 +519,7 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set port value to 100000
-		String propertyName = "CreateStream#" + StreamControllingMetric.PORT.getName();
+		String propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.PORT.getName();
 		String propertyValue = "100000";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -544,7 +544,7 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set port value to -100000
-		String propertyName = "CreateStream#" + StreamControllingMetric.PORT.getName();
+		String propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.PORT.getName();
 		String propertyValue = "-100000";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -569,14 +569,14 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set Protocol to TS-RTP
-		String propertyName = "CreateStream#" + StreamControllingMetric.ENCAPSULATION.getName();
+		String propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.ENCAPSULATION.getName();
 		String propertyValue = Encapsulation.TS_OVER_RTP.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set Fec to MPEG Pro
-		propertyName = "CreateStream#" + StreamControllingMetric.FEC.getName();
+		propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.FEC.getName();
 		propertyValue = Fec.MPEG_PRO_FEC.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
@@ -601,18 +601,18 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set Protocol to TS-SRT
-		String propertyName = "CreateStream#" + StreamControllingMetric.ENCAPSULATION.getName();
+		String propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.ENCAPSULATION.getName();
 		String propertyValue = Encapsulation.TS_OVER_SRT.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// Expected: Symphony will show default config when switch from TS-UDP to TS-SRT
-		Assertions.assertEquals(SRTMode.LISTENER.getUiName(), stats.get("CreateStream#" + StreamControllingMetric.SRT_MODE.getName()));
-		Assertions.assertEquals("125", stats.get("CreateStream#" + StreamControllingMetric.LATENCY.getName()));
-		Assertions.assertEquals("0", stats.get("CreateStream#" + StreamControllingMetric.ENCRYPTED.getName()));
-		Assertions.assertEquals("0", stats.get("CreateStream#" + StreamControllingMetric.SRT_TO_UDP_STREAM_CONVERSION.getName()));
-		Assertions.assertNotNull(stats.get("CreateStream#" + StreamControllingMetric.PORT.getName()));
+		Assertions.assertEquals(SRTMode.LISTENER.getUiName(), stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.SRT_MODE.getName()));
+		Assertions.assertEquals("125", stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.LATENCY.getName()));
+		Assertions.assertEquals("0", stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.ENCRYPTED.getName()));
+		Assertions.assertEquals("0", stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.SRT_TO_UDP_STREAM_CONVERSION.getName()));
+		Assertions.assertNotNull(stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.PORT.getName()));
 	}
 
 	/**
@@ -630,24 +630,24 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set Protocol to TS-SRT
-		String propertyName = "CreateStream#" + StreamControllingMetric.ENCAPSULATION.getName();
+		String propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.ENCAPSULATION.getName();
 		String propertyValue = Encapsulation.TS_OVER_SRT.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set srt to udp stream conversion to enabled
-		propertyName = "CreateStream#" + StreamControllingMetric.SRT_TO_UDP_STREAM_CONVERSION.getName();
+		propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.SRT_TO_UDP_STREAM_CONVERSION.getName();
 		propertyValue = "1";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// Expected: Symphony will show default config when switch from TS-UDP to TS-SRT and SRT to UDP Stream Conversion is enabled
-		Assertions.assertEquals("0x80", stats.get("CreateStream#" + StreamControllingMetric.SRT_TO_UDP_TOS.getName()));
-		Assertions.assertEquals("64", stats.get("CreateStream#" + StreamControllingMetric.SRT_TO_UDP_TTL.getName()));
-		Assertions.assertNotNull(stats.get("CreateStream#" + StreamControllingMetric.SRT_TO_UDP_ADDRESS.getName()));
-		Assertions.assertNotNull(stats.get("CreateStream#" + StreamControllingMetric.SRT_TO_UDP_PORT.getName()));
+		Assertions.assertEquals("0x80", stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.SRT_TO_UDP_TOS.getName()));
+		Assertions.assertEquals("64", stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.SRT_TO_UDP_TTL.getName()));
+		Assertions.assertNotNull(stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.SRT_TO_UDP_ADDRESS.getName()));
+		Assertions.assertNotNull(stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.SRT_TO_UDP_PORT.getName()));
 	}
 
 	/**
@@ -665,22 +665,22 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set Protocol to TS-SRT
-		String propertyName = "CreateStream#" + StreamControllingMetric.ENCAPSULATION.getName();
+		String propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.ENCAPSULATION.getName();
 		String propertyValue = Encapsulation.TS_OVER_SRT.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set encrypted to enabled
-		propertyName = "CreateStream#" + StreamControllingMetric.ENCRYPTED.getName();
+		propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.ENCRYPTED.getName();
 		propertyValue = "1";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// Expected: Symphony will show Reject Unencrypted Callers control and Passphrase control
-		Assertions.assertEquals("1", stats.get("CreateStream#" + StreamControllingMetric.REJECT_UNENCRYPTED_CALLERS.getName()));
-		Assertions.assertNotNull(stats.get("CreateStream#" + StreamControllingMetric.PASSPHRASE.getName()));
+		Assertions.assertEquals("1", stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.REJECT_UNENCRYPTED_CALLERS.getName()));
+		Assertions.assertNotNull(stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.PASSPHRASE.getName()));
 	}
 
 	/**
@@ -698,28 +698,28 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set Protocol to TS-SRT
-		String propertyName = "CreateStream#" + StreamControllingMetric.ENCAPSULATION.getName();
+		String propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.ENCAPSULATION.getName();
 		String propertyValue = Encapsulation.TS_OVER_SRT.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set SRT mode to Rendezvous
-		propertyName = "CreateStream#" + StreamControllingMetric.SRT_MODE.getName();
+		propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.SRT_MODE.getName();
 		propertyValue = "Rendevous";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set destination port to 1025
-		propertyName = "CreateStream#" + StreamControllingMetric.DESTINATION_PORT.getName();
+		propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.DESTINATION_PORT.getName();
 		propertyValue = "1025";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// expected: source port equal destination port
-		Assertions.assertEquals(propertyValue, stats.get("CreateStream#" + StreamControllingMetric.SOURCE_PORT.getName()));
+		Assertions.assertEquals(propertyValue, stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.SOURCE_PORT.getName()));
 	}
 
 	/**
@@ -737,29 +737,29 @@ class HaivisionXDecoderCommunicatorTest {
 		ControllableProperty controllableProperty = new ControllableProperty();
 
 		// set Protocol to TS-SRT
-		String propertyName = "CreateStream#" + StreamControllingMetric.ENCAPSULATION.getName();
+		String propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.ENCAPSULATION.getName();
 		String propertyValue = Encapsulation.TS_OVER_SRT.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set SRT mode to Rendezvous
-		propertyName = "CreateStream#" + StreamControllingMetric.SRT_MODE.getName();
+		propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.SRT_MODE.getName();
 		propertyValue = "Rendevous";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// push cancel button
-		propertyName = "CreateStream#" + StreamControllingMetric.CANCEL.getName();
+		propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.CANCEL.getName();
 		propertyValue = "1";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// expected: symphony will not show cancel button and edited field is false
-		Assertions.assertNull(stats.get("CreateStream#" + StreamControllingMetric.CANCEL.getName()));
-		Assertions.assertEquals(DecoderConstant.FALSE_VALUE, stats.get("CreateStream#" + StreamControllingMetric.EDITED.getName()));
+		Assertions.assertNull(stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.CANCEL.getName()));
+		Assertions.assertEquals(DecoderConstant.FALSE_VALUE, stats.get(ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.EDITED.getName()));
 	}
 
 	/**
@@ -776,37 +776,30 @@ class HaivisionXDecoderCommunicatorTest {
 		Map<String, String> stats = extendedStatistics.getStatistics();
 		ControllableProperty controllableProperty = new ControllableProperty();
 
-		// delete stream name "Harry"
-		String propertyName = "Stream#" + "Harry" + StreamControllingMetric.DELETE.getName();
-		String propertyValue = "1";
-		controllableProperty.setProperty(propertyName);
-		controllableProperty.setValue(propertyValue);
-		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
-
 		// set Protocol to TS-SRT
-		propertyName = "CreateStream#" + StreamControllingMetric.ENCAPSULATION.getName();
-		propertyValue = Encapsulation.TS_OVER_SRT.getUiName();
+		String propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.ENCAPSULATION.getName();
+		String propertyValue = Encapsulation.TS_OVER_SRT.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set Stream Name to Harry
-		propertyName = "CreateStream#" + StreamControllingMetric.ENCAPSULATION.getName();
+		propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.ENCAPSULATION.getName();
 		propertyValue = Encapsulation.TS_OVER_SRT.getUiName();
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// set port to 1025
-		propertyName = "CreateStream#" + StreamControllingMetric.PORT.getName();
+		propertyName = ControllingMetricGroup.CREATE_STREAM.getUiName() + "#" + StreamControllingMetric.PORT.getName();
 		propertyValue = "1089";
 		controllableProperty.setProperty(propertyName);
 		controllableProperty.setValue(propertyValue);
 		haivisionXDecoderCommunicator.controlProperty(controllableProperty);
 
 		// expected: stream is created
-		Assertions.assertNull(stats.get("Stream#" + "Harry" + StreamControllingMetric.DELETE));
-		Assertions.assertNotNull(stats.get("Stream#" + "Harry" + StreamControllingMetric.DELETE));
+		Assertions.assertNull(stats.get(ControllingMetricGroup.STREAM.getUiName() + "#" + "Harry" + StreamControllingMetric.DELETE));
+		Assertions.assertNotNull(stats.get(ControllingMetricGroup.STREAM.getUiName() + "#" + "Harry" + StreamControllingMetric.DELETE));
 	}
 
 	/**
@@ -1094,7 +1087,7 @@ class HaivisionXDecoderCommunicatorTest {
 		property.setProperty(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.CANCEL.getName());
 		haivisionXDecoderCommunicator.controlProperty(property);
 		ExtendedStatistics extendedStatistics = (ExtendedStatistics) haivisionXDecoderCommunicator.getMultipleStatistics().get(0);
-		Assertions.assertEquals("SDI2", extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName()
+		Assertions.assertEquals("SDI1", extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName()
 				+ DecoderConstant.HASH + AudioControllingMetric.AUDIO_SOURCE.getName()));
 		// ApplyChanges button is null
 		Assertions.assertNull(extendedStatistics.getStatistics().get(ControllingMetricGroup.AUDIO.getUiName() + DecoderConstant.HASH + AudioControllingMetric.APPLY_CHANGE.getName()));

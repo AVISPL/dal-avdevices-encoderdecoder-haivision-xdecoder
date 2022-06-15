@@ -16,7 +16,8 @@ import java.util.Optional;
 public enum TalkBackSwitchOnOffControl {
 
 	ON("TRANSMITTING", "start", 1),
-	OFF("STOPPED", "stop", 0);
+	OFF("STOPPED", "stop", 0),
+	DISABLE("DISABLED", "DISABLED", -1);
 
 	private final String apiStatsName;
 	private final String apiConfigName;

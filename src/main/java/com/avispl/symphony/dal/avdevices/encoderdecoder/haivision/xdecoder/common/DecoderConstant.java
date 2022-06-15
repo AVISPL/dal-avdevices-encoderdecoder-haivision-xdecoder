@@ -19,6 +19,7 @@ public class DecoderConstant {
 	public static final char AT_SIGN = '@';
 	public static final String COMMA = ",";
 	public static final String DOUBLE_QUOTATION = "\"";
+	public static final String NEXT_LINE = "\n";
 	public static final String COLON = ":";
 	public static final String DASH = "-";
 	public static final String RIGHT_PARENTHESES = ")";
@@ -47,6 +48,9 @@ public class DecoderConstant {
 	public static final String HOUR = " hour(s) ";
 	public static final String MINUTE = " minute(s) ";
 	public static final String SECOND = " second(s) ";
+	public static final String DEVICE_CONNECTION_TIMEOUT_MESSAGE_1 = "Connection timed out";
+	public static final String DEVICE_CONNECTION_TIMEOUT_MESSAGE_2 = "Connection refused";
+	public static final String DEVICE_CONNECTION_TIMEOUT_MESSAGE_3 = "cannot be used before init() is called";
 	public static final String GETTING_DEVICE_INFO_ERR = "Failed to get device info";
 	public static final String GETTING_DEVICE_TEMPERATURE_ERR = "Failed to get device temperature";
 	public static final String GETTING_DEVICE_STILL_IMAGE_ERR = "Failed to get device still image";
@@ -101,7 +105,7 @@ public class DecoderConstant {
 	public static final int ADDRESS_DATA_INDEX = 0;
 	public static final int MIN_DECODER_ID = 1;
 	public static final int MAX_DECODER_ID = 3;
-	public static final int MIN_NUMBER_OF_FAILED_MONITOR_METRIC = 3;
+	public static final int MIN_NUMBER_OF_FAILED_MONITOR_METRIC = 1;
 	public static final Integer MIN_STILL_IMAGE_DELAY = 1;
 	public static final Integer DEFAULT_STILL_IMAGE_DELAY = 3;
 	public static final Integer MAX_STILL_IMAGE_DELAY = 1000;
@@ -112,6 +116,7 @@ public class DecoderConstant {
 	public static final Integer MAX_MULTI_SYNC_BUFFERING_DELAY = 10000;
 	public static final Integer MIN_PORT = 1025;
 	public static final Integer MAX_PORT = 65535;
+	public static final Integer MIN_TALKBACK_PORT = 1;
 	public static final Integer MIN_LATENCY = 20;
 	public static final Integer MAX_LATENCY = 8000;
 	public static final Integer DEFAULT_LATENCY = 125;
@@ -120,10 +125,10 @@ public class DecoderConstant {
 	public static final Integer DEFAULT_TTL = 64;
 
 	// index of stream name in controlling metric group, eg: DecoderSDI1 => id = 1
-	public static final Integer INDEX_OF_DECODER_SDI_ID_IN_CONTROLLING_METRIC_GROUP = 10;
+	public static final Integer INDEX_OF_DECODER_SDI_ID_IN_CONTROLLING_METRIC_GROUP = 12;
 
 	// index of stream name in controlling metric group, eg: StreamTest => name = Test
-	public static final Integer INDEX_OF_STREAM_NAME_IN_CONTROLLING_METRIC_GROUP = 6;
+	public static final Integer INDEX_OF_STREAM_NAME_IN_CONTROLLING_METRIC_GROUP = 7;
 
 	// Normalize Data constant
 	public static final Integer DATA_INDEX = 0;
