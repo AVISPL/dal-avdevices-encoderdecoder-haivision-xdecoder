@@ -15,9 +15,9 @@ import java.util.Optional;
  */
 public enum ControllingMetricGroup {
 
-	DECODER_SDI("DecoderSDI", "Decoder"),
-	CREATE_STREAM("CreateStream", "Create"),
-	STREAM("Stream", "Stream"),
+	DECODER_SDI("Decoder SDI ", "Decoder"),
+	CREATE_STREAM("Create Stream ", "Create"),
+	STREAM("Stream ", "Stream"),
 	AUDIO("Audio", "Audio"),
 	SERVICE("Services", "Services"),
 	TALKBACK("Talkback", "Talkback"),

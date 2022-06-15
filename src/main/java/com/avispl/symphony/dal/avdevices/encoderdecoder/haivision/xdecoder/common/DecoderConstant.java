@@ -125,10 +125,10 @@ public class DecoderConstant {
 	public static final Integer DEFAULT_TTL = 64;
 
 	// index of stream name in controlling metric group, eg: DecoderSDI1 => id = 1
-	public static final Integer INDEX_OF_DECODER_SDI_ID_IN_CONTROLLING_METRIC_GROUP = 10;
+	public static final Integer INDEX_OF_DECODER_SDI_ID_IN_CONTROLLING_METRIC_GROUP = 12;
 
 	// index of stream name in controlling metric group, eg: StreamTest => name = Test
-	public static final Integer INDEX_OF_STREAM_NAME_IN_CONTROLLING_METRIC_GROUP = 6;
+	public static final Integer INDEX_OF_STREAM_NAME_IN_CONTROLLING_METRIC_GROUP = 7;
 
 	// Normalize Data constant
 	public static final Integer DATA_INDEX = 0;
