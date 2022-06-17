@@ -22,6 +22,7 @@ public enum TalkbackControllingMetric {
 	SECONDARY_STREAM("SecondaryStream"),
 	EDITED("Edited"),
 	PORT("Port"),
+	STATE("State"),
 	APPLY_CHANGE("ApplyChanges"),
 	CANCEL("CancelChanges");
 
