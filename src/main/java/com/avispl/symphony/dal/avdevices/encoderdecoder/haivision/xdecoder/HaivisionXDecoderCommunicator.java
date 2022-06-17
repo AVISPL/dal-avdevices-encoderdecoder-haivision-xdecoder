@@ -3719,6 +3719,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				}
 			}
 		}
+		// Populate talkback status
+		stats.put(talkbackGroup + TalkbackControllingMetric.STATE.getName(), getDefaultValueForNullData(cachedTalkbackConfig.getState(), DecoderConstant.EMPTY));
+
 		// Populate control
 		addAdvanceControlProperties(advancedControllableProperties,
 				createSwitch(stats, talkbackGroup + TalkbackControllingMetric.ACTIVE.getName(), talkBackSwitch.getCode(), DecoderConstant.OFF, DecoderConstant.ON));
