@@ -28,6 +28,9 @@ public class DecoderStats {
 	@JsonAlias("HdmiOutput")
 	private String  hdmiOutput ;
 
+	@JsonAlias("State")
+	private String  decoderState ;
+
 
 	/**
 	 * Retrieves {@code {@link #uptime}}
@@ -84,6 +87,24 @@ public class DecoderStats {
 	}
 
 	/**
+	 * Retrieves {@code {@link #decoderState}}
+	 *
+	 * @return value of {@link #decoderState}
+	 */
+	public String getDecoderState() {
+		return decoderState;
+	}
+
+	/**
+	 * Sets {@code decoderState}
+	 *
+	 * @param decoderState the {@code java.lang.String} field
+	 */
+	public void setDecoderState(String decoderState) {
+		this.decoderState = decoderState;
+	}
+
+	/**
 	 * @return String value of decoder monitoring properties by metric
 	 */
 	public String getValueByDecoderMonitoringMetric(DecoderStatsMonitoringMetric decoderStatsMonitoringMetric) {
@@ -92,6 +113,8 @@ public class DecoderStats {
 				return getUptime();
 			case RESTARTS:
 				return getRestarts();
+			case STATUS:
+				return  getDecoderState();
 			default:
 				return DecoderConstant.EMPTY;
 		}
