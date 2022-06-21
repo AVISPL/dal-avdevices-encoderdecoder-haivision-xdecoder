@@ -82,6 +82,7 @@ class HaivisionXDecoderCommunicatorTest {
 		Assertions.assertEquals("--", stats.get(DeviceInfoMetric.HARDWARE_VERSION.getName()));
 		Assertions.assertEquals("B-292D-HD2", stats.get(DeviceInfoMetric.PART_NUMBER.getName()));
 		Assertions.assertNotNull(stats.get(DeviceInfoMetric.TEMPERATURE.getName()));
+		Assertions.assertNotNull(ControllingMetricGroup.TALKBACK.getUiName() + DecoderConstant.HASH + TalkbackControllingMetric.STATE.getName());
 	}
 
 	/**
