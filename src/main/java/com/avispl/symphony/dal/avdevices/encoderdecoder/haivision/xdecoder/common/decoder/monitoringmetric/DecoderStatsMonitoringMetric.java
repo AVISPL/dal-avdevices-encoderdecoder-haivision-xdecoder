@@ -14,6 +14,7 @@ public enum DecoderStatsMonitoringMetric {
 
 	// Static metric
 	UPTIME("Uptime"),
+	STATUS("State"),
 	RESTARTS("Restarts");
 
 	private final String name;
