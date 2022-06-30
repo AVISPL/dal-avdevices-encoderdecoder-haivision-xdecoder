@@ -15,8 +15,8 @@ import java.util.Optional;
  */
 public enum TalkBackDecoderSDI {
 
-	DECODER_SDI_1("SDI1", "1"),
-	DECODER_SDI_2("SDI2", "2");
+	DECODER_SDI_1("SDI 1", "1"),
+	DECODER_SDI_2("SDI 2", "2");
 
 	private final String uiName;
 	private final String apiConfigName;
