@@ -1456,7 +1456,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			addAdvanceControlProperties(advancedControllableProperties,
 					createNumeric(stats, decoderControllingGroup + DecoderControllingMetric.STILL_IMAGE_DELAY.getName(), stillImageDelay));
 			addAdvanceControlProperties(advancedControllableProperties,
-					createSwitch(stats, decoderControllingGroup + DecoderControllingMetric.SYNC_MODE.getName(), enableBuffering.getCode(), DecoderConstant.OFF, DecoderConstant.ON));
+					createSwitch(stats, decoderControllingGroup + DecoderControllingMetric.SYNC_MODE.getName(), enableBuffering.getCode(), DecoderConstant.DISABLE, DecoderConstant.ENABLE));
 			addAdvanceControlProperties(advancedControllableProperties,
 					createDropdown(stats, decoderControllingGroup + DecoderControllingMetric.OUTPUT_RESOLUTION.getName(), resolutionModes, outputResolution.getUiName()));
 			addAdvanceControlProperties(advancedControllableProperties,
