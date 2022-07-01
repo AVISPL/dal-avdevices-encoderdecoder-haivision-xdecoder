@@ -12,10 +12,10 @@ import java.util.Optional;
  */
 public enum AudioChannel {
 
-	CHANNEL_1_2("1&2"),
-	CHANNEL_3_4("3&4"),
-	CHANNEL_5_6("5&6"),
-	CHANNEL_7_8("7&8");
+	CHANNEL_1_2("1 & 2"),
+	CHANNEL_3_4("3 & 4"),
+	CHANNEL_5_6("5 & 6"),
+	CHANNEL_7_8("7 & 8");
 
 	private final String uiName;
 
