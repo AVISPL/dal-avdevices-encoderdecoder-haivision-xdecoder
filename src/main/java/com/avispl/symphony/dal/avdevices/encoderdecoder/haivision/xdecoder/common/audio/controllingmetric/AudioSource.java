@@ -11,8 +11,8 @@ import java.util.Optional;
  * @since 1.0.0
  */
 public enum AudioSource {
-	SDI_1("SDI1"),
-	SDI_2("SDI2");
+	SDI_1("SDI 1"),
+	SDI_2("SDI 2");
 
 	private final String uiName;
 
