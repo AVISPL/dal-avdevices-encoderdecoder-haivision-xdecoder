@@ -296,16 +296,16 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		this.streamStatusFilter = streamStatusFilter;
 	}
 
-	/**
-	 * Retrieves {@code {@link #configManagement }}
-	 *
-	 * @return value of {@link #configManagement}
-	 */
-	public String getConfigManagement() {
-		return configManagement;
-	}
-
 // ToDo: removing controlling capabilities and config management
+//	/**
+//	 * Retrieves {@code {@link #configManagement }}
+//	 *
+//	 * @return value of {@link #configManagement}
+//	 */
+//	public String getConfigManagement() {
+//		return configManagement;
+//	}
+//
 //	/**
 //	 * Sets {@code controllingCapabilitiesTrigger}
 //	 *
