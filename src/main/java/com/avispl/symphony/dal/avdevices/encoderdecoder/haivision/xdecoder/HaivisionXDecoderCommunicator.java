@@ -135,7 +135,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private String streamNameFilter;
 	private String portNumberFilter;
 	private String streamStatusFilter;
-	private String configManagement;
+	private String configManagement = DecoderConstant.FALSE_VALUE;
 
 	// flags for populate apply changes/ cancel changes
 	private boolean isEditedForDecoderSDI1 = false;
@@ -296,23 +296,24 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		this.streamStatusFilter = streamStatusFilter;
 	}
 
-	/**
-	 * Retrieves {@code {@link #configManagement }}
-	 *
-	 * @return value of {@link #configManagement}
-	 */
-	public String getConfigManagement() {
-		return configManagement;
-	}
-
-	/**
-	 * Sets {@code controllingCapabilitiesTrigger}
-	 *
-	 * @param configManagement the {@code java.lang.String} field
-	 */
-	public void setConfigManagement(String configManagement) {
-		this.configManagement = configManagement;
-	}
+// ToDo: removing controlling capabilities and config management
+//	/**
+//	 * Retrieves {@code {@link #configManagement }}
+//	 *
+//	 * @return value of {@link #configManagement}
+//	 */
+//	public String getConfigManagement() {
+//		return configManagement;
+//	}
+//
+//	/**
+//	 * Sets {@code controllingCapabilitiesTrigger}
+//	 *
+//	 * @param configManagement the {@code java.lang.String} field
+//	 */
+//	public void setConfigManagement(String configManagement) {
+//		this.configManagement = configManagement;
+//	}
 
 	@Override
 	public List<Statistics> getMultipleStatistics() {
@@ -482,12 +483,14 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		roleBased = retrieveUserRole();
 		retrieveDeviceInfo(stats);
 		retrieveDeviceTemperature(stats);
-		retrieveDeviceStillImage();
 		retrieveStreamStats(stats);
-		retrieveAudioConfig();
-		retrieveHDMIConfig();
-		retrieveServiceConfig();
-		retrieveTalkback();
+		if (isValidConfigManagement()) {
+			retrieveDeviceStillImage();
+			retrieveAudioConfig();
+			retrieveHDMIConfig();
+			retrieveServiceConfig();
+			retrieveTalkback();
+		}
 
 		for (int decoderID = DecoderConstant.MIN_DECODER_ID; decoderID < DecoderConstant.MAX_DECODER_ID; decoderID++) {
 			retrieveDecoderStats(stats, decoderID);
