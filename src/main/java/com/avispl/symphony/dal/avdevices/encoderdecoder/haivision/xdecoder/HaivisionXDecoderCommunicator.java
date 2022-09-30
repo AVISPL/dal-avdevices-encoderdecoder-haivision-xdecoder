@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.statistics.DynamicStatisticsDefinitions;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -228,6 +229,11 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private static final int STATISTICS_SSH_TIMEOUT = 30000;
 
 	/**
+	 * Configurable property for historical properties, comma separated values
+	 * */
+	private String historicalProperties;
+
+	/**
 	 * Constructor set loginSuccess list, command success list, command error list
 	 */
 	public HaivisionXDecoderCommunicator() {
@@ -240,6 +246,24 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 		// set list of error response strings (included at the end of response when command fails, typically ending with command prompt)
 		this.setCommandErrorList(Collections.singletonList("~"));
+	}
+
+	/**
+	 * Retrieves {@link #historicalProperties}
+	 *
+	 * @return value of {@link #historicalProperties}
+	 */
+	public String getHistoricalProperties() {
+		return historicalProperties;
+	}
+
+	/**
+	 * Sets {@link #historicalProperties} value
+	 *
+	 * @param historicalProperties new value of {@link #historicalProperties}
+	 */
+	public void setHistoricalProperties(String historicalProperties) {
+		this.historicalProperties = historicalProperties;
 	}
 
 	/**
@@ -324,6 +348,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		try {
 			final ExtendedStatistics extendedStatistics = new ExtendedStatistics();
 			final Map<String, String> stats = new HashMap<>();
+			final Map<String, String> dynamicStats = new HashMap<>();
 			final List<AdvancedControllableProperty> advancedControllableProperties = new ArrayList<>();
 			failedMonitor = new HashMap<>();
 			filteredStreamIDSet = new HashSet<>();
@@ -382,7 +407,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					extendedStatistics.setControllableProperties(advancedControllableProperties);
 				}
 
-				extendedStatistics.setStatistics(stats);
+				provisionTypedStatistics(stats, extendedStatistics);
 				localExtendedStatistics = extendedStatistics;
 			}
 			isEmergencyDelivery = false;
@@ -4055,4 +4080,27 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	public boolean convertSwitchControlValue(String value) {
 		return value.equals(DecoderConstant.CODE_OF_ENABLED_SWITCH);
 	}
+
+	/**
+	 * Add a property as a regular statistics property, or as dynamic one, based on the {@link #historicalProperties} configuration
+	 * and DynamicStatisticsDefinitions static definitions.
+	 *
+	 * @param statistics map of all device properties
+	 * @param extendedStatistics device statistics object
+	 * */
+	private void provisionTypedStatistics(Map<String, String> statistics, ExtendedStatistics extendedStatistics) {
+		Map<String, String> dynamicStatistics = new HashMap<>();
+		Map<String, String> staticStatistics = new HashMap<>();
+		statistics.forEach((s, s2) -> {
+			if (!StringUtils.isNullOrEmpty(historicalProperties) && historicalProperties.contains(s)
+					&& DynamicStatisticsDefinitions.checkIfExists(s)) {
+				dynamicStatistics.put(s, s2);
+			} else {
+				staticStatistics.put(s, s2);
+			}
+		});
+		extendedStatistics.setDynamicStatistics(dynamicStatistics);
+		extendedStatistics.setStatistics(staticStatistics);
+	}
+
 }
