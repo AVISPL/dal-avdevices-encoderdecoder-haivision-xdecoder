@@ -348,7 +348,6 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 		try {
 			final ExtendedStatistics extendedStatistics = new ExtendedStatistics();
 			final Map<String, String> stats = new HashMap<>();
-			final Map<String, String> dynamicStats = new HashMap<>();
 			final List<AdvancedControllableProperty> advancedControllableProperties = new ArrayList<>();
 			failedMonitor = new HashMap<>();
 			filteredStreamIDSet = new HashSet<>();
