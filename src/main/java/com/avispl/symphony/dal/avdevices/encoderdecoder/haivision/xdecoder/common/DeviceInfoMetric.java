@@ -23,8 +23,6 @@ public enum DeviceInfoMetric {
 	HARDWARE_COMPATIBILITY("HardwareCompatibility"),
 	HARDWARE_VERSION("HardwareVersion"),
 	PART_NUMBER("PartNumber"),
-
-	// TODO: Can be Historical metric in next version
 	TEMPERATURE("Temperature");
 
 	private final String name;
