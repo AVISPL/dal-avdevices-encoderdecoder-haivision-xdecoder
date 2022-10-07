@@ -113,7 +113,7 @@
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna</artifactId>
       <scope>provided</scope>
-      <version>5.11.0</version>
+      <version>5.12.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -137,13 +137,13 @@
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna-platform</artifactId>
       <scope>provided</scope>
-      <version>5.11.0</version>
+      <version>5.12.0</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
       <scope>provided</scope>
-      <version>5.2.6.RELEASE</version>
+      <version>5.2.22.RELEASE</version>
     </dependency>
     <!--scope test-->
     <dependency>
