@@ -229,9 +229,9 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private static final int STATISTICS_SSH_TIMEOUT = 30000;
 
 	/**
-	 * Configurable property for historical properties, comma separated values
+	 * Configurable property for historical properties, comma separated values kept as set locally
 	 * */
-	private String historicalProperties;
+	private Set<String> historicalProperties = new HashSet<>();
 
 	/**
 	 * Constructor set loginSuccess list, command success list, command error list
@@ -254,7 +254,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @return value of {@link #historicalProperties}
 	 */
 	public String getHistoricalProperties() {
-		return historicalProperties;
+		return String.join(",", this.historicalProperties);
 	}
 
 	/**
@@ -263,7 +263,10 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	 * @param historicalProperties new value of {@link #historicalProperties}
 	 */
 	public void setHistoricalProperties(String historicalProperties) {
-		this.historicalProperties = historicalProperties;
+		this.historicalProperties.clear();
+		Arrays.asList(historicalProperties.split(",")).forEach(propertyName -> {
+			this.historicalProperties.add(propertyName.trim());
+		});
 	}
 
 	/**
@@ -4094,7 +4097,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 			// To ignore the group properties are in, we need to split it
 			// whenever there's a hash involved and take the 2nd part
 			boolean propertyListed = false;
-			if (!StringUtils.isNullOrEmpty(historicalProperties)) {
+			if (!historicalProperties.isEmpty()) {
 				if (propertyName.contains(DecoderConstant.HASH)) {
 					propertyListed = historicalProperties.contains(propertyName.split(DecoderConstant.HASH)[1]);
 				} else {
