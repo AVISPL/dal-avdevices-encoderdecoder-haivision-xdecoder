@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+import com.avispl.symphony.dal.avdevices.encoderdecoder.haivision.xdecoder.statistics.DynamicStatisticsDefinitions;
 import org.springframework.util.CollectionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -228,6 +229,11 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	private static final int STATISTICS_SSH_TIMEOUT = 30000;
 
 	/**
+	 * Configurable property for historical properties, comma separated values kept as set locally
+	 * */
+	private Set<String> historicalProperties = new HashSet<>();
+
+	/**
 	 * Constructor set loginSuccess list, command success list, command error list
 	 */
 	public HaivisionXDecoderCommunicator() {
@@ -240,6 +246,27 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 
 		// set list of error response strings (included at the end of response when command fails, typically ending with command prompt)
 		this.setCommandErrorList(Collections.singletonList("~"));
+	}
+
+	/**
+	 * Retrieves {@link #historicalProperties}
+	 *
+	 * @return value of {@link #historicalProperties}
+	 */
+	public String getHistoricalProperties() {
+		return String.join(",", this.historicalProperties);
+	}
+
+	/**
+	 * Sets {@link #historicalProperties} value
+	 *
+	 * @param historicalProperties new value of {@link #historicalProperties}
+	 */
+	public void setHistoricalProperties(String historicalProperties) {
+		this.historicalProperties.clear();
+		Arrays.asList(historicalProperties.split(",")).forEach(propertyName -> {
+			this.historicalProperties.add(propertyName.trim());
+		});
 	}
 
 	/**
@@ -382,7 +409,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 					extendedStatistics.setControllableProperties(advancedControllableProperties);
 				}
 
-				extendedStatistics.setStatistics(stats);
+				provisionTypedStatistics(stats, extendedStatistics);
 				localExtendedStatistics = extendedStatistics;
 			}
 			isEmergencyDelivery = false;
@@ -411,7 +438,7 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 				this.logger.debug("controlProperty value " + value);
 			}
 			// Decoder control
-			String[] splitProperty = property.split(String.valueOf(DecoderConstant.HASH));
+			String[] splitProperty = property.split(DecoderConstant.HASH);
 			if (splitProperty.length != 2) {
 				throw new IllegalArgumentException("Unexpected length of control property");
 			}
@@ -4055,4 +4082,36 @@ public class HaivisionXDecoderCommunicator extends SshCommunicator implements Mo
 	public boolean convertSwitchControlValue(String value) {
 		return value.equals(DecoderConstant.CODE_OF_ENABLED_SWITCH);
 	}
+
+	/**
+	 * Add a property as a regular statistics property, or as dynamic one, based on the {@link #historicalProperties} configuration
+	 * and DynamicStatisticsDefinitions static definitions.
+	 *
+	 * @param statistics map of all device properties
+	 * @param extendedStatistics device statistics object
+	 * */
+	private void provisionTypedStatistics(Map<String, String> statistics, ExtendedStatistics extendedStatistics) {
+		Map<String, String> dynamicStatistics = new HashMap<>();
+		Map<String, String> staticStatistics = new HashMap<>();
+		statistics.forEach((propertyName, propertyValue) -> {
+			// To ignore the group properties are in, we need to split it
+			// whenever there's a hash involved and take the 2nd part
+			boolean propertyListed = false;
+			if (!historicalProperties.isEmpty()) {
+				if (propertyName.contains(DecoderConstant.HASH)) {
+					propertyListed = historicalProperties.contains(propertyName.split(DecoderConstant.HASH)[1]);
+				} else {
+					propertyListed = historicalProperties.contains(propertyName);
+				}
+			}
+			if (propertyListed && DynamicStatisticsDefinitions.checkIfExists(propertyName)) {
+				dynamicStatistics.put(propertyName, propertyValue);
+			} else {
+				staticStatistics.put(propertyName, propertyValue);
+			}
+		});
+		extendedStatistics.setDynamicStatistics(dynamicStatistics);
+		extendedStatistics.setStatistics(staticStatistics);
+	}
+
 }
